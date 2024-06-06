@@ -1,60 +1,74 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-navigation-drawer app>
+      <!-- -->
+    </v-navigation-drawer>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+    <!-- 상단 bar -->
+    <v-app-bar app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Vuetify</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
+    <!-- 메뉴 navi -->
+    <v-navigation-drawer v-model="drawer" app>
+
+      <!-- 메뉴 navi - home title -->
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">Sunny</v-list-item-title>
+          <v-list-item-subtitle>해맑은</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider />
+
+      <!-- 메뉴 navi - list -->
+      <v-list dense nav>
+        <v-list-item
+          v-for="item in items" :key="item.title"
+          link :to="item.to">
+          <v-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+    </v-navigation-drawer>
+
+    <!-- Sizes your content based upon application components -->
     <v-main>
-      <HelloWorld/>
+      <router-view />
     </v-main>
+
+    <v-footer app>
+      <!-- -->
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+//import HelloWorld from './components/HelloWorld.vue';
 
 export default {
   name: 'App',
-
-  components: {
-    HelloWorld,
-  },
+  components: {},
 
   data: () => ({
-    //
+    drawer: false,
+    items: [
+      { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/'},
+      { title: 'HelloWorld', icon: 'mdi-image', to: '/helloworld' },
+    ],
+    right: null,
   }),
 };
 </script>
+
+<style scoped></style>
