@@ -1,18 +1,5 @@
 <template>
   <v-app>
-    <v-navigation-drawer app>
-      <!-- -->
-    </v-navigation-drawer>
-
-    <!-- 상단 bar -->
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Vuetify</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-    </v-app-bar>
-
     <!-- 메뉴 navi -->
     <v-navigation-drawer v-model="drawer" app>
 
@@ -24,7 +11,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider />
+      <v-divider /><!--구분선-->
 
       <!-- 메뉴 navi - list -->
       <v-list dense nav>
@@ -42,9 +29,20 @@
 
     </v-navigation-drawer>
 
+    <!-- 상단 bar -->
+    <v-app-bar app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Vuetify</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
     <!-- Sizes your content based upon application components -->
     <v-main>
-      <router-view />
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
 
     <v-footer app>
