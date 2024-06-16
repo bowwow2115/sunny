@@ -33,7 +33,7 @@
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Vuetify</v-toolbar-title>
+      <v-toolbar-title>메뉴</v-toolbar-title>
 
       <v-spacer></v-spacer>
     </v-app-bar>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld.vue';
+//import HelloWorld from './components/childRegist.vue';
 
 export default {
   name: 'App',
@@ -62,7 +62,7 @@ export default {
     drawer: false,
     items: [
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/'},
-      { title: 'HelloWorld', icon: 'mdi-image', to: '/helloworld' },
+      { title: 'childRegist', icon: 'mdi-image', to: '/childRegist' },
     ],
     right: null,
   }),

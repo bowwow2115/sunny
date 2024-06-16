@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld.vue';
+import childRegist from '@/components/childRegist.vue';
 
 Vue.use(Router);
 
@@ -13,9 +13,9 @@ export default new Router({
     //   component: () => import('@/components/Home.vue'), // 기본 홈 컴포넌트
     // },
     {
-      path: '/helloworld',
-      name: 'helloworld',
-      component: HelloWorld,
+      path: '/childRegist',
+      name: 'childRegist',
+      component: childRegist,
     },
   ],
 });
