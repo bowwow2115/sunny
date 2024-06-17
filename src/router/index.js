@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import SunnyLogin from '@/components/sunnyLogin.vue';
+import signIn from '@/components/signIn.vue';
+import signUp from '@/components/signUp.vue';
 import childRegist from '@/components/childRegist.vue';
 
 import auth from "@/api/auth";
@@ -16,9 +17,14 @@ export default new Router({
     //   component: () => import('@/components/Home.vue'), // 기본 홈 컴포넌트
     // },
     {
-      path: '/sunnyLogin',
-      name: 'sunnyLogin',
-      component: SunnyLogin,
+      path: '/signIn',
+      name: 'signIn',
+      component: signIn,
+    },
+    {
+      path: '/signUp',
+      name: 'signUp',
+      component: signUp,
     },
     {
       path: '/childRegist',
