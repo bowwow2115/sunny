@@ -15,7 +15,9 @@
                 :rules="nameRules"
                 :counter="10"
                 label="코드"
-                required outlined clearable
+                required
+                outlined
+                clearable
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -24,7 +26,9 @@
                 :rules="nameRules"
                 :counter="10"
                 label="이름"
-                required outlined clearable
+                required
+                outlined
+                clearable
               ></v-text-field>
             </v-col>
           </v-row>
@@ -33,7 +37,8 @@
               <v-select
                 v-model="form.className"
                 :items="items"
-                label="반명" outlined
+                label="반명"
+                outlined
               ></v-select>
             </v-col>
             <v-col cols="12" md="6">
@@ -53,18 +58,27 @@
                     append-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
-                    v-on="on" outlined
-                  ></v-text-field><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 -->
+                    v-on="on"
+                    outlined
+                  ></v-text-field
+                  ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 -->
                 </template>
                 <v-date-picker
                   v-model="form.birthdate"
                   :active-picker.sync="activePicker"
-                  :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10)"
+                  :max="
+                    new Date(
+                      Date.now() - new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .substring(0, 10)
+                  "
                   min="1950-01-01"
                   no-title
                   locale="ko"
                   @input="menu = false"
-                ></v-date-picker><!-- @input="menu = false" 날짜 입력시 menu 사라짐 -->
+                ></v-date-picker
+                ><!-- @input="menu = false" 날짜 입력시 menu 사라짐 -->
               </v-menu>
             </v-col>
           </v-row>
@@ -91,7 +105,6 @@
           <test></test>
         </v-tab-item>
       </v-tabs-items> -->
-
     </v-card>
   </v-container>
 </template>
@@ -99,37 +112,37 @@
 <script>
 //import childRegistForm from './childRegistForm.vue';
 export default {
-  name: 'childRegist',
+  name: "childRegist",
   components: {
     //childRegistForm, // childRegistForm 컴포넌트 등록
   },
-  data () {
-      return {
-        // tab: null,
-        // items: [
-        //   { tab: '원아등록', content: '/childRegistForm' },
-        //   { tab: '학부모등록', content: '/parentRegistForm' },
-        // ],
+  data() {
+    return {
+      // tab: null,
+      // items: [
+      //   { tab: '원아등록', content: '/childRegistForm' },
+      //   { tab: '학부모등록', content: '/parentRegistForm' },
+      // ],
 
-        valid: true,
-        menu: false, //생년월일 필드와 picker를 묶는 역할
-        activePicker: null,
+      valid: true,
+      menu: false, //생년월일 필드와 picker를 묶는 역할
+      activePicker: null,
 
-        form: {
-          childCode: "",
-          name: "",
-          className: "",
-          birthdate: null,
-        },
+      form: {
+        childCode: "",
+        name: "",
+        className: "",
+        birthdate: null,
+      },
 
-        items: [], //셀렉트박스 옵션
-        nameRules: [
-          v => !!v || '필수 항목입니다',
-          v => v.length <= 10 || 'Name must be less than 10 characters',
-        ],
-      }
-    },
-}
+      items: [], //셀렉트박스 옵션
+      nameRules: [
+        (v) => !!v || "필수 항목입니다",
+        (v) => v.length <= 10 || "Name must be less than 10 characters",
+      ],
+    };
+  },
+};
 </script>
 
 <style scoped></style>
