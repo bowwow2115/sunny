@@ -27,7 +27,7 @@ function loggedIn() {
   return new Promise((resolve, reject) => {
     let url = "";
     const sid = Utils.getCookie(constants.TOKEN);
-    if (sid != null && sid !== "") url = `/xcsm/auth/validation?sid=${sid}`;
+    if (sid != null && sid !== "") url = `/sunny/auth/validation?sid=${sid}`;
     if (url !== "") {
       api
         .ax()
@@ -85,63 +85,17 @@ function renewJWT() {
 }
 
 function login(user, password) {
-  const key = "exAdm1111"; // Utils.featuresDefault('security.key', '');
   let data = null;
 
-  if (key) {
     data = {
-      method: "AES",
       userId: Utils.tripleDESenc(user),
       password: Utils.tripleDESenc(password),
     };
-  } else {
-    data = {
-      userId: user,
-      password,
-    };
-  }
+
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/xcsm/login`, jQuery.param(data), false)
-      .then((r) => {
-        //console.log("login call : ", r);
-        if (r.code != "0") {
-          reject(r.code);
-          return;
-        } else if (r.code == "0" && r.data[0].errcode != null) {
-          reject(r.data[0]);
-        } else {
-          parseToken(r);
-          resolve(r.data[0]);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-function xcsmlogin(user, password) {
-  const key = "exAdm1111"; // Utils.featuresDefault('security.key', '');
-  let data = null;
-
-  if (key) {
-    data = {
-      method: "AES",
-      userId: Utils.tripleDESenc(user),
-      password: password,
-    };
-  } else {
-    data = {
-      userId: user,
-      password,
-    };
-  }
-
-  return new Promise((resolve, reject) => {
-    api
-      .postUrl(`/xcsm/login`, jQuery.param(data), false)
+      .postUrl(`/sunny/login`, jQuery.param(data), false)
       .then((r) => {
         //console.log("login call : ", r);
         if (r.code != "0") {
@@ -167,7 +121,7 @@ function logout(user) {
   };
 
   api
-    .postUrl("/xcsm/logout", jQuery.param(data), false)
+    .postUrl("/sunny/logout", jQuery.param(data), false)
     .then((response) => {
       if (response.data) console.log(response.data);
     })
@@ -195,7 +149,7 @@ function resetPwdate(user) {
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/xcsm/resetPwdate`, jQuery.param(data), false)
+      .postUrl(`/sunny/resetPwdate`, jQuery.param(data), false)
       .then((r) => {
         resolve(r);
       })
@@ -227,7 +181,7 @@ function changePassword(passwordForm) {
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/xcsm/changePw`, jQuery.param(data), false)
+      .postUrl(`/sunny/changePw`, jQuery.param(data), false)
       .then((r) => {
         resolve(r);
       })
@@ -240,7 +194,6 @@ function changePassword(passwordForm) {
 export default {
   loggedIn,
   login,
-  xcsmlogin,
   logout,
   renewJWT,
   resetPwdate,
