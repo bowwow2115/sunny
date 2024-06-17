@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import store from './store';
+import 'remixicon/fonts/remixicon.css'; //remixicon 아이콘
 
 // import ErrorDialog from "@/components/custom/dialog/ErrorDialog";
 import VueClipboard from 'vue-clipboard2'
