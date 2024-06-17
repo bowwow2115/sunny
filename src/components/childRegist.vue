@@ -36,12 +36,19 @@
                 <v-date-picker
                   v-model="form.birthdate"
                   :active-picker.sync="activePicker"
-                  :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10)"
+                  :max="
+                    new Date(
+                      Date.now() - new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .substring(0, 10)
+                  "
                   min="1950-01-01"
                   no-title
                   locale="ko"
                   @input="menu = false"
-                ></v-date-picker><!-- @input="menu = false" 날짜 입력시 menu 사라짐 -->
+                ></v-date-picker
+                ><!-- @input="menu = false" 날짜 입력시 menu 사라짐 -->
               </v-menu>
             </v-col>
           </v-row>
@@ -75,7 +82,6 @@
           <test></test>
         </v-tab-item>
       </v-tabs-items> -->
-
     </v-card>
   </v-container>
 </template>
