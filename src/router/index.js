@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import SunnyLogin from '@/components/sunnyLogin.vue';
 import childRegist from '@/components/childRegist.vue';
 
+import auth from "@/api/auth";
+
 Vue.use(Router);
 
 export default new Router({
