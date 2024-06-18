@@ -4,6 +4,7 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import store from './store';
 import 'remixicon/fonts/remixicon.css'; //remixicon 아이콘
+import './assets/css/comm.css'; //css 파일분리 테스트
 
 // import ErrorDialog from "@/components/custom/dialog/ErrorDialog";
 import VueClipboard from 'vue-clipboard2'
@@ -29,7 +30,6 @@ Vue.prototype.$Utils = Utils;
 window.Utils = Utils;
 Vue.use(ModalDialogs)
 Vue.use(VueClipboard);
-
 
 // async function openErrorDialog(errData) {
 //   const errorDialog = ModalDialogs.create(ErrorDialog);
@@ -94,3 +94,4 @@ let vue = new Vue({
 }).$mount('#app')
 
 window.vue = vue;
+
