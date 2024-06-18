@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import signIn from '@/components/signIn.vue';
 import signUp from '@/components/signUp.vue';
+import findId from '@/components/findId.vue';
 import childRegist from '@/components/childRegist.vue';
 
 import auth from "@/api/auth";
@@ -25,6 +26,11 @@ export default new Router({
       path: '/signUp',
       name: 'signUp',
       component: signUp,
+    },
+    {
+      path: '/findId',
+      name: 'findId',
+      component: findId,
     },
     {
       path: '/childRegist',

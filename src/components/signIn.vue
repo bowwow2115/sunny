@@ -19,9 +19,10 @@
           required outlined clearable
         ></v-text-field>
         <v-checkbox v-model="form.saveLogin" label="로그인 상태유지"></v-checkbox>
-        <v-btn type="submit" block depressed color="primary">로그인</v-btn>
+        <v-btn type="submit" block depressed color="primary" class="btn-submit">로그인</v-btn>
         <div class="login-more">
           <router-link to="/signUp">회원가입</router-link>
+          <span>|</span>
           <router-link to="/findId">아이디/비밀번호 찾기</router-link>
         </div>
       </v-form>
