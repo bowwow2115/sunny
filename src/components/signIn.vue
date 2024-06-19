@@ -5,14 +5,14 @@
       <v-form v-model="valid" @submit.prevent="login">
         <!-- 아이디 -->
         <v-text-field
-          v-model="form.loginId"
+          v-model="form.userId"
           label="아이디 입력"
           prepend-inner-icon="ri-user-line"
           required outlined clearable
         ></v-text-field>
         <!-- 비밀번호 -->
         <v-text-field
-          v-model="form.loginpw"
+          v-model="form.password"
           type="password"
           label="비밀번호 입력"
           prepend-inner-icon="ri-lock-line"
@@ -32,27 +32,37 @@
 
 <script>
 import { methods } from 'babel-plugin-transform-runtime/lib/definitions';
+import auth from "@/api/auth";
 
 
 export default {
   name: 'signIn',
-  components: {
-  },
-
+  components: {},
   data() {
     return {
       valid: true,
       form: {
-        loginId: "",
-        loginPw: "",
+        userId: "",
+        password: "",
         saveLogin: "",
-      },
-      methods: {
-        login() { //로그인 폼 submit
-
-        }
       },
     }
   },
+  methods: {
+        login() { //로그인 폼 submit
+          auth
+          .login(this.form)
+          .then((_) => {
+            this.$router.push({ path: constants.DEFAULT_HOME });
+          })
+          .catch((error) => {
+            console.log(error);
+            // this.$message({
+            //   type: "info",
+            //   message: error.message,
+            // });
+          })
+        }
+      },
 };
 </script>

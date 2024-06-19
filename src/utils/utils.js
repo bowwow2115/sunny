@@ -54,7 +54,10 @@ const Utils = {
         padding: CryptoJS.pad.Pkcs7
     });
     return encrypt.toString();
-},
+  },
+  getTenant() {
+    return Utils.getCookie('tenant');
+  },
 };
 
 export default Utils;

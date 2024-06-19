@@ -8,7 +8,7 @@ import './assets/css/comm.css'; //css 파일분리 테스트
 
 // import ErrorDialog from "@/components/custom/dialog/ErrorDialog";
 import VueClipboard from 'vue-clipboard2'
-import Constants from './Constants'
+import constants from './Constants'
 import Utils from '@/utils/utils'
 import * as ModalDialogs from 'vue-modal-dialogs'
 import lodash from 'lodash'
@@ -17,18 +17,18 @@ window.$ = require('jquery');
 window.jQuery = require('jquery');
 window.store = store;
 
-window.constants = Constants;
-Vue.prototype.$Constants = Constants
+window.constants = constants;
+Vue.prototype.$Constants = constants;
 Vue.config.productionTip = false;
 
 Vue.config.productionTip = false;
 
 VueClipboard.config.autoSetContainer = true;
 
-Vue.prototype.$lodash = lodash
+Vue.prototype.$lodash = lodash;
 Vue.prototype.$Utils = Utils;
 window.Utils = Utils;
-Vue.use(ModalDialogs)
+Vue.use(ModalDialogs);
 Vue.use(VueClipboard);
 
 // async function openErrorDialog(errData) {
@@ -55,7 +55,7 @@ Vue.prototype.$showError = function(error = null, title = null) {
       message = `${error.message} (${error.code})`
   }
 
-  console.log(message)
+  console.log(message);
 
   if (!title)
       title = "오류";
@@ -84,14 +84,14 @@ if (process.env.NODE_ENV === 'production') {
   window._consolelog = console.log
   console.log = function() {}
 }
-window.console = console
+window.console = console;
 
 let vue = new Vue({
   router,
   vuetify,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
 
 window.vue = vue;
 
