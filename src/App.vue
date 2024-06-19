@@ -1,54 +1,13 @@
 <template>
-  <v-app>
-    <!-- 메뉴 navi -->
-    <v-navigation-drawer v-model="drawer" app>
-
-      <!-- 메뉴 navi - home title -->
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="text-h6">Sunny</v-list-item-title>
-          <v-list-item-subtitle>해맑은</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-divider /><!--구분선-->
-
-      <!-- 메뉴 navi - list -->
-      <v-list dense nav>
-        <v-list-item
-          v-for="item in items" :key="item.title"
-          link :to="item.to">
-          <v-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-
-    </v-navigation-drawer>
-
-    <!-- 상단 bar -->
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <!-- <v-toolbar-title>메뉴</v-toolbar-title> -->
-
-      <v-spacer></v-spacer>
-    </v-app-bar>
-
-    <!-- Sizes your content based upon application components -->
-    <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
-    </v-main>
-
-    <v-footer app>
-      <!-- -->
-    </v-footer>
-  </v-app>
+    <div id="app">
+      <router-view></router-view>
+      <v-overlay :value="isLoading">
+        <v-progress-circular
+          indeterminate
+          size="64"
+        ></v-progress-circular>
+      </v-overlay>
+    </div>
 </template>
 
 <script>
@@ -57,15 +16,16 @@
 export default {
   name: 'App',
   components: {},
-
-  data: () => ({
-    drawer: false,
-    items: [
-      { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/'},
-      { title: 'childRegist', icon: 'mdi-image', to: '/childRegist' },
-    ],
-    right: null,
-  }),
+  mounted() {
+    // setTimeout(() => {
+    //   this.isLoading = true;
+    // }, 800);
+  },
+  data() {
+    return {
+      isLoading: false,
+    }
+  },
 };
 </script>
 
