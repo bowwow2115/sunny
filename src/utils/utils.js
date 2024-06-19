@@ -58,6 +58,16 @@ const Utils = {
   getTenant() {
     return Utils.getCookie('tenant');
   },
+  isNull(str) {
+    return str === null || str === undefined || str === '';
+  },
+  checkEnv(NODE_ENV) {
+    if (NODE_ENV === 'production') {
+        return '/sunny/#/signIn';
+    } else {
+        return '/';
+    }
+  },
 };
 
 export default Utils;

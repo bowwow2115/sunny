@@ -78,14 +78,6 @@ function renewJWT() {
 }
 
 function login(form) {
-  let data = null;
-
-    // data = {
-    //   userId: Utils.tripleDESenc(user),
-    //   password: Utils.tripleDESenc(password),
-    // };
-
-
   return new Promise((resolve, reject) => {
     api
       .post2(`/sunny/login`, form)
@@ -106,20 +98,6 @@ function login(form) {
 }
 
 function logout(user) {
-  let data = {
-    refreshToken: Utils.getCookie("refreshToken"),
-    userId: user,
-  };
-
-  api
-    .postUrl("/sunny/logout", jQuery.param(data), false)
-    .then((response) => {
-      if (response.data) console.log(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
   // clear store
   store.dispatch("resetState");
 
