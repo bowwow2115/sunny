@@ -61,19 +61,19 @@
 // window.validateHandle = null;
 // router.beforeEach((to, from, next) => {
 //   //어드민에서 넘어왔을 경우 로그인 처리
-//   if (to.query.id != undefined && to.query.pw != undefined) {
-//     auth
-//       .xcsmlogin(to.query.id, to.query.pw)
-//       .then((res) => {
-//         Utils.setCookie("loginID", to.query.id);
-//         router.push({
-//           path: "/dashboard",
-//         });
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   }
+//   // if (to.query.id != undefined && to.query.pw != undefined) {
+//   //   auth
+//   //     .xcsmlogin(to.query.id, to.query.pw)
+//   //     .then((res) => {
+//   //       Utils.setCookie("loginID", to.query.id);
+//   //       router.push({
+//   //         path: "/dashboard",
+//   //       });
+//   //     })
+//   //     .catch((error) => {
+//   //       console.log(error);
+//   //     });
+//   // }
 
 //   document.title = to.name;
 
@@ -149,12 +149,12 @@
 //       .replace(/^\#/g, "");
 //   }
 
-//   if (redirectQuery === "/" || redirectQuery === "/login" || !redirectQuery) {
+//   if (redirectQuery === "/" || redirectQuery === "/signIn" || !redirectQuery) {
 //     redirectQuery = null;
 //   }
 
 //   router.push({
-//     path: "/login",
+//     path: "/signIn",
 //     query: redirectQuery ? { redirect: redirectQuery } : {},
 //   });
 

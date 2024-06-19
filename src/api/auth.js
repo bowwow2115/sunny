@@ -3,19 +3,13 @@ import Utils from "@/utils/utils";
 import * as api from "@/api/api";
 
 function parseToken(result, reset = false) {
-  if (result.data[0]) {
-    let ticketId = result.data[0].accessToken;
-    let lang = "ko";
+  if (result.data) {
+    let ticketId = result.data.accessToken;
     if (ticketId) {
       Utils.setCookie("auth", ticketId, 3600, "/");
-      Utils.setCookie("lang", lang);
-      Utils.setCookie("refreshToken", result.data[0].refreshToken);
-      Utils.setCookie(
-        "loginedUserAuthCode",
-        result.data[0].loginedUserAuthCode
-      );
+      Utils.setCookie("refreshToken", result.data.refreshToken);
 
-      const user = result.data[0];
+      const user = result.data;
 
       store.commit("setUser", user);
       store.commit("setTicket", ticketId);
@@ -33,22 +27,21 @@ function loggedIn() {
         .ax()
         .get(url)
         .then((response) => {
-          //console.log("loggedIn Check : ", response);
+          console.log("loggedIn Check : ", response);
           //parseToken(response.data, true);
           if (response.data.code == "0") {
-            resolve();
+            resolve(response.data);
           } else if (response.data.code == "EXPIRED-TOKEN") {
             Utils.deleteCookie("auth", "/");
             Utils.deleteCookie("lang");
 
             router.push({
-              path: "/login",
-              query: { redirect: vue.$route.fullPath },
+              path: "/signIn",
             });
-            if (window.validateHandle) {
-              clearInterval(window.validateHandle);
-              window.validateHandle = null;
-            }
+            // if (window.validateHandle) {
+            //   clearInterval(window.validateHandle);
+            //   window.validateHandle = null;
+            // }
           } else {
             reject(new Error("validation failure"));
           }
@@ -84,28 +77,26 @@ function renewJWT() {
   });
 }
 
-function login(user, password) {
+function login(form) {
   let data = null;
 
-    data = {
-      userId: Utils.tripleDESenc(user),
-      password: Utils.tripleDESenc(password),
-    };
+    // data = {
+    //   userId: Utils.tripleDESenc(user),
+    //   password: Utils.tripleDESenc(password),
+    // };
 
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/sunny/login`, jQuery.param(data), false)
+      .post2(`/sunny/login`, form)
       .then((r) => {
-        //console.log("login call : ", r);
+        console.log("login call : ", r);
         if (r.code != "0") {
           reject(r.code);
           return;
-        } else if (r.code == "0" && r.data[0].errcode != null) {
-          reject(r.data[0]);
         } else {
           parseToken(r);
-          resolve(r.data[0]);
+          resolve(r.data);
         }
       })
       .catch((error) => {
@@ -149,7 +140,7 @@ function resetPwdate(user) {
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/sunny/resetPwdate`, jQuery.param(data), false)
+      .post2(`/sunny/resetPwdate`, data)
       .then((r) => {
         resolve(r);
       })
