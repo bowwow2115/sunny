@@ -2,9 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
-import store from './store';
-import 'remixicon/fonts/remixicon.css'; //remixicon 아이콘
-import './assets/css/comm.css'; //css 파일분리 테스트
+import store from './store'
+import 'remixicon/fonts/remixicon.css' //remixicon 아이콘
+import './assets/css/comm.css' //css 파일분리 테스트
 
 // import ErrorDialog from "@/components/custom/dialog/ErrorDialog";
 import VueClipboard from 'vue-clipboard2'
@@ -13,23 +13,23 @@ import Utils from '@/utils/utils'
 import * as ModalDialogs from 'vue-modal-dialogs'
 import lodash from 'lodash'
 
-window.$ = require('jquery');
-window.jQuery = require('jquery');
-window.store = store;
+window.$ = require('jquery')
+window.jQuery = require('jquery')
+window.store = store
 
-window.constants = constants;
-Vue.prototype.$Constants = constants;
-Vue.config.productionTip = false;
+window.constants = constants
+Vue.prototype.$Constants = constants
+Vue.config.productionTip = false
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
-VueClipboard.config.autoSetContainer = true;
+VueClipboard.config.autoSetContainer = true
 
-Vue.prototype.$lodash = lodash;
-Vue.prototype.$Utils = Utils;
-window.Utils = Utils;
-Vue.use(ModalDialogs);
-Vue.use(VueClipboard);
+Vue.prototype.$lodash = lodash
+Vue.prototype.$Utils = Utils
+window.Utils = Utils
+Vue.use(ModalDialogs)
+Vue.use(VueClipboard)
 
 // async function openErrorDialog(errData) {
 //   const errorDialog = ModalDialogs.create(ErrorDialog);
@@ -43,55 +43,52 @@ Vue.use(VueClipboard);
 //   openErrorDialog(errData);
 // }
 
-Vue.prototype.$showError = function(error = null, title = null) {
-  let message = '';
+Vue.prototype.$showError = function (error = null, title = null) {
+  let message = ''
   if (error && error.status && error.error) {
-      message = error.status + ' ' + error.error;
+    message = error.status + ' ' + error.error
   }
   if (!error)
-      message = "처리가 실패하였습니다. \n오류 내용은 관리자에게 전달되었습니다.";
+    message = '처리가 실패하였습니다. \n오류 내용은 관리자에게 전달되었습니다.'
 
   if (error && error.code) {
-      message = `${error.message} (${error.code})`
+    message = `${error.message} (${error.code})`
   }
 
-  console.log(message);
+  console.log(message)
 
-  if (!title)
-      title = "오류";
+  if (!title) title = '오류'
 
   this.$notify.error({
-      position: 'bottom-right',
-      duration: 2000,
-      title: title,
-      message: message
+    position: 'bottom-right',
+    duration: 2000,
+    title: title,
+    message: message,
   })
 }
-Vue.prototype.$showOk = function(message = null) {
-  if (!message)
-      message = "처리가 완료되었습니다.";
+Vue.prototype.$showOk = function (message = null) {
+  if (!message) message = '처리가 완료되었습니다.'
 
   this.$notify.success({
-      position: 'bottom-right',
-      duration: 1000,
-      title: "성공",
-      message: message,
-      offset: 60
-  });
+    position: 'bottom-right',
+    duration: 1000,
+    title: '성공',
+    message: message,
+    offset: 60,
+  })
 }
 
 if (process.env.NODE_ENV === 'production') {
   window._consolelog = console.log
-  console.log = function() {}
+  console.log = function () {}
 }
-window.console = console;
+window.console = console
 
 let vue = new Vue({
   router,
   vuetify,
   store,
-  render: h => h(App)
-}).$mount('#app');
+  render: (h) => h(App),
+}).$mount('#app')
 
-window.vue = vue;
-
+window.vue = vue

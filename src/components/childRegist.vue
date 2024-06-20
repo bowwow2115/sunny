@@ -10,19 +10,47 @@
         <v-container>
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field v-model="form.childCode" :rules="nameRules" :counter="10" label="원아코드" required outlined clearable></v-text-field>
+              <v-text-field
+                v-model="form.childCode"
+                :rules="nameRules"
+                :counter="10"
+                label="원아코드"
+                required
+                outlined
+                clearable
+              ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field v-model="form.name" :rules="nameRules" :counter="10" label="원아이름" required outlined clearable></v-text-field>
+              <v-text-field
+                v-model="form.name"
+                :rules="nameRules"
+                :counter="10"
+                label="원아이름"
+                required
+                outlined
+                clearable
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <v-select v-model="form.className" :items="items" label="반명" outlined></v-select>
+              <v-select
+                v-model="form.className"
+                :items="items"
+                label="반명"
+                outlined
+              ></v-select>
             </v-col>
             <v-col cols="12" md="6">
               <!-- 생년월일 -->
-              <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y min-width="auto">
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="form.birthdate"
@@ -30,8 +58,10 @@
                     append-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
-                    v-on="on" outlined
-                  ></v-text-field><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 -->
+                    v-on="on"
+                    outlined
+                  ></v-text-field
+                  ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 -->
                 </template>
                 <v-date-picker
                   v-model="form.birthdate"
@@ -89,39 +119,37 @@
 <script>
 //import childRegistForm from './childRegistForm.vue';
 export default {
-    name: 'childRegist',
-    components: {
-        //childRegistForm, // childRegistForm 컴포넌트 등록
-    },
-    data() {
-        return {
-            // tab: null,
-            // items: [
-            //   { tab: '원아등록', content: '/childRegistForm' },
-            //   { tab: '학부모등록', content: '/parentRegistForm' },
-            // ],
+  name: 'childRegist',
+  components: {
+    //childRegistForm, // childRegistForm 컴포넌트 등록
+  },
+  data() {
+    return {
+      // tab: null,
+      // items: [
+      //   { tab: '원아등록', content: '/childRegistForm' },
+      //   { tab: '학부모등록', content: '/parentRegistForm' },
+      // ],
 
-            valid: true,
-            menu: false, //생년월일 필드와 picker를 묶는 역할
-            activePicker: null,
+      valid: true,
+      menu: false, //생년월일 필드와 picker를 묶는 역할
+      activePicker: null,
 
-            form: {
-                childCode: "",
-                name: "",
-                className: "",
-                birthdate: null,
-            },
+      form: {
+        childCode: '',
+        name: '',
+        className: '',
+        birthdate: null,
+      },
 
-            items: [], //셀렉트박스 옵션
-            nameRules: [
-                v => !!v || '필수 항목입니다',
-                v => v.length <= 10 || 'Name must be less than 10 characters',
-            ],
-        }
-    },
+      items: [], //셀렉트박스 옵션
+      nameRules: [
+        (v) => !!v || '필수 항목입니다',
+        (v) => v.length <= 10 || 'Name must be less than 10 characters',
+      ],
+    }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
