@@ -1,20 +1,13 @@
-import axios from 'axios';
+import axios from 'axios'
 import * as api from '@/api/api'
 
 const actions = {
-  resetState({commit}) {
-    
+  resetState({ commit }) {
     commit('setCurrentPGM', null)
     commit('setTicket', null)
     commit('setUser', null)
     commit('setMenuList', null)
-    
-  }
+  },
+}
 
-
-
-  
-
-};
-
-export default actions;
+export default actions
