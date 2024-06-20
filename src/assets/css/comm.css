@@ -29,6 +29,10 @@ body {
   padding: 0;
   background: var(--clr-backgray);
 }
+.container {
+  padding: 2rem !important;
+}
+
 .v-application, button, input, select, textarea {
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   letter-spacing: -0.025em;
@@ -49,21 +53,21 @@ body {
   font-size: 2rem !important;
 }
 .theme--light.v-icon, .theme--light.v-label {
-  color: rgba(0, 0, 0, 0.3);
-  font-weight: 500;
+  color: rgba(0, 0, 0, 0.3) !important;
+  font-weight: 500 !important;
 }
 /* input 테두리 */
 .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
-  color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.15) !important;
 }
 .v-text-field--outlined.v-input--is-focused fieldset, .v-text-field--outlined.v-input--has-state fieldset {
-  border: 1px solid currentColor;
+  border: 1px solid currentColor !important;
 }
 .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state):not(.v-input--is-disabled) > .v-input__control > .v-input__slot:hover fieldset {
-  color: rgba(0, 0, 0, 0.5); /* input hover 테두리 */
+  color: rgba(0, 0, 0, 0.5) !important; /* input hover 테두리 */
 }
 .v-text-field__details {
-  display: none;
+  display: none !important;
 }
 
 .v-main { /* main contents 영역 */
@@ -80,11 +84,11 @@ body {
   text-align: center;
   margin: 2rem 0;
 }
-.join-id-wrap {
+.input-btn-wrap {
   display: flex;
   align-items: flex-start;
 }
-.join-id-wrap .v-btn {
+.input-btn-wrap .v-btn {
   height: 56px !important;
   font-size: 1.6rem;
   padding: 0 2rem !important;
@@ -136,4 +140,17 @@ body {
   border-top: 1px solid var(--clr-lightgray);
   margin: 3rem 0 0;
   padding-top: 3rem;
+}
+
+/* ********** form layout setting ********** */
+.input-type2 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* ********** app-bar reset ********** */
+.v-toolbar {
+  box-shadow: none !important;
+  background-color: var(--clr-backgray) !important;
 }
