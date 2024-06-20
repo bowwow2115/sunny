@@ -1,13 +1,10 @@
 <template>
-    <div id="app">
-      <router-view></router-view>
-      <v-overlay :value="isLoading">
-        <v-progress-circular
-          indeterminate
-          size="64"
-        ></v-progress-circular>
-      </v-overlay>
-    </div>
+  <div id="app">
+    <router-view></router-view>
+    <v-overlay :value="isLoading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+  </div>
 </template>
 
 <script>
@@ -26,7 +23,7 @@ export default {
       isLoading: false,
     }
   },
-};
+}
 </script>
 
 <style scoped></style>

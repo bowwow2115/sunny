@@ -1,80 +1,80 @@
-import store from "@/store";
-import Utils from "@/utils/utils";
-import * as api from "@/api/api";
+import store from '@/store'
+import Utils from '@/utils/utils'
+import * as api from '@/api/api'
 
 function parseToken(result, reset = false) {
   if (result.data) {
-    let ticketId = result.data.accessToken;
+    let ticketId = result.data.accessToken
     if (ticketId) {
-      Utils.setCookie("auth", ticketId, 3600, "/");
-      Utils.setCookie("refreshToken", result.data.refreshToken);
+      Utils.setCookie('auth', ticketId, 3600, '/')
+      Utils.setCookie('refreshToken', result.data.refreshToken)
 
-      const user = result.data;
+      const user = result.data
 
-      store.commit("setUser", user);
-      store.commit("setTicket", ticketId);
+      store.commit('setUser', user)
+      store.commit('setTicket', ticketId)
     }
   }
 }
 
 function loggedIn() {
   return new Promise((resolve, reject) => {
-    let url = "";
-    const sid = Utils.getCookie(constants.TOKEN);
-    if (sid != null && sid !== "") url = `/sunny/auth/validation?sid=${sid}`;
-    if (url !== "") {
+    let url = ''
+    const sid = Utils.getCookie(constants.TOKEN)
+    if (sid != null && sid !== '') url = `/sunny/auth/validation?sid=${sid}`
+    if (url !== '') {
       api
         .ax()
         .get(url)
         .then((response) => {
-          console.log("loggedIn Check : ", response);
+          console.log('loggedIn Check : ', response)
           //parseToken(response.data, true);
-          if (response.data.code == "0") {
-            resolve(response.data);
-          } else if (response.data.code == "EXPIRED-TOKEN") {
-            Utils.deleteCookie("auth", "/");
-            Utils.deleteCookie("lang");
+          if (response.data.code == '0') {
+            resolve(response.data)
+          } else if (response.data.code == 'EXPIRED-TOKEN') {
+            Utils.deleteCookie('auth', '/')
+            Utils.deleteCookie('lang')
 
             router.push({
-              path: "/signIn",
-            });
+              path: '/signIn',
+            })
             // if (window.validateHandle) {
             //   clearInterval(window.validateHandle);
             //   window.validateHandle = null;
             // }
           } else {
-            reject(new Error("validation failure"));
+            reject(new Error('validation failure'))
           }
         })
         .catch((error) => {
-          if (error.response) reject(new Error(error.response.data));
-          else reject(new Error("validation failure"));
-        });
+          if (error.response) reject(new Error(error.response.data))
+          else reject(new Error('validation failure'))
+        })
     } else {
-      reject(new Error("No cookie"));
+      reject(new Error('No cookie'))
     }
-  });
+  })
 }
 
 function renewJWT() {
   return new Promise((resolve, reject) => {
-    let url = "";
-    url = "/auth/json/jwt/renew";
-    if (url !== "") {
+    let url = ''
+    url = '/auth/json/jwt/renew'
+    if (url !== '') {
       api
         .ax()
         .get(url)
         .then((response) => {
-          parseToken(response.data, true);
-          resolve();
+          parseToken(response.data, true)
+          resolve()
         })
         .catch((error) => {
-          reject(new Error("renew failure"));
-        });
+          reject(new Error('renew failure'))
+        })
     } else {
-      reject(new Error("No cookie"));
+      reject(new Error('No cookie'))
     }
-  });
+  })
 }
 
 function login(form) {
@@ -82,82 +82,82 @@ function login(form) {
     api
       .post2(`/sunny/login`, form)
       .then((r) => {
-        console.log("login call : ", r);
-        if (r.code != "0") {
-          reject(r.code);
-          return;
+        console.log('login call : ', r)
+        if (r.code != '0') {
+          reject(r.code)
+          return
         } else {
-          parseToken(r);
-          resolve(r.data);
+          parseToken(r)
+          resolve(r.data)
         }
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }
 
 function logout(user) {
   // clear store
-  store.dispatch("resetState");
+  store.dispatch('resetState')
 
-  Utils.deleteCookie("auth", "/");
-  Utils.deleteCookie("JSESSIONID", "/");
-  Utils.deleteCookie("refreshToken", "/");
+  Utils.deleteCookie('auth', '/')
+  Utils.deleteCookie('JSESSIONID', '/')
+  Utils.deleteCookie('refreshToken', '/')
 
-  Utils.deleteCookie("lang");
+  Utils.deleteCookie('lang')
 
-  location.href = Utils.checkEnv(process.env.NODE_ENV);
-  window.location.reload();
+  location.href = Utils.checkEnv(process.env.NODE_ENV)
+  window.location.reload()
 }
 
 function resetPwdate(user) {
   let data = {
     userId: user,
-  };
+  }
 
   return new Promise((resolve, reject) => {
     api
       .post2(`/sunny/resetPwdate`, data)
       .then((r) => {
-        resolve(r);
+        resolve(r)
       })
       .catch((error) => {
-        alert(error.response);
-        reject(error);
-      });
-  });
+        alert(error.response)
+        reject(error)
+      })
+  })
 }
 
 function changePassword(passwordForm) {
-  const key = "exAdm1111"; // Utils.featuresDefault('security.key', '');
-  let data = null;
+  const key = 'exAdm1111' // Utils.featuresDefault('security.key', '');
+  let data = null
 
   if (key) {
     data = {
-      method: "AES",
+      method: 'AES',
       userId: Utils.tripleDESenc(passwordForm.userId),
       currentPwd: Utils.tripleDESenc(passwordForm.currentPwd),
       newPwd: Utils.tripleDESenc(passwordForm.newPwd),
-    };
+    }
   } else {
     data = {
       userId: passwordForm.userId,
       currentPwd: passwordForm.currentPwd,
       newPwd: passwordForm.newPwd,
-    };
+    }
   }
 
   return new Promise((resolve, reject) => {
     api
       .postUrl(`/sunny/changePw`, jQuery.param(data), false)
       .then((r) => {
-        resolve(r);
+        resolve(r)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }
 
 export default {
@@ -167,4 +167,4 @@ export default {
   renewJWT,
   resetPwdate,
   changePassword,
-};
+}
