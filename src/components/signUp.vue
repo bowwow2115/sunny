@@ -95,11 +95,17 @@
 export default {
   name: 'signUp',
   components: {},
+  components: {},
 
   data() {
     return {
       valid: true,
       form: {
+        joinId: '',
+        joinPw: '',
+        userName: '',
+        userPhoneNum: '',
+        userEmail: '',
         joinId: '',
         joinPw: '',
         userName: '',
@@ -120,7 +126,13 @@ export default {
           const joinId = this.form.joinId
           if (joinId) {
             alert(`${joinId}는 사용할 수 있습니다.`)
+        duplicateId() {
+          //아이디 중복확인
+          const joinId = this.form.joinId
+          if (joinId) {
+            alert(`${joinId}는 사용할 수 있습니다.`)
           } else {
+            alert(`아이디를 입력하세요.`)
             alert(`아이디를 입력하세요.`)
           }
         },
@@ -128,7 +140,12 @@ export default {
           //회원가입 폼 submit
         },
       },
+        join() {
+          //회원가입 폼 submit
+        },
+      },
     }
   },
+}
 }
 </script>
