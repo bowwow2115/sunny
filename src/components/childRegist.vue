@@ -209,6 +209,17 @@ export default {
       //   { tab: '원아등록', content: '/childRegistForm' },
       //   { tab: '학부모등록', content: '/parentRegistForm' },
       // ],
+  name: 'childRegist',
+  components: {
+    //childRegistForm, // childRegistForm 컴포넌트 등록
+  },
+  data() {
+    return {
+      // tab: null,
+      // items: [
+      //   { tab: '원아등록', content: '/childRegistForm' },
+      //   { tab: '학부모등록', content: '/parentRegistForm' },
+      // ],
 
       valid: true,
       birthdateWrap: false, //생년월일 필드와 picker를 묶는 역할

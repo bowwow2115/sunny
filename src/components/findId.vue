@@ -85,6 +85,7 @@
 
 <script>
 import { methods } from 'babel-plugin-transform-runtime/lib/definitions'
+import { methods } from 'babel-plugin-transform-runtime/lib/definitions'
 
 export default {
   name: 'findId',
@@ -97,13 +98,19 @@ export default {
         userId: '',
         userEmail: '',
         newPw: '',
+        userId: '',
+        userEmail: '',
+        newPw: '',
       },
       wation: false,
       countdown: 3, // 이메일 인증코드 재전송 타임 예시
       methods: {
         findId() {
           // 로그인 폼 submit
+        findId() {
+          // 로그인 폼 submit
         },
+        sendEmailCode() {}, // 시간이 카운트다운되면 좋겠습니당..
         sendEmailCode() {}, // 시간이 카운트다운되면 좋겠습니당..
       },
     }
