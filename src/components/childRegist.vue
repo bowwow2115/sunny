@@ -202,6 +202,10 @@ export default {
   components: {
     //childRegistForm, // childRegistForm 컴포넌트 등록
   },
+  name: 'childRegist',
+  components: {
+    //childRegistForm, // childRegistForm 컴포넌트 등록
+  },
   data() {
     return {
       // tab: null,
@@ -209,12 +213,6 @@ export default {
       //   { tab: '원아등록', content: '/childRegistForm' },
       //   { tab: '학부모등록', content: '/parentRegistForm' },
       // ],
-  name: 'childRegist',
-  components: {
-    //childRegistForm, // childRegistForm 컴포넌트 등록
-  },
-  data() {
-    return {
       // tab: null,
       // items: [
       //   { tab: '원아등록', content: '/childRegistForm' },
@@ -250,10 +248,10 @@ export default {
       dropTimeItems1: ['오전', '오후'],
       dropTimeItems2: ['11:00', ''],
       dropPlaceItems: ['알수없음', ''],
-  //    nameRules: [
-  //      (v) => !!v || '필수 항목입니다',
-  //      (v) => v.length <= 10 || 'Name must be less than 10 characters',
-  //    ],
+      //    nameRules: [
+      //      (v) => !!v || '필수 항목입니다',
+      //      (v) => v.length <= 10 || 'Name must be less than 10 characters',
+      //    ],
     }
   },
 }

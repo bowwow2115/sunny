@@ -94,37 +94,37 @@ export default {
       },
     }
   },
-//  validations: {
-//    form: {
-//      userId: {
-//        required,
-//      },
-//    },
-//  },
-//  methods: {
-// 로그인 폼 제출
-  // this.$v.$touch(); // 폼 유효성 검사 실행
+  //  validations: {
+  //    form: {
+  //      userId: {
+  //        required,
+  //      },
+  //    },
+  //  },
+  methods: {
+    // 로그인 폼 제출
+    // this.$v.$touch(); // 폼 유효성 검사 실행
 
-//  if (this.$v.$invalid) {
-// 폼이 유효하지 않으면 처리
-//    return;
-//  }
+    //  if (this.$v.$invalid) {
+    // 폼이 유효하지 않으면 처리
+    //    return;
+    //  }
 
-  login() {
-    //로그인 폼 submit
-    auth
-      .login(this.form)
-      .then(() => {
-        this.$router.push({ path: constants.DEFAULT_HOME })
-      })
-      .catch((error) => {
-        console.log(error)
-        // this.$message({
-        //   type: "info",
-        //   message: error.message,
-        // });
-      })
+    login() {
+      //로그인 폼 submit
+      auth
+        .login(this.form)
+        .then(() => {
+          this.$router.push({ path: constants.DEFAULT_HOME })
+        })
+        .catch((error) => {
+          console.log(error)
+          // this.$message({
+          //   type: "info",
+          //   message: error.message,
+          // });
+        })
+    },
   },
 }
 </script>
-
