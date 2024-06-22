@@ -112,40 +112,41 @@ export default {
         userPhoneNum: '',
         userEmail: '',
       },
-      // errorRules: [
-      //   v => !!v || '필수 항목입니다',
-      // ],
+
+      errorRules: [(v) => !!v || '필수 항목입니다'],
       phoneRules: [
-        //v => !!v || '필수 항목입니다', //숫자만 입력가능하게 해줭
+        (v) => !!v || '필수 항목입니다', //숫자만 입력가능하게 해줭
       ],
-      //idpwHint: "* 영문, 숫자 혼용 6자리~10자리 이하 등록(특수문자 사용불가)",
-      //phoneHint: "하이픈(-)을 제외하고 숫자만 입력하세요.",
-      methods: {
-        duplicateId() {
-          //아이디 중복확인
-          const joinId = this.form.joinId
-          if (joinId) {
-            alert(`${joinId}는 사용할 수 있습니다.`)
-        duplicateId() {
-          //아이디 중복확인
-          const joinId = this.form.joinId
-          if (joinId) {
-            alert(`${joinId}는 사용할 수 있습니다.`)
-          } else {
-            alert(`아이디를 입력하세요.`)
-            alert(`아이디를 입력하세요.`)
-          }
-        },
-        join() {
-          //회원가입 폼 submit
-        },
-      },
-        join() {
-          //회원가입 폼 submit
-        },
-      },
+      idpwHint: '* 영문, 숫자 혼용 6자리~10자리 이하 등록(특수문자 사용불가)',
+      phoneHint: '하이픈(-)을 제외하고 숫자만 입력하세요.',
     }
   },
-}
+  methods: {
+    //   duplicateId() {
+    //     //아이디 중복확인
+    //     const joinId = this.form.joinId
+    //     if (joinId) {
+    //       alert(`${joinId}는 사용할 수 있습니다.`)
+    //   duplicateId() {
+    //     //아이디 중복확인
+    //     const joinId = this.form.joinId
+    //     if (joinId) {
+    //       alert(`${joinId}는 사용할 수 있습니다.`)
+    //     } else {
+    //       alert(`아이디를 입력하세요.`)
+    //       alert(`아이디를 입력하세요.`)
+    //     }
+    //   },
+    //   join() {
+    //     //회원가입 폼 submit
+    //   },
+    // },
+    //   join() {
+    //     //회원가입 폼 submit
+    //   },
+    // },
+    // }
+    // },
+  },
 }
 </script>
