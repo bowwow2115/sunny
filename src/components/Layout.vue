@@ -52,13 +52,14 @@
 import auth from '@/api/auth'
 
 export default {
-  name: 'App',
+  name: 'Layout',
   components: {},
   data: () => ({
     drawer: false,
     items: [
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: 'childRegist', icon: 'mdi-image', to: '/childRegist' },
+      { title: 'ChildrenList', icon: 'mdi-image', to: '/ChildrenList' },
     ],
     right: null,
   }),

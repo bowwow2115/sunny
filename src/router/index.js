@@ -8,6 +8,7 @@ const signIn = () => import('@/components/signIn')
 const childRegist = () => import('@/components/childRegist')
 const findId = () => import('@/components/findId')
 const Layout = () => import('@/components/Layout')
+const ChildrenList = () => import('@/components/ChildrenList')
 
 Vue.use(Router)
 
@@ -42,6 +43,12 @@ const router = new Router({
           path: '/childRegist',
           name: 'childRegist',
           component: childRegist,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: '/ChildrenList',
+          name: 'ChildrenList',
+          component: ChildrenList,
           meta: { requiresAuth: true },
         },
       ],

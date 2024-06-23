@@ -295,3 +295,7 @@ export function deleteBody(
 export function getChildren() {
   return get(`/sunny/child`)
 }
+
+export function addChild(param) {
+  return post2('/sunny/child', param)
+}

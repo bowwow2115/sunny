@@ -28,21 +28,6 @@
               outlined
               clearable
             ></v-text-field>
-            <!-- <ValidationProvider
-              v-slot="{}"
-              name="userId"
-              rules="required|userId"
-            >
-              <v-text-field
-                v-model="form.password"
-                type="password"
-                label="비밀번호 입력"
-                prepend-inner-icon="ri-lock-line"
-                required
-                outlined
-                clearable
-              ></v-text-field>
-            </ValidationProvider> -->
             <v-text-field
               v-model="form.password"
               type="password"
@@ -63,6 +48,7 @@
             depressed
             color="primary"
             class="btn-submit"
+            @click="login"
             >로그인</v-btn
           >
           <div class="login-more">
@@ -109,7 +95,6 @@ export default {
     // 폼이 유효하지 않으면 처리
     //    return;
     //  }
-
     login() {
       //로그인 폼 submit
       auth
