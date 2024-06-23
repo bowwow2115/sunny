@@ -9,16 +9,15 @@
         <div class="area-cont">
           <v-text-field
             v-model="form.childCode"
-            :rules="nameRules"
             :counter="10"
             label="원아코드"
             required
             outlined
             clearable
           ></v-text-field>
+          <!-- :rules="nameRules" -->
           <v-text-field
-            v-model="form.childName"
-            :rules="nameRules"
+            v-model="form.name"
             :counter="10"
             label="원아이름"
             required
@@ -29,7 +28,7 @@
           <v-menu
             ref="menu"
             v-model="birthdateWrap"
-            :close-on-content-click="false"
+            :close-on-content-click="true"
             transition="scale-transition"
             offset-y
             min-width="auto"
@@ -54,7 +53,7 @@
                   .toISOString()
                   .substring(0, 10)
               "
-              min="1950-01-01"
+              min="2018-01-01"
               no-title
               locale="ko"
               @input="menu = false"
@@ -63,7 +62,7 @@
           </v-menu>
           <v-select
             v-model="form.className"
-            :items="items"
+            :items="classNameList"
             label="반명"
             outlined
           ></v-select>
@@ -71,24 +70,22 @@
           <div class="address-wrap">
             <div class="input-btn-wrap">
               <v-text-field
-                v-model="form.postalCode"
+                v-model="form.zipCode"
                 label="우편번호"
                 outlined
                 readonly
               ></v-text-field>
-              <v-btn type="button" @click="duplicateId" depressed>
-                주소 검색
-              </v-btn>
+              <v-btn type="button" depressed> 주소 검색 </v-btn>
             </div>
             <!-- 검색해서 선택한 우편번호 여기 입력됨 -->
             <v-text-field
-              v-model="form.address1"
+              v-model="form.address"
               label="주소"
               outlined
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="form.address2"
+              v-model="form.detailAddress"
               label="상세주소 입력"
               outlined
               readonly
@@ -97,9 +94,10 @@
         </div>
       </div>
       <div class="area">
+        <!-- TODO: 버튼으로 학부모 추가 가능하게 수정(학부모 정보 입력 옆에 '+'버튼이 있게?) -->
         <h3 class="area-title">학부모 정보</h3>
         <div class="area-cont">
-          <v-radio-group v-model="form.relsCheck" row>
+          <v-radio-group v-model="form.parentList" row>
             <v-radio label="부" value="부"></v-radio>
             <v-radio label="모" value="모"></v-radio>
             <v-radio label="조부" value="조부"></v-radio>
@@ -107,17 +105,7 @@
             <v-radio label="그 외" value="그 외"></v-radio>
           </v-radio-group>
           <v-text-field
-            v-model="form.adultName"
-            :rules="nameRules"
-            :counter="10"
-            label="학부모 이름"
-            required
-            outlined
-            clearable
-          ></v-text-field>
-          <v-text-field
-            v-model="form.adultName"
-            :rules="nameRules"
+            v-model="form.parant"
             :counter="10"
             label="학부모 이름"
             required
@@ -126,7 +114,6 @@
           ></v-text-field>
           <v-text-field
             v-model="form.phoneNum1"
-            :rules="nameRules"
             label="연락처1"
             required
             outlined
@@ -134,7 +121,6 @@
           ></v-text-field>
           <v-text-field
             v-model="form.phoneNum2"
-            :rules="nameRules"
             label="연락처2"
             required
             outlined
@@ -147,112 +133,99 @@
         <div class="area-cont">
           <div class="pickup">
             <div class="input-type2">
+              오전
               <v-select
-                v-model="form.pickTime1"
-                :items="pickTimeItems1"
-                label="오전/오후"
-                outlined
-              ></v-select>
-              <v-select
-                v-model="form.pickTime2"
-                :items="pickTimeItems2"
+                v-model="form.amRide.time"
+                :items="amRideTimeList"
                 label="승차 시간"
                 outlined
               ></v-select>
             </div>
             <v-select
-              v-model="form.pickupPlace"
-              :items="pickupPlaceItems"
-              label="장소를 선택하세요."
+              v-model="form.amRide.name"
+              :items="amRideNameList"
+              label="오전 코스를 선택하세요"
               outlined
             ></v-select>
+            <v-input> </v-input>
           </div>
           <div class="drop">
             <div class="input-type2">
+              오후
               <v-select
-                v-model="form.dropTime1"
-                :items="dropTimeItems1"
-                label="오전/오후"
-                outlined
-              ></v-select>
-              <v-select
-                v-model="form.dropTime2"
-                :items="dropTimeItems2"
+                v-model="form.pmRide.time"
+                :items="pmRideTimeList"
                 label="하차 시간"
                 outlined
               ></v-select>
             </div>
             <v-select
-              v-model="form.dropPlace"
-              :items="dropPlaceItems"
-              label="장소를 선택하세요."
+              v-model="form.pmRide.name"
+              :items="pmRideNameList"
+              label="코스를 선택하세요."
               outlined
             ></v-select>
           </div>
         </div>
       </div>
+      <v-btn @click="addChild">등록</v-btn>
     </v-form>
   </div>
 </template>
 
 <script>
-//import childRegistForm from './childRegistForm.vue';
+import { addChild } from '@/api/api'
+
 export default {
-  name: 'childRegist',
-  components: {
-    //childRegistForm, // childRegistForm 컴포넌트 등록
-  },
   name: 'childRegist',
   components: {
     //childRegistForm, // childRegistForm 컴포넌트 등록
   },
   data() {
     return {
-      // tab: null,
-      // items: [
-      //   { tab: '원아등록', content: '/childRegistForm' },
-      //   { tab: '학부모등록', content: '/parentRegistForm' },
-      // ],
-      // tab: null,
-      // items: [
-      //   { tab: '원아등록', content: '/childRegistForm' },
-      //   { tab: '학부모등록', content: '/parentRegistForm' },
-      // ],
-
+      items: [
+        { tab: '원아등록', content: '/childRegistForm' },
+        { tab: '학부모등록', content: '/parentRegistForm' },
+      ],
+      tab: null,
       valid: true,
-      birthdateWrap: false, //생년월일 필드와 picker를 묶는 역할
+      birthdateWrap: null, //생년월일 필드와 picker를 묶는 역할
       activePicker: null,
-
       form: {
-        childCode: '',
-        childName: '',
-        className: '',
-        birthdate: null,
-        postalCode: '',
-        address1: '',
-        address2: '',
-        relsCheck: false,
-        phoneNum1: '',
-        phoneNum2: '',
-        pickTime1: null,
-        pickTime2: null,
-        pickupPlace: null,
-        dropTime1: null,
-        dropTime2: null,
-        dropPlace: null,
+        childCode: 'test',
+        birthday: '2023-01-01',
+        admissionDate: '2024-01-01',
+        className: 'test',
+        address: { detailAddress: 'test', zipCode: 'test', address: 'test' },
+        status: true,
+        amRide: { name: 'name', time: 'time', comment: 'comment' },
+        pmRide: { name: 'name', time: 'time', comment: 'comment' },
+        name: 'test',
       },
-
-      pickTimeItems1: ['오전', '오후'],
-      pickTimeItems2: ['11:00', ''],
-      pickupPlaceItems: ['알수없음', ''],
-      dropTimeItems1: ['오전', '오후'],
-      dropTimeItems2: ['11:00', ''],
-      dropPlaceItems: ['알수없음', ''],
-      //    nameRules: [
-      //      (v) => !!v || '필수 항목입니다',
-      //      (v) => v.length <= 10 || 'Name must be less than 10 characters',
-      //    ],
+      amRideTimeList: ['11:00', ''],
+      amRideNameList: ['알수없음', ''],
+      pmRideTimeList: ['11:00', ''],
+      pmRideNameList: ['알수없음', ''],
+      classNameList: [],
+      // nameRules: [
+      //   (v) => !!v || '필수 항목입니다',
+      //   (v) => v.length <= 10 || 'Name must be less than 10 characters',
+      // ],
     }
+  },
+  methods: {
+    addChild() {
+      let param = this.form
+      addChild(param)
+        .then((response) => {
+          if (response.code == '0') {
+            console.log('성공')
+          }
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    },
   },
 }
 </script>
