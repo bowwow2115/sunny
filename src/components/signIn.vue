@@ -57,6 +57,7 @@
         </div>
       </div>
       <v-btn @click="showDialog">모달</v-btn>
+      <v-btn @click="showModal">모달플러그인</v-btn>
     </v-container>
   </v-main>
 </template>
@@ -112,6 +113,9 @@ export default {
     },
     showDialog() {
       this.showError({ code: 'Hello', message: 'This is a global dialog!' })
+    },
+    showModal() {
+      this.$modal.open('Hello', 'This is a global modal!')
     },
   },
 }
