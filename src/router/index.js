@@ -9,6 +9,7 @@ const childRegist = () => import('@/components/childRegist')
 const findId = () => import('@/components/findId')
 const Layout = () => import('@/components/Layout')
 const ChildrenList = () => import('@/components/ChildrenList')
+const AdminLayout = () => import('@/components/admin/AdminLayout')
 
 Vue.use(Router)
 
@@ -33,6 +34,16 @@ const router = new Router({
       path: '/findId',
       name: 'findId',
       component: findId,
+    },
+    {
+      path: 'admin/:id?/:secondId?',
+      name: 'AdminLayout',
+      component: AdminLayout,
+      meta: {
+        requiresAuth: true,
+        requiresAdmin: true,
+        name: ':nm?',
+      },
     },
     {
       path: '/',
