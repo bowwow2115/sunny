@@ -11,7 +11,8 @@ import './assets/css/sub.css' //css 파일분리 테스트
 import VueClipboard from 'vue-clipboard2'
 import constants from './Constants'
 import Utils from '@/utils/utils'
-import * as ModalDialogs from 'vue-modal-dialogs'
+import GlobalModal from './plugins/globalModal.js'
+
 import lodash from 'lodash'
 
 window.$ = require('jquery')
@@ -29,8 +30,8 @@ VueClipboard.config.autoSetContainer = true
 Vue.prototype.$lodash = lodash
 Vue.prototype.$Utils = Utils
 window.Utils = Utils
-Vue.use(ModalDialogs)
 Vue.use(VueClipboard)
+Vue.use(GlobalModal)
 
 // async function openErrorDialog(errData) {
 //   const errorDialog = ModalDialogs.create(ErrorDialog);
