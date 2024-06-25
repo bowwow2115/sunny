@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <router-view></router-view>
-    <v-overlay :value="isLoading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
+    <v-app>
+      <error-dialog></error-dialog>
+      <router-view> </router-view>
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+    </v-app>
   </div>
 </template>
 
 <script>
-//import HelloWorld from './components/childRegist.vue';
+import ErrorDialog from '@/views/ErrorDialog'
 
 export default {
   name: 'App',
-  components: {},
+  components: { ErrorDialog },
   mounted() {
     // setTimeout(() => {
     //   this.isLoading = true;
