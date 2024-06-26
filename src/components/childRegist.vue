@@ -71,7 +71,7 @@
           <div class="address-wrap">
             <div class="input-btn-wrap">
               <v-text-field
-                v-model="form.zipCode"
+                v-model="form.address.zipCode"
                 label="우편번호"
                 hide-details="auto"
                 outlined
@@ -81,14 +81,14 @@
             </div>
             <!-- 검색해서 선택한 우편번호 여기 입력됨 -->
             <v-text-field
-              v-model="form.address"
+              v-model="form.address.address"
               label="주소"
               hide-details="auto"
               outlined
               readonly
             ></v-text-field>
             <v-text-field
-              v-model="form.detailAddress"
+              v-model="form.address.detailAddress"
               label="상세주소 입력"
               hide-details="auto"
               outlined
@@ -103,12 +103,12 @@
         <div class="area-cont">
           <div
             class="parent-box"
-            v-for="(parentBox, index) in parentBoxes"
+            v-for="(parentBox, index) in form.parentList"
             :key="index"
           >
             <div class="layout">
               <v-combobox
-                v-model="parentBox.parenType"
+                v-model="parentBox.relation"
                 :items="parentTypeList"
                 label="관계"
                 hide-details="auto"
@@ -116,7 +116,7 @@
               >
               </v-combobox>
               <v-text-field
-                v-model="parentBox.parant"
+                v-model="parentBox.name"
                 label="학부모 이름"
                 hide-details="auto"
                 required
@@ -125,8 +125,8 @@
               ></v-text-field>
             </div>
             <v-text-field
-              v-model="parentBox.parentPhone"
-              label="연락처1"
+              v-model="parentBox.telephone"
+              label="연락처"
               required
               outlined
               clearable
@@ -136,7 +136,7 @@
             </v-btn>
             <v-btn
               @click="removeParentBox(index)"
-              v-if="parentBoxes.length > 1"
+              v-if="form.parentList.length > 1"
               class="btn-pb"
             >
               <v-icon>ri-subtract-line</v-icon>
@@ -214,20 +214,25 @@ export default {
         className: 'test',
         address: { detailAddress: 'test', zipCode: 'test', address: 'test' },
         status: true,
-        parentType: '',
-        parentPhone: '',
+        parentList: [
+          {
+            relation: '',
+            name: '',
+            telephone: '',
+          },
+        ],
         amRide: { name: 'name', time: 'time', comment: 'comment' },
         pmRide: { name: 'name', time: 'time', comment: 'comment' },
         name: 'test',
       },
       classNameList: ['1반', '2반'],
-      parentBoxes: [
-        {
-          parentType: '',
-          parent: '',
-          parentPhone: '',
-        },
-      ],
+      // parentBoxes: [
+      //   {
+      //     relation: '',
+      //     name: '',
+      //     telephone: '',
+      //   },
+      // ],
       parentTypeList: ['부', '모', '조부', '조모', '그 외'],
       amRideTimeList: ['11:00', ''],
       amRideNameList: ['알수없음', ''],
@@ -269,15 +274,15 @@ export default {
       return `${year}년 ${month}월`
     },
     addParentBox() {
-      this.parentBoxes.push({
+      this.form.parentList.push({
         parentType: '',
         parent: '',
         parentPhone: '',
       })
     },
     removeParentBox(index) {
-      if (this.parentBoxes.length > 1) {
-        this.parentBoxes.splice(index, 1)
+      if (this.form.parentList.length > 1) {
+        this.form.parentList.splice(index, 1)
       }
     },
     addChild() {
