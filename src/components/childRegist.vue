@@ -1,75 +1,89 @@
 <template>
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
+
   <div class="id-form">
     <h2 class="id-tit">원아등록</h2>
     <v-form v-model="valid">
-      <div class="area">
-        <h3 class="area-title">원아 정보</h3>
-        <div class="area-cont">
-          <v-text-field
-            v-model="form.childCode"
-            label="원아코드"
-            hide-details="auto"
-            required
-            outlined
-            clearable
-          ></v-text-field>
-          <v-text-field
-            v-model="form.name"
-            label="원아이름"
-            hide-details="auto"
-            required
-            outlined
-            clearable
-          ></v-text-field>
-          <v-menu
-            ref="menu"
-            v-model="birthdayWrap"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-            <template v-slot:activator="{ on, attrs }">
+      <!-- ---------- 원아 정보 ---------- -->
+      <v-card>
+        <v-card-title>원아정보</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
               <v-text-field
-                v-model="form.birthday"
-                label="원아 생년월일"
-                append-icon="mdi-calendar"
-                hide-details="auto"
-                readonly
-                v-bind="attrs"
-                v-on="on"
+                v-model="form.childCode"
+                label="원아코드"
+                required
                 outlined
-              ></v-text-field
-              ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
-            </template>
-            <v-date-picker
-              v-model="form.birthday"
-              :active-picker.sync="activePicker"
-              class="calendar"
-              no-title
-              :max="
-                new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                  .toISOString()
-                  .substr(0, 10)
-              "
-              min="2000-01-01"
-              :weekday-format="getDay"
-              :month-format="getMonth"
-              :header-date-format="changeHeader"
-              width="100%"
-              @change="$refs.menu.save((birthdayWrap = false))"
-            ></v-date-picker>
-          </v-menu>
-          <v-combobox
-            v-model="form.className"
-            :items="classNameList"
-            label="반명"
-            hide-details="auto"
-            outlined
-          ></v-combobox>
-          <div class="address-wrap">
-            <div class="input-btn-wrap">
+                clearable
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="form.name"
+                label="원아이름"
+                required
+                outlined
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-menu
+                ref="menu"
+                v-model="birthdayWrap"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="form.birthday"
+                    label="원아 생년월일"
+                    append-icon="mdi-calendar"
+                    hide-details="auto"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                  ></v-text-field
+                  ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+                </template>
+                <v-date-picker
+                  v-model="form.birthday"
+                  :active-picker.sync="activePicker"
+                  class="calendar"
+                  no-title
+                  :max="
+                    new Date(
+                      Date.now() - new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .substr(0, 10)
+                  "
+                  min="2000-01-01"
+                  :weekday-format="getDay"
+                  :month-format="getMonth"
+                  :header-date-format="changeHeader"
+                  width="100%"
+                  @change="$refs.menu.save((birthdayWrap = false))"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="form.className"
+                :items="classNameList"
+                label="반명"
+                hide-details="auto"
+                outlined
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-text-field
                 v-model="form.zipCode"
                 label="우편번호"
@@ -77,114 +91,146 @@
                 outlined
                 readonly
               ></v-text-field>
+            </v-col>
+            <v-col>
               <v-btn type="button" depressed class="input-h"> 주소 검색 </v-btn>
-            </div>
-            <!-- 검색해서 선택한 우편번호 여기 입력됨 -->
-            <v-text-field
-              v-model="form.address"
-              label="주소"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="form.detailAddress"
-              label="상세주소 입력"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-          </div>
-        </div>
-      </div>
-      <div class="area">
-        <!-- TODO: 버튼으로 학부모 추가 가능하게 수정(학부모 정보 입력 옆에 '+'버튼이 있게?) -->
-        <h3 class="area-title">학부모 정보</h3>
-        <div class="area-cont">
-          <div
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="form.address"
+                label="주소"
+                hide-details="auto"
+                outlined
+                readonly
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="form.detailAddress"
+                label="상세주소 입력"
+                hide-details="auto"
+                outlined
+                readonly
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <!-- ---------- 학부모 정보 ---------- -->
+      <v-card>
+        <v-card-title>학부모 정보</v-card-title>
+        <v-card-text>
+          <v-row
             class="parent-box"
             v-for="(parentBox, index) in parentBoxes"
             :key="index"
           >
-            <div class="layout">
-              <v-combobox
-                v-model="parentBox.parenType"
-                :items="parentTypeList"
-                label="관계"
-                hide-details="auto"
-                outlined
-              >
-              </v-combobox>
+            <v-col cols="12" md="6">
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-select
+                    v-model="parentBox.parenType"
+                    :items="parentTypeList"
+                    label="관계"
+                    hide-details="auto"
+                    outlined
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="parentBox.parant"
+                    label="학부모 이름"
+                    hide-details="auto"
+                    required
+                    outlined
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols="12" md="4">
               <v-text-field
-                v-model="parentBox.parant"
-                label="학부모 이름"
-                hide-details="auto"
+                v-model="parentBox.parentPhone"
+                label="연락처1"
                 required
                 outlined
                 clearable
               ></v-text-field>
-            </div>
-            <v-text-field
-              v-model="parentBox.parentPhone"
-              label="연락처1"
-              required
-              outlined
-              clearable
-            ></v-text-field>
-            <v-btn @click="addParentBox" class="btn-pb">
-              <v-icon>ri-add-line</v-icon>
-            </v-btn>
-            <v-btn
-              @click="removeParentBox(index)"
-              v-if="parentBoxes.length > 1"
-              class="btn-pb"
-            >
-              <v-icon>ri-subtract-line</v-icon>
-            </v-btn>
-          </div>
-        </div>
-      </div>
-      <div class="area">
-        <h3 class="area-title">탑승 차량 정보</h3>
-        <div class="area-cont">
-          <div class="pickup">
-            <div class="input-type2">
-              오전
-              <v-combobox
+            </v-col>
+            <v-col cols="12" md="2">
+              <v-btn @click="addParentBox" class="btn-pb">
+                <v-icon>ri-add-line</v-icon>
+              </v-btn>
+              <v-btn
+                @click="removeParentBox(index)"
+                v-if="parentBoxes.length > 1"
+                class="btn-pb"
+              >
+                <v-icon>ri-subtract-line</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <!-- ---------- 차량 정보 ---------- -->
+      <v-card>
+        <v-card-title>탑승 차량 정보</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="2">
+              <v-subheader>오전</v-subheader>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-select
                 v-model="form.amRide.time"
                 :items="amRideTimeList"
                 label="승차 시간"
                 outlined
-              ></v-combobox>
-            </div>
-            <v-combobox
-              v-model="form.amRide.name"
-              :items="amRideNameList"
-              label="오전 코스를 선택하세요"
-              outlined
-            ></v-combobox>
-            <v-input> </v-input>
-          </div>
-          <div class="drop">
-            <div class="input-type2">
-              오후
-              <v-combobox
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="form.amRide.name"
+                :items="amRideNameList"
+                label="오전 코스를 선택하세요"
+                outlined
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="2">
+              <v-subheader>오후</v-subheader>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-select
                 v-model="form.pmRide.time"
                 :items="pmRideTimeList"
                 label="하차 시간"
                 outlined
-              ></v-combobox>
-            </div>
-            <v-combobox
-              v-model="form.pmRide.name"
-              :items="pmRideNameList"
-              label="코스를 선택하세요."
-              outlined
-            ></v-combobox>
-          </div>
-        </div>
-      </div>
-      <v-btn @click="addChild">등록</v-btn>
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="form.pmRide.name"
+                :items="pmRideNameList"
+                label="코스를 선택하세요."
+                outlined
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <v-card-actions>
+        <v-btn @click="addChild" color="primary">등록</v-btn>
+      </v-card-actions>
     </v-form>
   </div>
 </template>

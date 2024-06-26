@@ -1,3 +1,5 @@
+
+
 @font-face {
 	font-family: 'Pretendard Variable';
 	font-weight: 100 900;
@@ -18,9 +20,6 @@
   --clr-primary-deep: #E65100;
 }
 
-html {
-  font-size: 10px;
-}
 body {
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   font-size: 1.6rem;
@@ -41,7 +40,6 @@ img {
 }
 /* button 내용 */
 button, .v-btn__content {
-  font-size: 1.5rem !important;
   letter-spacing: -0.02em;
 }
 .v-btn.input-h { /* input 과 동일하게 높이 맞추기 */
@@ -55,26 +53,6 @@ button, .v-btn__content {
 }
 
 
-/* ********** input reset ********** */
-.v-input {
-  margin-bottom: 0.5rem !important;
-}
-.v-input__slot {
-  padding: 0 1.4rem !important;
-  margin-bottom: 0.5rem !important;
-}
-.v-icon {
-  font-size: 2rem !important;
-}
-.v-list-item__title {
-  font-size: 1.5rem !important;
-}
-
-
-.theme--light.v-icon, .theme--light.v-label {
-  color: rgba(0, 0, 0, 0.3) !important;
-  font-weight: 500 !important;
-}
 /* input 테두리 */
 .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
   color: rgba(0, 0, 0, 0.15) !important;
@@ -90,12 +68,6 @@ button, .v-btn__content {
   background: var(--clr-backgray);
 }
 
-.id-form {
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border-radius: 1.2rem;
-  padding: 2rem 2.4rem;
-}
 .id-tit {
   text-align: center;
   margin: 2rem 0;
@@ -106,13 +78,6 @@ button, .v-btn__content {
 }
 .btn-submit {
   margin-bottom: 2rem;
-}
-.btn-submit .v-btn__content {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-.v-input--checkbox .v-label {
-  font-size: 1.4rem;
 }
 .v-input--selection-controls__ripple,
 .id-form .v-input--checkbox .v-messages {
@@ -129,28 +94,13 @@ button, .v-btn__content {
 .login-more a {
   text-decoration: none;
 }
-.send-code-btn .v-btn__content {
-  font-size: 1.6rem;
-}
 .input-caption .v-input {
   margin-bottom: 0.5rem !important;
-}
-.cap {
-  font-size: 1.3rem;
-  color: var(--clr-gray);
 }
 .after-check {
   border-top: 1px solid var(--clr-lightgray);
   margin: 3rem 0 0;
   padding-top: 3rem;
-}
-
-/* ********** form layout setting ********** */
-.input-type2 {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 0.5rem;
 }
 
 /* ********** app-bar reset ********** */
