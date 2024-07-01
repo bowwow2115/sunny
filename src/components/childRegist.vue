@@ -32,7 +32,7 @@
             ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="form.birthday"
+                v-model="birthday"
                 label="원아 생년월일"
                 append-icon="mdi-calendar"
                 hide-details="auto"
@@ -44,7 +44,7 @@
               ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
             </template>
             <v-date-picker
-              v-model="form.birthday"
+              v-model="birthday"
               :active-picker.sync="activePicker"
               class="calendar"
               no-title
@@ -65,6 +65,8 @@
             v-model="form.className"
             :items="classNameList"
             label="반명"
+            item-text="name"
+            item-value="id"
             hide-details="auto"
             outlined
           ></v-combobox>
@@ -158,12 +160,21 @@
               ></v-combobox>
             </div>
             <v-combobox
-              v-model="form.amRide.name"
+              v-model="form.amRide.sunnyRide"
               :items="amRideNameList"
-              label="오전 코스를 선택하세요"
+              item-text="name"
+              item-value="id"
+              label="코스를 선택하세요"
+              hide-details="auto"
               outlined
             ></v-combobox>
-            <v-input> </v-input>
+            <v-text-field
+              v-model="form.amRide.comment"
+              label="비고"
+              outlined
+              clearable
+            >
+            </v-text-field>
           </div>
           <div class="drop">
             <div class="input-type2">
@@ -179,8 +190,17 @@
               v-model="form.pmRide.name"
               :items="pmRideNameList"
               label="코스를 선택하세요."
+              item-text="name"
+              item-value="id"
               outlined
             ></v-combobox>
+            <v-text-field
+              v-model="form.pmRide.comment"
+              label="비고"
+              outlined
+              clearable
+            >
+            </v-text-field>
           </div>
         </div>
       </div>
@@ -190,12 +210,16 @@
 </template>
 
 <script>
-import { addChild } from '@/api/api'
+import { addChild, getClassList, getRideList } from '@/api/api'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'childRegist',
   components: {
     //childRegistForm, // childRegistForm 컴포넌트 등록
+  },
+  mounted() {
+    this.init()
   },
   data() {
     return {
@@ -208,11 +232,12 @@ export default {
       birthdayWrap: false, //생년월일 필드와 picker를 묶는 역할
       activePicker: null,
       form: {
-        childCode: 'test',
+        id: '',
+        childCode: '',
         birthday: '',
         admissionDate: '2024-01-01',
-        className: 'test',
-        address: { detailAddress: 'test', zipCode: 'test', address: 'test' },
+        className: '',
+        address: { detailAddress: '', zipCode: '', address: '' },
         status: true,
         parentList: [
           {
@@ -221,11 +246,11 @@ export default {
             telephone: '',
           },
         ],
-        amRide: { name: 'name', time: 'time', comment: 'comment' },
-        pmRide: { name: 'name', time: 'time', comment: 'comment' },
-        name: 'test',
+        amRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
+        pmRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
       },
       classNameList: ['1반', '2반'],
+      birthday: '',
       // parentBoxes: [
       //   {
       //     relation: '',
@@ -235,9 +260,9 @@ export default {
       // ],
       parentTypeList: ['부', '모', '조부', '조모', '그 외'],
       amRideTimeList: ['11:00', ''],
-      amRideNameList: ['알수없음', ''],
-      pmRideTimeList: ['11:00', ''],
-      pmRideNameList: ['알수없음', ''],
+      amRideNameList: [],
+      pmRideTimeList: [],
+      pmRideNameList: [],
       // nameRules: [
       //   (v) => !!v || '필수 항목입니다',
       //   (v) => v.length <= 10 || 'Name must be less than 10 characters',
@@ -245,6 +270,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['showError']),
+    init() {
+      this.getClassList()
+      this.getRideList()
+    },
     getDay(date) {
       const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
       let week = new Date(date).getDay(date)
@@ -286,6 +316,10 @@ export default {
       }
     },
     addChild() {
+      this.form.birthday = Utils.convertDateToLocalDateTime(this.birthday)
+      this.form.admissionDate = Utils.convertDateToLocalDateTime(
+        this.form.admissionDate
+      )
       let param = this.form
       addChild(param)
         .then((response) => {
@@ -295,6 +329,33 @@ export default {
         })
         .catch((e) => {
           console.log(e)
+        })
+    },
+    getClassList() {
+      getClassList()
+        .then((response) => {
+          if (response.data != null) {
+            this.classNameList = response.data
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.showError(error)
+        })
+    },
+    getRideList() {
+      getRideList()
+        .then((response) => {
+          if (response.data != null) {
+            response.data.forEach((element) => {
+              if (element.am) this.amRideNameList.push(element)
+              else this.pmRideNameList.push(element)
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.showError(error)
         })
     },
   },

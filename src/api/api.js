@@ -299,3 +299,11 @@ export function getChildren() {
 export function addChild(param) {
   return post2('/sunny/child', param)
 }
+
+export function getClassList() {
+  return get(`/sunny/class`)
+}
+
+export function getRideList() {
+  return get(`/sunny/ride`)
+}

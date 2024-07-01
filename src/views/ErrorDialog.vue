@@ -1,16 +1,14 @@
 <template>
-  <Teleport to="body">
-    <v-dialog v-model="dialog.show" @input="onDialogInput" max-width="300px">
-      <v-card>
-        <v-card-title class="headline">{{ dialog.code }}</v-card-title>
-        <v-card-text>{{ dialog.message }}</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="closeError">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </Teleport>
+  <v-dialog v-model="errorMsgBox.show" @input="onDialogInput" max-width="400px">
+    <v-card>
+      <v-card-title class="headline">{{ errorMsgBox.code }}</v-card-title>
+      <v-card-text>{{ errorMsgBox.message }}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="red lighten-2" text @click="closeError">닫기</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -19,7 +17,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
   computed: {
     ...mapState({
-      dialog: (state) => state.errorMsg,
+      errorMsgBox: (state) => state.errorMsgBox,
     }),
   },
   methods: {
