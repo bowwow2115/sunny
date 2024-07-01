@@ -8,9 +8,9 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  errorMsg: {
+  errorMsgBox: {
     show: false,
-    title: '',
+    code: '',
     message: '',
   },
   baseURL:

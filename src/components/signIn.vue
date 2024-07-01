@@ -56,8 +56,6 @@
           <router-link to="/findId">아이디/비밀번호 찾기</router-link>
         </div>
       </div>
-      <v-btn @click="showDialog">모달</v-btn>
-      <v-btn @click="showModal">모달플러그인</v-btn>
     </v-container>
   </v-main>
 </template>
@@ -89,15 +87,14 @@ export default {
   //    },
   //  },
   methods: {
-    // 로그인 폼 제출
-    // this.$v.$touch(); // 폼 유효성 검사 실행
-
-    //  if (this.$v.$invalid) {
-    // 폼이 유효하지 않으면 처리
-    //    return;
-    //  }
     ...mapActions(['showError']),
     login() {
+      // 로그인 폼 제출
+      // this.$v.$touch(); // 폼 유효성 검사 실행
+      //  if (this.$v.$invalid) {
+      // 폼이 유효하지 않으면 처리
+      //    return;
+      //  }
       auth
         .login(this.form)
         .then(() => {
@@ -105,17 +102,8 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          // this.$message({
-          //   type: "info",
-          //   message: error.message,
-          // });
+          this.showError(error)
         })
-    },
-    showDialog() {
-      this.showError({ code: 'Hello', message: 'This is a global dialog!' })
-    },
-    showModal() {
-      this.$modal.open('Hello', 'This is a global modal!')
     },
   },
 }
