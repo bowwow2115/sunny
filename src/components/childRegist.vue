@@ -7,6 +7,21 @@
       <div class="area">
         <h3 class="area-title">원아 정보</h3>
         <div class="area-cont">
+          <v-row>
+            <v-col cols="9">
+              <v-text-field
+                v-model="form.name"
+                label="원아이름"
+                hide-details="auto"
+                required
+                outlined
+                clearable
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-checkbox v-model="form.status" label="재원여부"></v-checkbox>
+            </v-col>
+          </v-row>
           <v-text-field
             v-model="form.childCode"
             label="원아코드"
@@ -15,14 +30,45 @@
             outlined
             clearable
           ></v-text-field>
-          <v-text-field
-            v-model="form.name"
-            label="원아이름"
-            hide-details="auto"
-            required
-            outlined
-            clearable
-          ></v-text-field>
+          <v-menu
+            ref="menu"
+            v-model="addmisionDateWrap"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="form.admissionDate"
+                label="원아 입학일"
+                append-icon="mdi-calendar"
+                hide-details="auto"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                outlined
+              ></v-text-field
+              ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+            </template>
+            <v-date-picker
+              v-model="form.admissionDate"
+              :active-picker.sync="activePicker"
+              class="calendar"
+              no-title
+              :max="
+                new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                  .toISOString()
+                  .substr(0, 10)
+              "
+              min="2015-01-01"
+              :weekday-format="getDay"
+              :month-format="getMonth"
+              :header-date-format="changeHeader"
+              width="100%"
+              @change="$refs.menu.save((addmisionDateWrap = false))"
+            ></v-date-picker>
+          </v-menu>
+          <v-divider></v-divider>
           <v-menu
             ref="menu"
             v-model="birthdayWrap"
@@ -32,7 +78,7 @@
             ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="birthday"
+                v-model="form.birthday"
                 label="원아 생년월일"
                 append-icon="mdi-calendar"
                 hide-details="auto"
@@ -44,7 +90,7 @@
               ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
             </template>
             <v-date-picker
-              v-model="birthday"
+              v-model="form.birthday"
               :active-picker.sync="activePicker"
               class="calendar"
               no-title
@@ -53,7 +99,7 @@
                   .toISOString()
                   .substr(0, 10)
               "
-              min="2000-01-01"
+              min="2015-01-01"
               :weekday-format="getDay"
               :month-format="getMonth"
               :header-date-format="changeHeader"
@@ -65,8 +111,6 @@
             v-model="form.className"
             :items="classNameList"
             label="반명"
-            item-text="name"
-            item-value="id"
             hide-details="auto"
             outlined
           ></v-combobox>
@@ -100,7 +144,6 @@
         </div>
       </div>
       <div class="area">
-        <!-- TODO: 버튼으로 학부모 추가 가능하게 수정(학부모 정보 입력 옆에 '+'버튼이 있게?) -->
         <h3 class="area-title">학부모 정보</h3>
         <div class="area-cont">
           <div
@@ -149,7 +192,11 @@
       <div class="area">
         <h3 class="area-title">탑승 차량 정보</h3>
         <div class="area-cont">
-          <div class="pickup">
+          <v-checkbox
+            v-model="hasAmRide"
+            label="오전차량 사용여부"
+          ></v-checkbox>
+          <div class="pickup" v-if="hasAmRide">
             <div class="input-type2">
               오전
               <v-combobox
@@ -159,7 +206,7 @@
                 outlined
               ></v-combobox>
             </div>
-            <v-combobox
+            <v-select
               v-model="form.amRide.sunnyRide"
               :items="amRideNameList"
               item-text="name"
@@ -167,7 +214,7 @@
               label="코스를 선택하세요"
               hide-details="auto"
               outlined
-            ></v-combobox>
+            ></v-select>
             <v-text-field
               v-model="form.amRide.comment"
               label="비고"
@@ -176,7 +223,11 @@
             >
             </v-text-field>
           </div>
-          <div class="drop">
+          <v-checkbox
+            v-model="hasPmRide"
+            label="오전차량 사용여부"
+          ></v-checkbox>
+          <div class="drop" v-if="hasPmRide">
             <div class="input-type2">
               오후
               <v-combobox
@@ -186,14 +237,15 @@
                 outlined
               ></v-combobox>
             </div>
-            <v-combobox
-              v-model="form.pmRide.name"
+            <v-select
+              v-model="form.pmRide.sunnyRide"
               :items="pmRideNameList"
               label="코스를 선택하세요."
               item-text="name"
               item-value="id"
+              hide-details="auto"
               outlined
-            ></v-combobox>
+            ></v-select>
             <v-text-field
               v-model="form.pmRide.comment"
               label="비고"
@@ -230,12 +282,15 @@ export default {
       tab: null,
       valid: true,
       birthdayWrap: false, //생년월일 필드와 picker를 묶는 역할
+      addmisionDateWrap: false,
       activePicker: null,
+      hasAmRide: false,
+      hasPmRide: false,
       form: {
         id: '',
         childCode: '',
         birthday: '',
-        admissionDate: '2024-01-01',
+        admissionDate: `${moment().format('YYYY-MM-DD')}`,
         className: '',
         address: { detailAddress: '', zipCode: '', address: '' },
         status: true,
@@ -316,10 +371,8 @@ export default {
       }
     },
     addChild() {
-      this.form.birthday = Utils.convertDateToLocalDateTime(this.birthday)
-      this.form.admissionDate = Utils.convertDateToLocalDateTime(
-        this.form.admissionDate
-      )
+      if (!this.hasAmRide) this.form.amRide = null
+      if (!this.hasPmRide) this.form.pmRide = null
       let param = this.form
       addChild(param)
         .then((response) => {
@@ -335,7 +388,11 @@ export default {
       getClassList()
         .then((response) => {
           if (response.data != null) {
-            this.classNameList = response.data
+            let array = []
+            response.data.forEach((element) => {
+              array.push(element.name)
+            })
+            this.classNameList = array
           }
         })
         .catch((error) => {
@@ -351,6 +408,8 @@ export default {
               if (element.am) this.amRideNameList.push(element)
               else this.pmRideNameList.push(element)
             })
+            console.log(this.amRideNameList)
+            console.log(this.pmRideNameList)
           }
         })
         .catch((error) => {

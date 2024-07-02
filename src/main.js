@@ -18,6 +18,7 @@ import lodash from 'lodash'
 window.$ = require('jquery')
 window.jQuery = require('jquery')
 window.store = store
+window.moment = require('moment')
 
 window.constants = constants
 Vue.prototype.$Constants = constants
