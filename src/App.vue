@@ -2,6 +2,7 @@
   <div id="app">
     <v-app>
       <error-dialog></error-dialog>
+      <global-alert></global-alert>
       <router-view> </router-view>
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -12,15 +13,12 @@
 
 <script>
 import ErrorDialog from '@/views/ErrorDialog'
+import GlobalAlert from '@/views/GlobalAlert'
 
 export default {
   name: 'App',
-  components: { ErrorDialog },
-  mounted() {
-    // setTimeout(() => {
-    //   this.isLoading = true;
-    // }, 800);
-  },
+  components: { ErrorDialog, GlobalAlert },
+  mounted() {},
   data() {
     return {
       isLoading: false,

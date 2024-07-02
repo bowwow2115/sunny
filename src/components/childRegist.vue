@@ -55,11 +55,6 @@
               :active-picker.sync="activePicker"
               class="calendar"
               no-title
-              :max="
-                new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                  .toISOString()
-                  .substr(0, 10)
-              "
               min="2015-01-01"
               :weekday-format="getDay"
               :month-format="getMonth"
@@ -225,7 +220,7 @@
           </div>
           <v-checkbox
             v-model="hasPmRide"
-            label="오전차량 사용여부"
+            label="오후차량 사용여부"
           ></v-checkbox>
           <div class="drop" v-if="hasPmRide">
             <div class="input-type2">
@@ -314,9 +309,9 @@ export default {
       //   },
       // ],
       parentTypeList: ['부', '모', '조부', '조모', '그 외'],
-      amRideTimeList: ['11:00', ''],
+      amRideTimeList: getTimeIntervals('07:00', '10:00'),
       amRideNameList: [],
-      pmRideTimeList: [],
+      pmRideTimeList: getTimeIntervals('15:00', '19:00'),
       pmRideNameList: [],
       // nameRules: [
       //   (v) => !!v || '필수 항목입니다',
@@ -418,6 +413,36 @@ export default {
         })
     },
   },
+}
+
+function getTimeIntervals(startTime, endTime) {
+  // 시간 문자열을 Date 객체로 변환하는 함수
+  function parseTime(timeStr) {
+    const [hours, minutes] = timeStr.split(':').map(Number)
+    const date = new Date()
+    date.setHours(hours)
+    date.setMinutes(minutes)
+    date.setSeconds(0)
+    return date
+  }
+
+  // Date 객체를 "HH:mm" 형식의 문자열로 변환하는 함수
+  function formatTime(date) {
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${hours}:${minutes}`
+  }
+
+  const start = parseTime(startTime)
+  const end = parseTime(endTime)
+  const intervals = []
+
+  while (start <= end) {
+    intervals.push(formatTime(start))
+    start.setMinutes(start.getMinutes() + 5) // 5분 단위로 증가
+  }
+
+  return intervals
 }
 </script>
 

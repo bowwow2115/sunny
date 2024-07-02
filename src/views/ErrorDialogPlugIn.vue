@@ -14,20 +14,20 @@ export default {
     return {
       visible: false,
       title: '',
-      message: ''
-    };
+      message: '',
+    }
   },
   methods: {
     open(title, message) {
-      this.title = title;
-      this.message = message;
-      this.visible = true;
+      this.title = title
+      this.message = message
+      this.visible = true
     },
     close() {
-      this.visible = false;
-    }
-  }
-};
+      this.visible = false
+    },
+  },
+}
 </script>
 
 <style scoped>
