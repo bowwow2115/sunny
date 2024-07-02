@@ -24,8 +24,6 @@ window.constants = constants
 Vue.prototype.$Constants = constants
 Vue.config.productionTip = false
 
-Vue.config.productionTip = false
-
 VueClipboard.config.autoSetContainer = true
 
 Vue.prototype.$lodash = lodash
@@ -33,18 +31,6 @@ Vue.prototype.$Utils = Utils
 window.Utils = Utils
 Vue.use(VueClipboard)
 Vue.use(GlobalModal)
-
-// async function openErrorDialog(errData) {
-//   const errorDialog = ModalDialogs.create(ErrorDialog);
-//   await errorDialog({
-//       code: errData.code,
-//       message: errData.message
-//   });
-// }
-
-// Vue.prototype.$showErrMsgbox = function(errData = null) {
-//   openErrorDialog(errData);
-// }
 
 Vue.prototype.$showError = function (error = null, title = null) {
   let message = ''

@@ -13,6 +13,11 @@ const state = {
     code: '',
     message: '',
   },
+  alertMsgBox: {
+    show: false,
+    type: '',
+    message: '',
+  },
   baseURL:
     process.env.NODE_ENV !== 'production'
       ? ''

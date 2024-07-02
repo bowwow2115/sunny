@@ -56,6 +56,10 @@
           <router-link to="/findId">아이디/비밀번호 찾기</router-link>
         </div>
       </div>
+      <v-btn @click="showAlert({ type: 'success', message: 'test' })"
+        >alert</v-btn
+      >
+      <v-btn @click="showOk()">ok</v-btn>
     </v-container>
   </v-main>
 </template>
@@ -87,7 +91,13 @@ export default {
   //    },
   //  },
   methods: {
-    ...mapActions(['showError']),
+    ...mapActions(['showError', 'showAlert']),
+    showErrors() {
+      this.$showErrMsgbox({ code: 'test', message: '22' })
+    },
+    showOk() {
+      this.$showOk()
+    },
     login() {
       // 로그인 폼 제출
       // this.$v.$touch(); // 폼 유효성 검사 실행

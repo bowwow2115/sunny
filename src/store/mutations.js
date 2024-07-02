@@ -9,6 +9,16 @@ const mutations = {
     state.errorMsgBox.code = ''
     state.errorMsgBox.message = ''
   },
+  showAlert(state, payload) {
+    state.alertMsgBox.show = true
+    state.alertMsgBox.type = payload.type
+    state.alertMsgBox.message = payload.message
+  },
+  closeAlert(state) {
+    state.alertMsgBox.show = false
+    state.alertMsgBox.type = ''
+    state.alertMsgBox.message = ''
+  },
 }
 
 export default mutations
