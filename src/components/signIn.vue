@@ -85,11 +85,14 @@ export default {
   //    },
   //  },
   methods: {
-    showErrors() {
-      this.$showErrMsgbox({ code: 'test', message: '22' })
+    showError() {
+      this.$emit('show-error', { code: 'test', message: 'testmsg' })
     },
-    showOk() {
-      this.$showOk()
+    showAlert() {
+      this.$emit('show-alert', { type: 'warning', message: 'test' })
+    },
+    showMessage() {
+      this.$emit('show-message', { color: 'warning', message: 'test' })
     },
     login() {
       // 로그인 폼 제출
