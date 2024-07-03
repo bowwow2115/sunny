@@ -63,6 +63,8 @@
           <v-card>
             <v-card-title class="subheading font-weight-bold">
               {{ item.name }}
+              <v-spacer></v-spacer>
+              <v-btn color="plus"><v-icon left>mdi-plus</v-icon>더보기</v-btn>
             </v-card-title>
 
             <v-divider></v-divider>
