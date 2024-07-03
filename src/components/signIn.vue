@@ -56,17 +56,11 @@
           <router-link to="/findId">아이디/비밀번호 찾기</router-link>
         </div>
       </div>
-      <v-btn @click="showAlert({ type: 'success', message: 'test' })"
-        >alert</v-btn
-      >
-      <v-btn @click="showOk()">ok</v-btn>
     </v-container>
   </v-main>
 </template>
 
 <script>
-import { methods } from 'babel-plugin-transform-runtime/lib/definitions'
-import { mapActions } from 'vuex'
 //import { required } from 'vuelidate/lib/validators';
 import auth from '@/api/auth'
 
@@ -91,7 +85,6 @@ export default {
   //    },
   //  },
   methods: {
-    ...mapActions(['showError', 'showAlert']),
     showErrors() {
       this.$showErrMsgbox({ code: 'test', message: '22' })
     },
