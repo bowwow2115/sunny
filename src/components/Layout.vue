@@ -29,7 +29,7 @@
     <!-- 상단 bar -->
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"
-        ><v-icon>menu</v-icon></v-app-bar-nav-icon
+        ><v-icon>mdi-menu</v-icon></v-app-bar-nav-icon
       >
       <v-toolbar-title>메뉴</v-toolbar-title>
       <v-spacer></v-spacer>
