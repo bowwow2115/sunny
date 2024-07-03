@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib/framework'
 import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
 Vue.use(Vuetify)
 
 const opts = {
+  icons: {
+    iconfont: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+  },
   theme: {
     dark: false, // 다크 모드를 원하면 true로 설정
     themes: {

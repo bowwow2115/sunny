@@ -12,16 +12,27 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-
 export default {
-  computed: {
-    ...mapState({
-      errorMsgBox: (state) => state.errorMsgBox,
-    }),
+  data() {
+    return {
+      errorMsgBox: {
+        show: false,
+        code: '',
+        message: '',
+      },
+    }
   },
   methods: {
-    ...mapActions(['closeError']),
+    showError(payload) {
+      this.errorMsgBox.show = true
+      this.errorMsgBox.code = payload.code || '정의되지 않은 에러입니다.'
+      this.errorMsgBox.message = payload.message || '관리자에게 문의하세요'
+    },
+    closeError() {
+      this.errorMsgBox.show = false
+      this.errorMsgBox.code = ''
+      this.errorMsgBox.message = ''
+    },
     onDialogInput(value) {
       if (!value) {
         this.closeError()

@@ -11,17 +11,29 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-
 export default {
   name: 'GlobalAlert',
-  computed: {
-    ...mapState({
-      alertMsgBox: (state) => state.alertMsgBox,
-    }),
+  data() {
+    return {
+      alertMsgBox: {
+        show: false,
+        type: '',
+        message: '',
+      },
+    }
   },
   methods: {
-    ...mapActions(['closeAlert']),
+    showAlert(payload) {
+      this.alertMsgBox.show = true
+      this.alertMsgBox.type = payload.type
+      this.alertMsgBox.message = payload.message
+      setTimeout(this.closeAlert, 2000)
+    },
+    closeAlert() {
+      this.alertMsgBox.show = false
+      this.alertMsgBox.type = ''
+      this.alertMsgBox.message = ''
+    },
   },
 }
 </script>
