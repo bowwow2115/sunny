@@ -258,7 +258,6 @@
 
 <script>
 import { addChild, getClassList, getRideList } from '@/api/api'
-import { mapActions } from 'vuex'
 
 export default {
   name: 'ChildRegist',
@@ -320,7 +319,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['showError']),
     init() {
       this.getClassList()
       this.getRideList()
