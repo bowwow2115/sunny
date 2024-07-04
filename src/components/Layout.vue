@@ -64,7 +64,7 @@ export default {
     drawer: false,
     items: [
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
-      { title: 'childRegist', icon: 'mdi-image', to: '/childRegist' },
+      { title: 'ChildRegist', icon: 'mdi-image', to: '/ChildRegist' },
       { title: 'ChildrenList', icon: 'mdi-image', to: '/ChildrenList' },
     ],
     right: null,
