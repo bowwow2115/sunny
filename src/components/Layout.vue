@@ -55,7 +55,7 @@
 
 <script>
 import auth from '@/api/auth'
-import ErrorDialog from '@/views/ErrorDialog.vue'
+import ErrorDialog from '@/components/dialog/ErrorDialog.vue'
 
 export default {
   name: 'Layout',
