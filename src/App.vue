@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import GlobalAlert from '@/views/GlobalAlert'
-import GlobalSnackbar from '@/views/GlobalSnackbar.vue'
+import GlobalAlert from '@/components/GlobalAlert'
+import GlobalSnackbar from '@/components/GlobalSnackbar.vue'
 
 export default {
   name: 'App',

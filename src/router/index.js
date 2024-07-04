@@ -3,13 +3,13 @@ import Router from 'vue-router'
 import auth from '@/api/auth'
 import constants from '@/Constants.js'
 
-const SignUp = () => import('@/components/SignUp')
-const SignIn = () => import('@/components/SignIn')
-const ChildRegist = () => import('@/components/ChildRegist')
-const FindId = () => import('@/components/FindId')
 const Layout = () => import('@/components/Layout')
-const ChildrenList = () => import('@/components/ChildrenList')
 const AdminLayout = () => import('@/components/admin/AdminLayout')
+const SignUp = () => import('@/views/SignUp')
+const SignIn = () => import('@/views/SignIn')
+const ChildRegist = () => import('@/views/ChildRegist')
+const FindId = () => import('@/views/FindId')
+const ChildrenList = () => import('@/views/ChildrenList')
 
 Vue.use(Router)
 

@@ -7,7 +7,6 @@ import 'remixicon/fonts/remixicon.css' //remixicon 아이콘
 import './assets/css/comm.css' //css 파일분리 테스트
 import './assets/css/sub.css' //css 파일분리 테스트
 
-// import ErrorDialog from "@/components/custom/dialog/ErrorDialog";
 import VueClipboard from 'vue-clipboard2'
 import constants from './Constants'
 import Utils from '@/utils/utils'
