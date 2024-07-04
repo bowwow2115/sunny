@@ -261,9 +261,9 @@ import { addChild, getClassList, getRideList } from '@/api/api'
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'childRegist',
+  name: 'ChildRegist',
   components: {
-    //childRegistForm, // childRegistForm 컴포넌트 등록
+    //ChildRegistForm, // ChildRegistForm 컴포넌트 등록
   },
   mounted() {
     this.init()
@@ -271,7 +271,7 @@ export default {
   data() {
     return {
       items: [
-        { tab: '원아등록', content: '/childRegistForm' },
+        { tab: '원아등록', content: '/ChildRegistForm' },
         { tab: '학부모등록', content: '/parentRegistForm' },
       ],
       tab: null,

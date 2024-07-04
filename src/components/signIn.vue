@@ -51,9 +51,9 @@
           >로그인</v-btn
         >
         <div class="login-more">
-          <router-link to="/signUp">회원가입</router-link>
+          <router-link to="/SignUp">회원가입</router-link>
           <span>|</span>
-          <router-link to="/findId">아이디/비밀번호 찾기</router-link>
+          <router-link to="/FindId">아이디/비밀번호 찾기</router-link>
         </div>
       </div>
     </v-container>
@@ -65,7 +65,7 @@
 import auth from '@/api/auth'
 
 export default {
-  name: 'signIn',
+  name: 'SignIn',
   components: {},
   data() {
     return {
