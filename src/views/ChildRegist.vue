@@ -1,116 +1,122 @@
 <template>
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
-  <div class="id-form">
-    <h2 class="id-tit">원아등록</h2>
+  <div>
+    <h2>원아등록</h2>
     <v-form v-model="valid">
-      <div class="area">
-        <h3 class="area-title">원아 정보</h3>
-        <div class="area-cont">
+      <!-- ---------- 원아 정보 ---------- -->
+      <v-card class="my-4">
+        <v-card-title>원아정보</v-card-title>
+        <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
+        <v-card-text>
           <v-row>
-            <v-col cols="9">
+            <v-col>
+              <v-checkbox v-model="form.status" label="재원여부" aria-checked="true"></v-checkbox>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="form.childCode"
+                label="원아코드"
+                required
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
               <v-text-field
                 v-model="form.name"
                 label="원아이름"
-                hide-details="auto"
                 required
                 outlined
-                clearable
               ></v-text-field>
             </v-col>
-            <v-col cols="3">
-              <v-checkbox v-model="form.status" label="재원여부"></v-checkbox>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-menu
+                ref="menu"
+                v-model="addmisionDateWrap"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="form.admissionDate"
+                    label="원아 입학일"
+                    append-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                  ></v-text-field
+                  ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+                </template>
+                <v-date-picker
+                  v-model="form.admissionDate"
+                  :active-picker.sync="activePicker"
+                  class="calendar"
+                  no-title
+                  min="2015-01-01"
+                  :weekday-format="getDay"
+                  :month-format="getMonth"
+                  :header-date-format="changeHeader"
+                  width="100%"
+                  @change="$refs.menu.save((addmisionDateWrap = false))"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-menu
+                ref="menu"
+                v-model="birthdayWrap"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="form.birthday"
+                    label="원아 생년월일"
+                    append-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                  ></v-text-field
+                  ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+                </template>
+                <v-date-picker
+                  v-model="form.birthday"
+                  :active-picker.sync="activePicker"
+                  class="calendar"
+                  no-title
+                  :max="
+                    new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .substr(0, 10)
+                  "
+                  min="2015-01-01"
+                  :weekday-format="getDay"
+                  :month-format="getMonth"
+                  :header-date-format="changeHeader"
+                  width="100%"
+                  @change="$refs.menu.save((birthdayWrap = false))"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
-          <v-text-field
-            v-model="form.childCode"
-            label="원아코드"
-            hide-details="auto"
-            required
-            outlined
-            clearable
-          ></v-text-field>
-          <v-menu
-            ref="menu"
-            v-model="addmisionDateWrap"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="form.admissionDate"
-                label="원아 입학일"
-                append-icon="mdi-calendar"
-                hide-details="auto"
-                readonly
-                v-bind="attrs"
-                v-on="on"
+          <v-row>
+            <v-col>
+              <v-select
+                v-model="form.className"
+                :items="classNameList"
+                label="반명"
                 outlined
-              ></v-text-field
-              ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
-            </template>
-            <v-date-picker
-              v-model="form.admissionDate"
-              :active-picker.sync="activePicker"
-              class="calendar"
-              no-title
-              min="2015-01-01"
-              :weekday-format="getDay"
-              :month-format="getMonth"
-              :header-date-format="changeHeader"
-              width="100%"
-              @change="$refs.menu.save((addmisionDateWrap = false))"
-            ></v-date-picker>
-          </v-menu>
-          <v-divider></v-divider>
-          <v-menu
-            ref="menu"
-            v-model="birthdayWrap"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="form.birthday"
-                label="원아 생년월일"
-                append-icon="mdi-calendar"
-                hide-details="auto"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                outlined
-              ></v-text-field
-              ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
-            </template>
-            <v-date-picker
-              v-model="form.birthday"
-              :active-picker.sync="activePicker"
-              class="calendar"
-              no-title
-              :max="
-                new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                  .toISOString()
-                  .substr(0, 10)
-              "
-              min="2015-01-01"
-              :weekday-format="getDay"
-              :month-format="getMonth"
-              :header-date-format="changeHeader"
-              width="100%"
-              @change="$refs.menu.save((birthdayWrap = false))"
-            ></v-date-picker>
-          </v-menu>
-          <v-combobox
-            v-model="form.className"
-            :items="classNameList"
-            label="반명"
-            hide-details="auto"
-            outlined
-          ></v-combobox>
-          <div class="address-wrap">
-            <div class="input-btn-wrap">
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-text-field
                 v-model="form.address.zipCode"
                 label="우편번호"
@@ -118,140 +124,164 @@
                 outlined
                 readonly
               ></v-text-field>
-              <v-btn type="button" depressed class="input-h"> 주소 검색 </v-btn>
-            </div>
-            <!-- 검색해서 선택한 우편번호 여기 입력됨 -->
-            <v-text-field
-              v-model="form.address.address"
-              label="주소"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="form.address.detailAddress"
-              label="상세주소 입력"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-          </div>
-        </div>
-      </div>
-      <div class="area">
-        <h3 class="area-title">학부모 정보</h3>
-        <div class="area-cont">
-          <div
-            class="parent-box"
+            </v-col>
+            <v-col>
+              <v-btn type="button" depressed> 주소 검색 </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="form.address.address"
+                label="주소"
+                hide-details="auto"
+                outlined
+                readonly
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="form.address.detailAddress"
+                label="상세주소 입력"
+                hide-details="auto"
+                outlined
+                readonly
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <!-- ---------- 학부모 정보 ---------- -->
+      <v-card class="my-4">
+        <v-card-title>학부모 정보</v-card-title>
+        <v-card-subtitle>라라라</v-card-subtitle>
+        <v-card-text>
+          <v-row class="parent-box"
             v-for="(parentBox, index) in form.parentList"
             :key="index"
           >
-            <div class="layout">
-              <v-combobox
-                v-model="parentBox.relation"
-                :items="parentTypeList"
-                label="관계"
-                hide-details="auto"
-                outlined
-              >
-              </v-combobox>
+            <v-col cols="12" md="6">
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-select
+                    v-model="parentBox.relation"
+                    :items="parentTypeList"
+                    label="관계"
+                    hide-details="auto"
+                    outlined
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="parentBox.name"
+                    label="학부모 이름"
+                    hide-details="auto"
+                    required
+                    outlined
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols=12 md="4">
               <v-text-field
-                v-model="parentBox.name"
-                label="학부모 이름"
-                hide-details="auto"
+                v-model="parentBox.telephone"
+                label="연락처"
                 required
                 outlined
-                clearable
               ></v-text-field>
-            </div>
-            <v-text-field
-              v-model="parentBox.telephone"
-              label="연락처"
-              required
-              outlined
-              clearable
-            ></v-text-field>
-            <v-btn @click="addParentBox" class="btn-pb">
-              <v-icon>ri-add-line</v-icon>
-            </v-btn>
-            <v-btn
-              @click="removeParentBox(index)"
-              v-if="form.parentList.length > 1"
-              class="btn-pb"
-            >
-              <v-icon>ri-subtract-line</v-icon>
-            </v-btn>
-          </div>
-        </div>
-      </div>
-      <div class="area">
-        <h3 class="area-title">탑승 차량 정보</h3>
-        <div class="area-cont">
-          <v-checkbox
-            v-model="hasAmRide"
-            label="오전차량 사용여부"
-          ></v-checkbox>
-          <div class="pickup" v-if="hasAmRide">
-            <div class="input-type2">
-              오전
-              <v-combobox
-                v-model="form.amRide.time"
-                :items="amRideTimeList"
-                label="승차 시간"
-                outlined
-              ></v-combobox>
-            </div>
-            <v-select
-              v-model="form.amRide.sunnyRide"
-              :items="amRideNameList"
-              item-text="name"
-              item-value="id"
-              label="코스를 선택하세요"
-              hide-details="auto"
-              outlined
-            ></v-select>
-            <v-text-field
-              v-model="form.amRide.comment"
-              label="비고"
-              outlined
-              clearable
-            >
-            </v-text-field>
-          </div>
-          <v-checkbox
-            v-model="hasPmRide"
-            label="오후차량 사용여부"
-          ></v-checkbox>
-          <div class="drop" v-if="hasPmRide">
-            <div class="input-type2">
-              오후
-              <v-combobox
-                v-model="form.pmRide.time"
-                :items="pmRideTimeList"
-                label="하차 시간"
-                outlined
-              ></v-combobox>
-            </div>
-            <v-select
-              v-model="form.pmRide.sunnyRide"
-              :items="pmRideNameList"
-              label="코스를 선택하세요."
-              item-text="name"
-              item-value="id"
-              hide-details="auto"
-              outlined
-            ></v-select>
-            <v-text-field
-              v-model="form.pmRide.comment"
-              label="비고"
-              outlined
-              clearable
-            >
-            </v-text-field>
-          </div>
-        </div>
-      </div>
-      <v-btn @click="addChild">등록</v-btn>
+            </v-col>
+            <v-col cols=12 md="2">
+              <v-btn @click="addParentBox">
+                <v-icon>ri-add-line</v-icon>
+              </v-btn>
+              <v-btn
+                @click="removeParentBox(index)"
+                v-if="form.parentList.length > 1"
+                class="btn-pb"
+              >
+                <v-icon>ri-subtract-line</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <!-- ---------- 탑승차량 정보 ---------- -->
+      <v-card class="my-4">
+        <v-card-title>탑승차량 정보</v-card-title>
+        <v-card-subtitle>라라라</v-card-subtitle>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-checkbox
+                v-model="hasAmRide"
+                label="오전차량 사용여부"
+              ></v-checkbox>
+              <div class="pickup" v-if="hasAmRide">
+                <v-subheader>오전</v-subheader>
+                <v-select
+                  v-model="form.amRide.time"
+                  :items="amRideTimeList"
+                  label="승차 시간"
+                  outlined
+                ></v-select>
+                <v-select
+                  v-model="form.amRide.sunnyRide"
+                  :items="amRideNameList"
+                  item-text="name"
+                  item-value="id"
+                  label="코스를 선택하세요"
+                  outlined
+                ></v-select>
+                <v-text-field
+                  v-model="form.amRide.comment"
+                  label="비고"
+                  outlined
+                  clearable
+                >
+                </v-text-field>
+              </div>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-checkbox
+                v-model="hasPmRide"
+                label="오후차량 사용여부"
+              ></v-checkbox>
+              <div class="pickup" v-if="hasPmRide">
+                <v-subheader>오후</v-subheader>
+                <v-select
+                  v-model="form.pmRide.time"
+                  :items="pmRideTimeList"
+                  label="하차 시간"
+                  outlined
+                ></v-select>
+                <v-select
+                  v-model="form.pmRide.sunnyRide"
+                  :items="pmRideNameList"
+                  label="코스를 선택하세요."
+                  item-text="name"
+                  item-value="id"
+                  outlined
+                ></v-select>
+                <v-text-field
+                  v-model="form.pmRide.comment"
+                  label="비고"
+                  outlined
+                  clearable
+                >
+                </v-text-field>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <v-row class="justify-center">
+        <v-col cols="12" md="6">
+          <v-btn @click="addChild" class="btn-main">등록</v-btn>
+        </v-col>
+      </v-row>
     </v-form>
   </div>
 </template>
@@ -448,4 +478,4 @@ function getTimeIntervals(startTime, endTime) {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
