@@ -1,0 +1,62 @@
+@charset "UTF-8";
+// 설명 : 프로젝트 전체에 적용되는 변수에 대해 정의함
+// 주의 : 컴포넌트 갯수 만큼 실행되기 때문에 변수에 대해서만 정의해야합니다. (실제 CSS에 대한 적용은 sass/styles.scss에 작성)
+
+// vuetify의 스타일 변수 가져오기
+@import '~vuetify/src/styles/styles.sass';
+
+// @font-face {
+// 	font-family: 'Pretendard Variable';
+// 	font-weight: 100 900;
+// 	font-style: normal;
+// 	font-display: swap;
+// 	src: url('../../fonts/PretendardVariable.woff2') format('woff2-variations');
+// }
+
+$text-field-outlined-fieldset-border: 1px solid currentColor;
+
+$body-font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+$font-size-root: 5px;
+$clr-primary: #FF6F00;
+
+$colors: (
+  'gray100': #fafafa,
+  'gray200': #eee,
+  'gray300': #dbdbdb,
+  'gray400': #b5b5b5,
+  'gray500': #9e9e9e,
+  'gray600': #717171,
+  'gray700': #424242,
+  'black': #141414
+);
+
+$buttons-sizes: (
+  'default': 55px,
+  'large' : 65px,
+) !default;
+$input-sizes: (
+  'default': 55px,
+  'large' : 65px,
+) !default;
+
+$headings: (
+  'h1': (
+    'font-size': 3.2rem,
+    'line-height': 1.2
+  ),
+  'h2': (
+    'font-size': 2.7rem,
+    'line-height': 1.4
+  ),
+  'h3': (
+    'font-size': 2.3rem,
+    'line-height': 1.4
+  ),
+  'h4': (
+    'font-size': 2.0rem,
+    'line-height': 1.4
+  ),
+);
+
+
+
