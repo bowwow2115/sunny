@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'childRegistForm',
+  name: 'ChildRegistForm',
 
   data: () => ({
     valid: false,

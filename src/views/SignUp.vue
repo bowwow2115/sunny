@@ -91,10 +91,8 @@
 
 <script>
 export default {
-  name: 'signUp',
+  name: 'SignUp',
   components: {},
-  components: {},
-
   data() {
     return {
       valid: true,
