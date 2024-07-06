@@ -20,7 +20,7 @@
       </v-tabs-items> -->
       <div class="id-form">
         <h2 class="id-tit">아이디/비밀번호 찾기</h2>
-        <v-form v-model="valid" @submit.prevent="findId">
+        <v-form v-model="valid" @submit.prevent="FindId">
           <!-- 아이디 -->
           <v-text-field
             v-model="form.userId"
@@ -85,7 +85,7 @@
 import { methods } from 'babel-plugin-transform-runtime/lib/definitions'
 
 export default {
-  name: 'findId',
+  name: 'FindId',
   components: {},
 
   data() {
@@ -103,7 +103,7 @@ export default {
       countdown: 3, // 이메일 인증코드 재전송 타임 예시
       methods: {
         // 로그인 폼 submit
-        findId() {
+        FindId() {
           // 로그인 폼 submit
         },
         sendEmailCode() {}, // 시간이 카운트다운되면 좋겠습니당..

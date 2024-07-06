@@ -1,5 +1,5 @@
 const constants = {
-  DEFAULT_HOME: '/childRegist',
+  DEFAULT_HOME: '/ChildrenList',
   TOKEN: 'auth',
 }
 export default constants

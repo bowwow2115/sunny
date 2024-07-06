@@ -28,17 +28,22 @@
 
     <!-- 상단 bar -->
     <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <!-- <v-toolbar-title>메뉴</v-toolbar-title> -->
-
+      <v-app-bar-nav-icon @click="drawer = !drawer"
+        ><v-icon>mdi-menu</v-icon></v-app-bar-nav-icon
+      >
+      <v-toolbar-title>메뉴</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
     <v-main>
       <v-container fluid>
-        <router-view />
+        <error-dialog ref="errorDialog"></error-dialog>
+        <router-view
+          @show-error="showError"
+          @show-alert="showAlert"
+          @show-message="showMessage"
+        />
       </v-container>
     </v-main>
 
@@ -50,15 +55,16 @@
 
 <script>
 import auth from '@/api/auth'
+import ErrorDialog from '@/components/dialog/ErrorDialog.vue'
 
 export default {
   name: 'Layout',
-  components: {},
+  components: { ErrorDialog },
   data: () => ({
     drawer: false,
     items: [
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
-      { title: 'childRegist', icon: 'mdi-image', to: '/childRegist' },
+      { title: 'ChildRegist', icon: 'mdi-image', to: '/ChildRegist' },
       { title: 'ChildrenList', icon: 'mdi-image', to: '/ChildrenList' },
     ],
     right: null,
@@ -66,6 +72,15 @@ export default {
   methods: {
     logout() {
       auth.logout()
+    },
+    showError(err) {
+      this.$refs.errorDialog.showError(err)
+    },
+    showAlert(alert) {
+      this.$emit('show-alert', alert)
+    },
+    showMessage(msg) {
+      this.$emit('show-message', msg)
     },
   },
 }

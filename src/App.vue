@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <v-app>
-      <error-dialog></error-dialog>
-      <router-view> </router-view>
+      <global-alert ref="alert"></global-alert>
+      <router-view @show-alert="showAlert" @show-message="showMessage">
+      </router-view>
+      <global-snackbar ref="snackbar"></global-snackbar>
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -11,20 +13,25 @@
 </template>
 
 <script>
-import ErrorDialog from '@/views/ErrorDialog'
+import GlobalAlert from '@/components/GlobalAlert'
+import GlobalSnackbar from '@/components/GlobalSnackbar.vue'
 
 export default {
   name: 'App',
-  components: { ErrorDialog },
-  mounted() {
-    // setTimeout(() => {
-    //   this.isLoading = true;
-    // }, 800);
-  },
+  components: { GlobalAlert, GlobalSnackbar },
+  mounted() {},
   data() {
     return {
       isLoading: false,
     }
+  },
+  methods: {
+    showAlert(alert) {
+      this.$refs.alert.showAlert(alert)
+    },
+    showMessage(msg) {
+      this.$refs.snackbar.showMessage(msg)
+    },
   },
 }
 </script>

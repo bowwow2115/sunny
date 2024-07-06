@@ -3,13 +3,13 @@ import Router from 'vue-router'
 import auth from '@/api/auth'
 import constants from '@/Constants.js'
 
-const signUp = () => import('@/components/signUp')
-const signIn = () => import('@/components/signIn')
-const childRegist = () => import('@/components/childRegist')
-const findId = () => import('@/components/findId')
 const Layout = () => import('@/components/Layout')
-const ChildrenList = () => import('@/components/ChildrenList')
 const AdminLayout = () => import('@/components/admin/AdminLayout')
+const SignUp = () => import('@/views/SignUp')
+const SignIn = () => import('@/views/SignIn')
+const ChildRegist = () => import('@/views/ChildRegist')
+const FindId = () => import('@/views/FindId')
+const ChildrenList = () => import('@/views/ChildrenList')
 
 Vue.use(Router)
 
@@ -21,19 +21,19 @@ const router = new Router({
       redirect: { path: constants.DEFAULT_HOME },
     },
     {
-      path: '/signIn',
-      name: 'signIn',
-      component: signIn,
+      path: '/SignIn',
+      name: 'SignIn',
+      component: SignIn,
     },
     {
-      path: '/signUp',
-      name: 'signUp',
-      component: signUp,
+      path: '/SignUp',
+      name: 'SignUp',
+      component: SignUp,
     },
     {
-      path: '/findId',
-      name: 'findId',
-      component: findId,
+      path: '/FindId',
+      name: 'FindId',
+      component: FindId,
     },
     {
       path: 'admin/:id?/:secondId?',
@@ -51,9 +51,9 @@ const router = new Router({
       redirect: { path: constants.DEFAULT_HOME },
       children: [
         {
-          path: '/childRegist',
-          name: 'childRegist',
-          component: childRegist,
+          path: '/ChildRegist',
+          name: 'ChildRegist',
+          component: ChildRegist,
           meta: { requiresAuth: true },
         },
         {
@@ -136,7 +136,7 @@ async function validate() {
 function redirectLoginPage() {
   router
     .push({
-      path: '/signIn',
+      path: '/SignIn',
     })
     .catch(() => {})
 
