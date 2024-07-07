@@ -11,7 +11,16 @@
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <input type="checkbox" v-model="form.status" checked class="custom-chkbox" id="statusChk"><label for="statusChk"><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면 눌러주세요</label>
+              <input
+                type="checkbox"
+                v-model="form.status"
+                checked
+                class="custom-chkbox"
+                id="statusChk"
+              /><label for="statusChk"
+                ><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면
+                눌러주세요</label
+              >
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
@@ -91,7 +100,9 @@
                   class="calendar"
                   no-title
                   :max="
-                    new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                    new Date(
+                      Date.now() - new Date().getTimezoneOffset() * 60000
+                    )
                       .toISOString()
                       .substr(0, 10)
                   "
@@ -157,7 +168,8 @@
         <v-card-title>학부모 정보</v-card-title>
         <v-card-subtitle>라라라</v-card-subtitle>
         <v-card-text>
-          <v-row class="parent-box"
+          <v-row
+            class="parent-box"
             v-for="(parentBox, index) in form.parentList"
             :key="index"
           >
@@ -183,7 +195,7 @@
                 </v-col>
               </v-row>
             </v-col>
-            <v-col cols=12 md="4">
+            <v-col cols="12" md="4">
               <v-text-field
                 v-model="parentBox.telephone"
                 label="연락처"
@@ -191,7 +203,7 @@
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col cols=12 md="2">
+            <v-col cols="12" md="2">
               <v-btn @click="addParentBox">
                 <v-icon>ri-add-line</v-icon>
               </v-btn>
@@ -227,7 +239,7 @@
                   outlined
                 ></v-select>
                 <v-select
-                  v-model="form.amRide.sunnyRide"
+                  v-model="form.amRide.sunnyRide.id"
                   :items="amRideNameList"
                   item-text="name"
                   item-value="id"
@@ -257,7 +269,7 @@
                   outlined
                 ></v-select>
                 <v-select
-                  v-model="form.pmRide.sunnyRide"
+                  v-model="form.pmRide.sunnyRide.id"
                   :items="pmRideNameList"
                   label="코스를 선택하세요."
                   item-text="name"
@@ -279,7 +291,9 @@
 
       <v-row class="justify-center">
         <v-col cols="12" md="6">
-          <v-btn @click="addChild" depressed block x-large class="btn-main">등록</v-btn>
+          <v-btn @click="addChild" depressed block x-large class="btn-main"
+            >등록</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
