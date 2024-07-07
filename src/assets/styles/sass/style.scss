@@ -1,44 +1,62 @@
 @import '../variables.scss';
 
 
-h2 {
-  font-size: map-get(map-get($headings, 'h2'), 'font-size');
-}
-
 .v-text-field {
-  fieldset {
-    color: map-get($colors, 'gray300') !important; // 테두리값
-    &:focus {
-      border: 1px solid green !important;
-      color: blue !important;
-    }
+  fieldset {}
+  .v-label--active.primary--text {
+    color: var(--v-primary-darken3) !important;
+    font-weight: 700;
   }
 }
-
-.input-base {
-  fieldset {
-    color: map-get($colors, 'gray300');
-
-    // 다른 스타일 속성들을 필요에 따라 추가할 수 있습니다.
-  }
-
-  .v-label {
-    // 라벨 스타일을 커스터마이즈할 수도 있습니다.
-    color: #333; // 예시: 라벨 텍스트 색상 변경
-    font-size: 20px; // 예시: 라벨 텍스트 크기 조정
-  }
-  .v-text-field--outlined {
-    color: 1px solid red !important;
-  }
-  &fieldset:focus {
-    color: blue !important; // 포커스 상태일 때 테두리 색상 변경
-    background-color: #E3F2FD; // 포커스 상태일 때 배경색 변경
-  }
+.v-btn--is-primary {
+  color: black !important;
 }
-
-.btn-main {
-  background: $clr-primary;
-  color: #fff;
+.v-card__title {
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+}
+.v-card__title + .v-card__subtitle {
+  border-bottom: 1px dashed #e0e0e0;
+}
+body, .v-main {
+  background: #f2f2f2;
+}
+.page-title {
+  font-weight: 800;
+  text-align: center;
+}
+.page-title::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(120deg, var(--v-primary-base), var(--v-primary-lighten3));
+  border-radius: 100%;
+  vertical-align: top;
+  margin-right: 5px;
+}
+.custom-chkbox[type=checkbox] {
+  display: none;
+}
+.custom-chkbox[type=checkbox] + label {
+  padding: 0.5em 0.8em;
+  border-radius: 4px;
+  background: #f2f2f2;
   width: 100%;
-  height: map-get($buttons-sizes, 'default');
+  box-sizing: border-box;
+  display: inline-block;
+}
+.custom-chkbox[type=checkbox] + label > .v-icon {
+  margin-right: 3px;
+}
+.custom-chkbox[type=checkbox]:checked + label {
+  background: $clr-primary-back;
+  color: var(--v-primary-darken3);
+}
+.custom-chkbox[type=checkbox]:checked + label > .v-icon {
+  color: var(--v-primary-darken1);
+  font-weight: 400;
+}
+.btn-main {
+  background: linear-gradient(140deg, var(--v-primary-base), var(--v-primary-darken1)) !important;
 }
