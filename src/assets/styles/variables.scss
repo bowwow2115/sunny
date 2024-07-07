@@ -5,69 +5,51 @@
 // vuetify의 스타일 변수 가져오기
 @import '~vuetify/src/styles/styles.sass';
 
-// @font-face {
-// 	font-family: 'Pretendard Variable';
-// 	font-weight: 100 900;
-// 	font-style: normal;
-// 	font-display: swap;
-// 	src: url('../../fonts/PretendardVariable.woff2') format('woff2-variations');
-// }
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 300;
+  font-style: normal;
+	src: url('@/assets/fonts/NanumSquareNeoTTF-aLt.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 400;
+  font-style: normal;
+	src: url('@/assets/fonts/NanumSquareNeoTTF-bRg.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 700;
+  font-style: normal;
+	src: url('@/assets/fonts/NanumSquareNeoTTF-cBd.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 800;
+  font-style: normal;
+	src: url('@/assets/fonts/NanumSquareNeoTTF-dEb.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 900;
+  font-style: normal;
+	src: url('@/assets/fonts/NanumSquareNeoTTF-eHv.woff') format('woff');
+}
 
-$text-field-outlined-fieldset-border: 1px solid currentColor;
-
-$body-font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+/* ***** override ****** */
+$body-font-family: NanumSquareNeo, -apple-system, BlinkMacSystemFont, system-ui,
   Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
   'Malgun Gothic', sans-serif;
-$font-size-root: 25px !default;
-$clr-primary: #ff6f00;
 
-$font-weights: map-deep-merge(
-  (
-    'thin': 100,
-    'light': 700,
-    'regular': 700,
-    'medium': 700,
-    'bold': 700,
-    'black': 900,
-  ),
-  $font-weights
-);
+$text-field-outlined-fieldset-border: 1px solid var(--v-primary-darken3);
 
-$colors-set: (
-  // 'gray100': #ffffff,
-  'gray200': #eee,
-  'gray300': #dbdbdb,
-  'gray400': #b5b5b5,
-  'gray500': #9e9e9e,
-  'gray600': #717171,
-  'gray700': #424242,
-  'black': #141414
-);
+/* ***** 새로운 변수 ****** */
+$clr-primary-back: #f8f5e6;
 
-$buttons-sizes: (
-  'default': 55px,
-  'large': 65px,
-) !default;
-$input-sizes: (
-  'default': 55px,
-  'large': 65px,
-) !default;
 
-$headings: (
-  'h1': (
-    'font-size': 3.2rem,
-    'line-height': 1.2,
-  ),
-  'h2': (
-    'font-size': 2.7rem,
-    'line-height': 1.4,
-  ),
-  'h3': (
-    'font-size': 2.3rem,
-    'line-height': 1.4,
-  ),
-  'h4': (
-    'font-size': 2rem,
-    'line-height': 1.4,
-  ),
-);
+

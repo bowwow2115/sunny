@@ -2,16 +2,16 @@
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
   <div>
-    <h2>원아등록</h2>
+    <h2 class="page-title">원아등록</h2>
     <v-form v-model="valid">
       <!-- ---------- 원아 정보 ---------- -->
-      <v-card class="my-4">
+      <v-card class="my-4 pa-2 rounded-xl">
         <v-card-title>원아정보</v-card-title>
         <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
-        <v-card-text>
+        <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-checkbox v-model="form.status" label="재원여부" aria-checked="true"></v-checkbox>
+              <input type="checkbox" v-model="form.status" checked class="custom-chkbox" id="statusChk"><label for="statusChk"><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면 눌러주세요</label>
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
@@ -126,7 +126,7 @@
               ></v-text-field>
             </v-col>
             <v-col>
-              <v-btn type="button" depressed> 주소 검색 </v-btn>
+              <v-btn type="button" outlined x-large> 주소 검색 </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -153,7 +153,7 @@
       </v-card>
 
       <!-- ---------- 학부모 정보 ---------- -->
-      <v-card class="my-4">
+      <v-card class="my-4 pa-2 rounded-xl">
         <v-card-title>학부모 정보</v-card-title>
         <v-card-subtitle>라라라</v-card-subtitle>
         <v-card-text>
@@ -208,7 +208,7 @@
       </v-card>
 
       <!-- ---------- 탑승차량 정보 ---------- -->
-      <v-card class="my-4">
+      <v-card class="my-4 pa-2 rounded-xl">
         <v-card-title>탑승차량 정보</v-card-title>
         <v-card-subtitle>라라라</v-card-subtitle>
         <v-card-text>
@@ -279,7 +279,7 @@
 
       <v-row class="justify-center">
         <v-col cols="12" md="6">
-          <v-btn @click="addChild" class="btn-main">등록</v-btn>
+          <v-btn @click="addChild" depressed block x-large class="btn-main">등록</v-btn>
         </v-col>
       </v-row>
     </v-form>
