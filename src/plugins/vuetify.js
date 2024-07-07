@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib/framework'
-import 'vuetify/dist/vuetify.min.css'
+import 'vuetify/src/styles/main.sass' // Vuetify 스타일을 가져옵니다.
+import '@/assets/styles/sass/style.scss' // style.scss를 한번만 불러오면 자동으로 css로 컴파일 해줌
 
 import colors from 'vuetify/lib/util/colors'
-
 
 // import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
@@ -13,7 +13,7 @@ const opts = {
   // icons: {
   //   iconfont: 'mdiSvg', //'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg',
   // },
-// 언어 설정
+  // 언어 설정
   theme: {
     dark: false, // 다크 모드를 원하면 true로 설정
     // default: 'light',
@@ -38,7 +38,6 @@ const opts = {
       },
     },
   },
-
 }
 
 export default new Vuetify(opts)

@@ -15,12 +15,26 @@
 
 $text-field-outlined-fieldset-border: 1px solid currentColor;
 
-$body-font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-$font-size-root: 5px;
-$clr-primary: #FF6F00;
+$body-font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+  Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+  'Malgun Gothic', sans-serif;
+$font-size-root: 25px !default;
+$clr-primary: #ff6f00;
 
-$colors: (
-  'gray100': #fafafa,
+$font-weights: map-deep-merge(
+  (
+    'thin': 100,
+    'light': 700,
+    'regular': 700,
+    'medium': 700,
+    'bold': 700,
+    'black': 900,
+  ),
+  $font-weights
+);
+
+$colors-set: (
+  // 'gray100': #ffffff,
   'gray200': #eee,
   'gray300': #dbdbdb,
   'gray400': #b5b5b5,
@@ -32,31 +46,28 @@ $colors: (
 
 $buttons-sizes: (
   'default': 55px,
-  'large' : 65px,
+  'large': 65px,
 ) !default;
 $input-sizes: (
   'default': 55px,
-  'large' : 65px,
+  'large': 65px,
 ) !default;
 
 $headings: (
   'h1': (
     'font-size': 3.2rem,
-    'line-height': 1.2
+    'line-height': 1.2,
   ),
   'h2': (
     'font-size': 2.7rem,
-    'line-height': 1.4
+    'line-height': 1.4,
   ),
   'h3': (
     'font-size': 2.3rem,
-    'line-height': 1.4
+    'line-height': 1.4,
   ),
   'h4': (
-    'font-size': 2.0rem,
-    'line-height': 1.4
+    'font-size': 2rem,
+    'line-height': 1.4,
   ),
 );
-
-
-

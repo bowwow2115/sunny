@@ -72,9 +72,6 @@
               <v-card-title class="subheading font-weight-bold">
                 {{ item.name }}
                 <v-spacer></v-spacer>
-                <v-btn small color="success" @click="test"
-                  ><v-icon left>mdi-pencil</v-icon>수정</v-btn
-                >
                 <v-btn small color="plus" @click="openInfoDialog(item)"
                   ><v-icon left>mdi-plus</v-icon>더보기</v-btn
                 >
@@ -231,21 +228,21 @@ export default {
             response.data.forEach((element) => {
               element.address = `${element.address.address} ${element.address.detailAddress}`
               element.status = element.status ? '재원' : '졸업 or 퇴원'
-              if (element.amRide != null) {
-                element.amRide = `이용코스: ${
-                  element.amRide.sunnyRide.name || ''
-                } ${element.amRide.sunnyRide.time || ''}\n 승차시간: ${
-                  element.amRide.time
-                } \n 비고: ${element.amRide.comment}`
-              }
+              // if (element.amRide != null) {
+              //   element.amRide = `이용코스: ${
+              //     element.amRide.sunnyRide.name || ''
+              //   } ${element.amRide.sunnyRide.time || ''}\n 승차시간: ${
+              //     element.amRide.time
+              //   } \n 비고: ${element.amRide.comment}`
+              // }
 
-              if (element.pmRide != null) {
-                element.pmRide = `이용코스: ${
-                  element.pmRide.sunnyRide.name || ''
-                } ${element.pmRide.sunnyRide.time || ''}\n 승차시간: ${
-                  element.pmRide.time
-                } \n 비고: ${element.pmRide.comment}`
-              }
+              // if (element.pmRide != null) {
+              //   element.pmRide = `이용코스: ${
+              //     element.pmRide.sunnyRide.name || ''
+              //   } ${element.pmRide.sunnyRide.time || ''}\n 승차시간: ${
+              //     element.pmRide.time
+              //   } \n 비고: ${element.pmRide.comment}`
+              // }
             })
             this.childrenList = response.data
           }
@@ -255,7 +252,20 @@ export default {
         })
     },
     openInfoDialog(info) {
-      this.$refs.parentsRideInfo.showInfo(info)
+      console.log(info)
+      this.$refs.parentsRideInfo.showInfo({
+        id: info.id,
+        childCode: info.childCode,
+        admissionDate: info.admissionDate,
+        className: info.className,
+        address: info.address,
+        birthday: info.birthday,
+        parentList: info.parentList,
+        status: info.status,
+        amRide: info.amRide,
+        pmRide: info.pmRide,
+        name: info.name,
+      })
     },
     nextPage() {
       if (this.page + 1 <= this.numberOfPages) this.page += 1

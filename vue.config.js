@@ -21,11 +21,25 @@ module.exports = defineConfig({
     },
   },
   lintOnSave: false,
+  // css: {
+  //   loaderOptions: {
+  //     sass: {
+  //       additionalData: '@import "@/assets/sass/variables.scss";',
+  //     },
+  //   },
+  // },
+
   css: {
     loaderOptions: {
       sass: {
-        additionalData: '@import "@/assets/sass/variables.scss";'
-      }
-    }
-  }
+        additionalData: `@import "@/assets/styles/variables.scss"`,
+        sassOptions: {
+          indentedSyntax: true, // .sass 파일에서 인덴트 문법을 사용하도록 설정합니다.
+        },
+      },
+      scss: {
+        additionalData: `@import "@/assets/styles/variables.scss";`,
+      },
+    },
+  },
 })

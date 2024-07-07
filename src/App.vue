@@ -1,15 +1,13 @@
 <template>
-  <div id="app">
-    <v-app>
-      <global-alert ref="alert"></global-alert>
-      <router-view @show-alert="showAlert" @show-message="showMessage">
-      </router-view>
-      <global-snackbar ref="snackbar"></global-snackbar>
-      <v-overlay :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
-    </v-app>
-  </div>
+  <v-app>
+    <global-alert ref="alert"></global-alert>
+    <router-view @show-alert="showAlert" @show-message="showMessage">
+    </router-view>
+    <global-snackbar ref="snackbar"></global-snackbar>
+    <v-overlay :value="isLoading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+  </v-app>
 </template>
 
 <script>
@@ -37,6 +35,5 @@ export default {
 </script>
 
 <style lang="scss">
-  @import './assets/styles/sass/style.scss';
-  
+@import './assets/styles/sass/style.scss';
 </style>
