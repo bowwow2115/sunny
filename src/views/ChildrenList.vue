@@ -11,7 +11,7 @@
       hide-default-footer
     >
       <template v-slot:header>
-        <v-toolbar dark color="blue darken-3" class="mb-1">
+        <v-toolbar dark color="primary" class="mb-1">
           <v-text-field
             v-model="search"
             clearable
@@ -40,7 +40,8 @@
               v-if="!sortDesc"
               small
               depressed
-              color="blue"
+              light
+              color="primary"
               @click="sortDesc = true"
             >
               <v-icon>mdi-arrow-up</v-icon>
@@ -49,7 +50,7 @@
               v-else
               small
               depressed
-              color="blue"
+              color="primary"
               @click="sortDesc = false"
             >
               <v-icon>mdi-arrow-down</v-icon>
@@ -140,7 +141,7 @@
               fab
               small
               dark
-              color="blue darken-3"
+              color="primary"
               class="mr-1"
               @click="formerPage"
             >
@@ -150,7 +151,7 @@
               fab
               small
               dark
-              color="blue darken-3"
+              color="primary"
               class="ml-1"
               @click="nextPage"
             >
