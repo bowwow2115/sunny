@@ -9,10 +9,10 @@ function parseToken(result, reset = false) {
       Utils.setCookie('auth', ticketId, 3600, '/')
       Utils.setCookie('refreshToken', result.data.refreshToken)
 
-      const user = result.data
+      // const user = result.data
 
-      store.commit('setUser', user)
-      store.commit('setTicket', ticketId)
+      // store.commit('setUser', user)
+      // store.commit('setTicket', ticketId)
     }
   }
 }

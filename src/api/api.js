@@ -293,7 +293,7 @@ export function deleteBody(
 }
 
 export function getChildren() {
-  return get(`/sunny/child`)
+  return get(`/sunny/child/app`)
 }
 
 export function addChild(param) {
@@ -310,4 +310,8 @@ export function getRideList() {
 
 export function updateParents(param) {
   return put('/sunny/parents', param)
+}
+
+export function getChildById(id) {
+  return get(`/sunny/child?id=${id}`)
 }

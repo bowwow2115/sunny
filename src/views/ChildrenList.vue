@@ -240,7 +240,6 @@ export default {
       )
     },
     openInfoDialog(info) {
-      console.log(info)
       this.$refs.parentsRideInfo.showInfo({
         id: info.id,
         childCode: info.childCode,
