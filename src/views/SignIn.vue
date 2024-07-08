@@ -92,15 +92,17 @@ export default {
       // 폼이 유효하지 않으면 처리
       //    return;
       //  }
-      auth
-        .login(this.form)
-        .then(() => {
-          this.$router.push({ path: constants.DEFAULT_HOME })
-        })
-        .catch((error) => {
-          console.log(error)
-          this.showError(error)
-        })
+      this.$withLoading(
+        auth
+          .login(this.form)
+          .then(() => {
+            this.$router.push({ path: constants.DEFAULT_HOME })
+          })
+          .catch((error) => {
+            console.log(error)
+            this.showError(error)
+          })
+      )
     },
   },
 }

@@ -1,27 +1,27 @@
 <template>
-  <v-dialog v-model="parentsBox.show" max-width="400px">
+  <v-dialog v-model="show" max-width="400px">
     <v-card>
       <v-card-title class="headline">부모정보수정</v-card-title>
       <v-card-text>
         <v-text-field
           prepend-icon="mdi-account"
-          v-model="parentsBox.name"
+          v-model="form.name"
           clearable
         ></v-text-field>
         <v-text-field
           prepend-icon="mdi-account-multiple"
-          v-model="parentsBox.relation"
+          v-model="form.relation"
           clearable
         ></v-text-field>
         <v-text-field
           prepend-icon="mdi-phone"
           color="green"
-          v-model="parentsBox.telephone"
+          v-model="form.telephone"
           clearable
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="accent" text @click="updateParents">닫기</v-btn>
+        <v-btn color="accent" text @click="updateParents">수정</v-btn>
         <v-spacer></v-spacer>
         <v-btn color="red lighten-2" text @click="closeParents">닫기</v-btn>
       </v-card-actions>
@@ -34,8 +34,8 @@ import { updateParents } from '@/api/api'
 export default {
   data() {
     return {
-      parentsBox: {
-        show: false,
+      show: false,
+      form: {
         id: '',
         name: '',
         telephone: '',
@@ -45,18 +45,35 @@ export default {
   },
   methods: {
     showParents(payload) {
-      this.parentsBox.show = true
-      this.parentsBox.id = payload.id
-      this.parentsBox.name = payload.name
-      this.parentsBox.telephone = payload.telephone
-      this.parentsBox.relation = payload.relation
+      this.show = true
+      this.form.id = payload.id
+      this.form.name = payload.name
+      this.form.telephone = payload.telephone
+      this.form.relation = payload.relation
     },
     closeParents() {
-      this.parentsBox.show = false
-      this.parentsBox.id = ''
-      this.parentsBox.name = ''
-      this.parentsBox.telephone = ''
-      this.parentsBox.relation = ''
+      this.show = false
+      this.form.id = ''
+      this.form.name = ''
+      this.form.telephone = ''
+      this.form.relation = ''
+    },
+    updateParents() {
+      this.$withLoading(
+        updateParents(this.form)
+          .then((response) => {
+            if (response.code == '0') {
+              this.$emit('show-message', {
+                type: 'success',
+                message: '수정이 완료되었습니다.',
+              })
+              this.closeParents()
+            }
+          })
+          .catch((e) => {
+            this.$emit('show-error', e)
+          })
+      )
     },
   },
 }

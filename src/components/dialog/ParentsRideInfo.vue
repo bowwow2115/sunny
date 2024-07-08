@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="infoBox.show"
+    v-model="show"
     fullscreen
     hide-overlay
     transition="dialog-bottom-transition"
@@ -21,11 +21,8 @@
           <template v-slot:activator>
             <v-list-item-subtitle>보호자 정보</v-list-item-subtitle>
           </template>
-          <div v-if="infoBox.parentList.length != 0">
-            <v-list-item-group
-              v-for="(item, index) in infoBox.parentList"
-              :key="index"
-            >
+          <div v-if="form.parentList.length != 0">
+            <v-list-item-group v-for="(item, index) in parentList" :key="index">
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
@@ -49,9 +46,7 @@
                   <v-list-item-title>{{ item.telephone }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-divider
-                v-if="index != infoBox.parentList.length - 1"
-              ></v-divider>
+              <v-divider v-if="index != form.parentList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
           <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
@@ -74,18 +69,18 @@
             <v-list-item-subtitle>오전차량 정보</v-list-item-subtitle>
           </template>
 
-          <v-list-item-group v-if="infoBox.amRide != null">
+          <v-list-item-group v-if="form.amRide != null">
             <v-list-item style="padding-left: 15%; padding-right: 8%">
               <v-list-item-icon>
                 <v-icon>mdi-bus</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  infoBox.amRide.sunnyRide.name + ' 코스'
+                  form.amRide.sunnyRide.name + ' 코스'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  infoBox.amRide.sunnyRide.time ||
-                  '' + ' ' + infoBox.amRide.sunnyRide.comment
+                  form.amRide.sunnyRide.time ||
+                  '' + ' ' + form.amRide.sunnyRide.comment
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -100,10 +95,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  infoBox.amRide.time + ' 승차'
+                  form.amRide.time + ' 승차'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  infoBox.amRide.comment || ''
+                  form.amRide.comment || ''
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -131,18 +126,18 @@
           <template v-slot:activator>
             <v-list-item-subtitle>오후차량 정보</v-list-item-subtitle>
           </template>
-          <v-list-item-group v-if="infoBox.pmRide != null">
+          <v-list-item-group v-if="form.pmRide != null">
             <v-list-item style="padding-left: 15%; padding-right: 8%">
               <v-list-item-icon>
                 <v-icon>mdi-bus</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  infoBox.pmRide.sunnyRide.name + ' 코스'
+                  form.pmRide.sunnyRide.name + ' 코스'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  infoBox.pmRide.sunnyRide.time ||
-                  '' + ' ' + infoBox.pmRide.sunnyRide.comment
+                  form.pmRide.sunnyRide.time ||
+                  '' + ' ' + form.pmRide.sunnyRide.comment
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -157,10 +152,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  infoBox.pmRide.time + ' 하차'
+                  form.pmRide.time + ' 하차'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  infoBox.pmRide.comment
+                  form.pmRide.comment
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -188,14 +183,15 @@
 
 <script>
 import ParentsDialog from './ParentsDialog.vue'
+import { getChildById } from '@/api/api.js'
 export default {
   components: { ParentsDialog },
   name: 'ParentRideInfo',
   mounted() {},
   data() {
     return {
-      infoBox: {
-        show: false,
+      show: false,
+      form: {
         id: '',
         childCode: '',
         admissionDate: '',
@@ -212,45 +208,52 @@ export default {
   },
   methods: {
     showInfo(info) {
-      this.infoBox.show = true
-      this.infoBox.id = info.id
-      this.infoBox.childCode = info.childCode
-      this.infoBox.admissionDate = info.admissionDate
-      this.infoBox.className = info.className
-      this.infoBox.address = info.address
-      this.infoBox.birthday = info.birthday
-      this.infoBox.parentList = info.parentList
-      this.infoBox.status = info.status
-      this.infoBox.amRide = info.amRide
-      this.infoBox.pmRide = info.pmRide
-      this.infoBox.name = info.name
+      this.show = true
+      this.form.id = info.id
+      this.form.childCode = info.childCode
+      this.form.admissionDate = info.admissionDate
+      this.form.className = info.className
+      this.form.address = info.address
+      this.form.birthday = info.birthday
+      this.form.parentList = info.parentList
+      this.form.status = info.status
+      this.form.amRide = info.amRide
+      this.form.pmRide = info.pmRide
+      this.form.name = info.name
     },
     closeInfo() {
-      this.infoBox.show = false
-      this.infoBox.id = null
-      this.infoBox.childCode = null
-      this.infoBox.admissionDate = null
-      this.infoBox.className = null
-      this.infoBox.address = null
-      this.infoBox.birthday = null
-      this.infoBox.parentList = []
-      this.infoBox.status = null
-      this.infoBox.amRide = null
-      this.infoBox.pmRide = null
-      this.infoBox.name = null
+      this.show = false
+      this.form.id = null
+      this.form.childCode = null
+      this.form.admissionDate = null
+      this.form.className = null
+      this.form.address = null
+      this.form.birthday = null
+      this.form.parentList = []
+      this.form.status = null
+      this.form.amRide = null
+      this.form.pmRide = null
+      this.form.name = null
     },
     phoneCall() {
       console.log('hi')
     },
     showParents(item) {
-      console.log(item)
       this.$refs.parentsDialog.showParents(item)
     },
-    // onDialogInput(value) {
-    //   if (!value) {
-    //     this.closeError()
-    //   }
-    // },
+    getParentsRideInfo() {
+      this.$withLoading(
+        getChildById(this.form.id)
+          .then((response) => {
+            if (response.code == '0') {
+              console.log(response.data)
+            }
+          })
+          .catch((e) => {
+            this.$emit('show-error', e)
+          })
+      )
+    },
   },
 }
 </script>
