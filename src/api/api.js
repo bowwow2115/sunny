@@ -293,7 +293,7 @@ export function deleteBody(
 }
 
 export function getChildren() {
-  return get(`/sunny/child/app`)
+  return get(`/sunny/child/all`)
 }
 
 export function addChild(param) {
