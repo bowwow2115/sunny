@@ -1,5 +1,11 @@
 <template>
   <v-app>
+    <!-- <v-progress-circular
+      :size="50"
+      color="secondary"
+      indeterminate
+    ></v-progress-circular> -->
+    <loading-bar :isLoading="isLoading" />
     <global-alert ref="alert"></global-alert>
     <router-view @show-alert="showAlert" @show-message="showMessage">
     </router-view>
@@ -13,14 +19,21 @@
 <script>
 import GlobalAlert from '@/components/GlobalAlert'
 import GlobalSnackbar from '@/components/GlobalSnackbar.vue'
+import LoadingBar from './components/LoadingBar.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'App',
-  components: { GlobalAlert, GlobalSnackbar },
+  components: { GlobalAlert, GlobalSnackbar, LoadingBar },
   mounted() {},
+  computed: {
+    ...mapState({
+      isLoading: (state) => state.isLoading,
+    }),
+  },
   data() {
     return {
-      isLoading: false,
+      // isLoading: false,
     }
   },
   methods: {
