@@ -17,7 +17,7 @@ export default {
     return {
       alertMsgBox: {
         show: false,
-        type: '',
+        type: 'success',
         message: '',
       },
     }

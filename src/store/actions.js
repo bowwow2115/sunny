@@ -1,16 +1,6 @@
 const actions = {
-  showError({ commit }, payload) {
-    commit('showError', payload)
-  },
-  closeError({ commit }) {
-    commit('closeError')
-  },
-  showAlert({ commit }, payload) {
-    commit('showAlert', payload)
-    setTimeout(() => commit('closeAlert'), 2000)
-  },
-  closeAlert({ commit }) {
-    commit('closeAlert')
+  setLoading({ commit }, isLoading) {
+    commit('SET_LOADING', isLoading)
   },
 }
 

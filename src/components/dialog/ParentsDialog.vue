@@ -9,17 +9,19 @@
           clearable
         ></v-text-field>
         <v-text-field
-          prepend-icon="mdi-account"
-          v-model="parentsBox.name"
+          prepend-icon="mdi-account-multiple"
+          v-model="parentsBox.relation"
           clearable
         ></v-text-field>
         <v-text-field
-          prepend-icon="mdi-account"
-          v-model="parentsBox.name"
+          prepend-icon="mdi-phone"
+          color="green"
+          v-model="parentsBox.telephone"
           clearable
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
+        <v-btn color="accent" text @click="updateParents">닫기</v-btn>
         <v-spacer></v-spacer>
         <v-btn color="red lighten-2" text @click="closeParents">닫기</v-btn>
       </v-card-actions>
@@ -28,11 +30,13 @@
 </template>
 
 <script>
+import { updateParents } from '@/api/api'
 export default {
   data() {
     return {
       parentsBox: {
         show: false,
+        id: '',
         name: '',
         telephone: '',
         relation: '',
@@ -42,12 +46,14 @@ export default {
   methods: {
     showParents(payload) {
       this.parentsBox.show = true
+      this.parentsBox.id = payload.id
       this.parentsBox.name = payload.name
       this.parentsBox.telephone = payload.telephone
       this.parentsBox.relation = payload.relation
     },
     closeParents() {
       this.parentsBox.show = false
+      this.parentsBox.id = ''
       this.parentsBox.name = ''
       this.parentsBox.telephone = ''
       this.parentsBox.relation = ''

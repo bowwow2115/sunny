@@ -243,6 +243,7 @@ export default {
       console.log('hi')
     },
     showParents(item) {
+      console.log(item)
       this.$refs.parentsDialog.showParents(item)
     },
     // onDialogInput(value) {

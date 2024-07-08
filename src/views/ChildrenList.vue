@@ -223,34 +223,21 @@ export default {
   },
   methods: {
     getChildren() {
-      getChildren()
-        .then((response) => {
-          if (response.code == '0') {
-            response.data.forEach((element) => {
-              element.address = `${element.address.address} ${element.address.detailAddress}`
-              element.status = element.status ? '재원' : '졸업 or 퇴원'
-              // if (element.amRide != null) {
-              //   element.amRide = `이용코스: ${
-              //     element.amRide.sunnyRide.name || ''
-              //   } ${element.amRide.sunnyRide.time || ''}\n 승차시간: ${
-              //     element.amRide.time
-              //   } \n 비고: ${element.amRide.comment}`
-              // }
-
-              // if (element.pmRide != null) {
-              //   element.pmRide = `이용코스: ${
-              //     element.pmRide.sunnyRide.name || ''
-              //   } ${element.pmRide.sunnyRide.time || ''}\n 승차시간: ${
-              //     element.pmRide.time
-              //   } \n 비고: ${element.pmRide.comment}`
-              // }
-            })
-            this.childrenList = response.data
-          }
-        })
-        .catch((e) => {
-          this.$emit('show-error', e)
-        })
+      this.$withLoading(
+        getChildren()
+          .then((response) => {
+            if (response.code == '0') {
+              response.data.forEach((element) => {
+                element.address = `${element.address.address} ${element.address.detailAddress}`
+                element.status = element.status ? '재원' : '졸업 or 퇴원'
+              })
+              this.childrenList = response.data
+            }
+          })
+          .catch((e) => {
+            this.$emit('show-error', e)
+          })
+      )
     },
     openInfoDialog(info) {
       console.log(info)

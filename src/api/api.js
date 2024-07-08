@@ -307,3 +307,7 @@ export function getClassList() {
 export function getRideList() {
   return get(`/sunny/ride`)
 }
+
+export function updateParents(param) {
+  return put('/sunny/parents', param)
+}

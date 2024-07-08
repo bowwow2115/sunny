@@ -415,7 +415,7 @@ export default {
         .then((response) => {
           if (response.code == '0') {
             this.$emit('show-message', {
-              color: 'success',
+              type: 'success',
               message: '원아 등록이 성공적으로 완료되었습니다.',
             })
             //TODO: 화면이동 or 인풋값 초기화

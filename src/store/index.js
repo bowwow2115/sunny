@@ -8,25 +8,11 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  errorMsgBox: {
-    show: false,
-    code: '',
-    message: '',
-  },
-  alertMsgBox: {
-    show: false,
-    type: '',
-    message: '',
-  },
+  isLoading: false,
   baseURL:
     process.env.NODE_ENV !== 'production'
       ? ''
       : document.querySelector('meta[name="webbase"]').getAttribute('content'),
-  // user: {
-  //   locale: 'ko',
-  //   isFirstLogin: true,
-  // },
-  // ticket: '',
 }
 
 const store = new Vuex.Store({

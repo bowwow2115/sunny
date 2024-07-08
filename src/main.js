@@ -8,8 +8,9 @@ import 'remixicon/fonts/remixicon.css' //remixicon 아이콘
 import VueClipboard from 'vue-clipboard2'
 import constants from './Constants'
 import Utils from '@/utils/utils'
-
 import lodash from 'lodash'
+
+import LoadingPlugin from '@/plugins/loadingPlugin'
 
 window.$ = require('jquery')
 window.jQuery = require('jquery')
@@ -26,6 +27,7 @@ Vue.prototype.$lodash = lodash
 Vue.prototype.$Utils = Utils
 window.Utils = Utils
 Vue.use(VueClipboard)
+Vue.use(LoadingPlugin)
 
 if (process.env.NODE_ENV === 'production') {
   window._consolelog = console.log
