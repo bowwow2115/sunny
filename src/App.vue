@@ -1,22 +1,25 @@
 <template>
   <v-app>
-    <loading-bar :isLoading="isLoading" />
     <router-view> </router-view>
-    <!-- <v-overlay :value="isLoading">
+    <v-overlay :value="isLoading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay> -->
+    </v-overlay>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'App',
   mounted() {},
-  computed: {},
+  computed: {
+    ...mapState({
+      isLoading: (state) => state.isLoading,
+    }),
+  },
   data() {
-    return {
-      // isLoading: false,
-    }
+    return {}
   },
   methods: {},
 }

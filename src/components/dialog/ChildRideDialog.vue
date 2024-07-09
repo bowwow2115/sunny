@@ -2,18 +2,19 @@
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title class="headline">{{
-        isEdit ? '보호자 정보 수정' : '보호자 정보 추가'
+        (form.isAm ? '오전' : '오후',
+        isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>
       <v-card-text>
-        <v-text-field
-          prepend-icon="mdi-account"
-          v-model="form.name"
-          clearable
-        ></v-text-field>
         <v-select
           prepend-icon="mdi-account-multiple"
           v-model="form.relation"
           :items="parentTypeList"
+          clearable
+        ></v-select>
+        <v-select
+          prepend-icon="mdi-account"
+          v-model="form.name"
           clearable
         ></v-select>
         <v-text-field
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-import { updateParents, addParents } from '@/api/api'
+import { getRideList, addChildRide, updateChildRide } from '@/api/api'
 export default {
   mounted() {},
   data() {
@@ -45,23 +46,41 @@ export default {
       reject: null,
       form: {
         id: '',
-        childId: '',
-        name: '',
-        telephone: '',
-        relation: '',
+        comment: '',
+        time: '',
+        sunnyRide: { rideId: '' },
+        child: { childId: '' },
       },
       isEdit: false,
-      parentTypeList: ['부', '모', '조부', '조모', '그 외'],
+      amRideTimeList: Utils.getTimeIntervals('07:00', '10:00'),
+      amRideNameList: [],
+      pmRideTimeList: Utils.getTimeIntervals('15:00', '19:00'),
+      pmRideNameList: [],
     }
   },
   methods: {
+    getRideList() {
+      getRideList()
+        .then((response) => {
+          if (response.data != null) {
+            response.data.forEach((element) => {
+              if (element.am) this.amRideNameList.push(element)
+              else this.pmRideNameList.push(element)
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$showError(error)
+        })
+    },
     open(item) {
       this.visible = true
       this.form.id = item.id
       this.form.name = item.name
       this.form.telephone = item.telephone
       this.form.relation = item.relation
-      this.form.childId = item.childId
+      this.form.child = item.child
       this.isEdit = item.isEdit
       return new Promise((resolve, reject) => {
         this.resolve = resolve
@@ -74,7 +93,7 @@ export default {
     confirm() {
       if (this.isEdit) {
         this.$withLoading(
-          updateParents(this.form)
+          addChildRide(this.form)
             .then((response) => {
               if (response.code == '0') {
                 this.visible = false
@@ -87,7 +106,7 @@ export default {
         )
       } else {
         this.$withLoading(
-          addParents(this.form)
+          updateChildRide(this.form)
             .then((response) => {
               if (response.code == '0') {
                 this.visible = false
