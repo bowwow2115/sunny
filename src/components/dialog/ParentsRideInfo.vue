@@ -36,7 +36,7 @@
                   }}</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-spacer></v-spacer>
-                <v-list-item-icon @click="showParents(item)">
+                <v-list-item-icon @click="openParentsDialog(item)">
                   <v-icon color="accent">mdi-pencil</v-icon>
                 </v-list-item-icon>
               </v-list-item>
@@ -240,25 +240,19 @@ export default {
     phoneCall() {
       console.log('hi')
     },
-    async showParents(item) {
-      try {
-        const result = await this.$dialog(ParentsDialog, item)
-        if (result) {
-          this.$emit('show-message', {
-            type: 'success',
-            message: '수정이 완료되었습니다.',
-          })
-          let index = this.form.parentList.findIndex(
-            (item) => item.id == result.id
-          )
-          console.log(`index: ${index}`)
-          if (index !== -1) {
-            this.$set(this.form.parentList, index, result)
-          }
+    async openParentsDialog(item) {
+      const result = await this.$dialog(ParentsDialog, item)
+      if (result) {
+        this.$showMessage({
+          type: 'success',
+          message: '수정이 완료되었습니다.',
+        })
+        let index = this.form.parentList.findIndex(
+          (item) => item.id == result.id
+        )
+        if (index !== -1) {
+          this.$set(this.form.parentList, index, result)
         }
-        console.log('Dialog confirmed:', result)
-      } catch (error) {
-        console.log('Dialog cancelled:', error)
       }
     },
     getParentsRideInfo() {
@@ -270,7 +264,7 @@ export default {
             }
           })
           .catch((e) => {
-            this.$emit('show-error', e)
+            this.$showError(e)
           })
       )
     },

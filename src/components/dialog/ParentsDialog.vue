@@ -8,11 +8,12 @@
           v-model="form.name"
           clearable
         ></v-text-field>
-        <v-text-field
+        <v-select
           prepend-icon="mdi-account-multiple"
           v-model="form.relation"
+          :items="parentTypeList"
           clearable
-        ></v-text-field>
+        ></v-select>
         <v-text-field
           prepend-icon="mdi-phone"
           color="green"
@@ -32,6 +33,7 @@
 <script>
 import { updateParents } from '@/api/api'
 export default {
+  mounted() {},
   data() {
     return {
       visible: false,
@@ -43,6 +45,7 @@ export default {
         telephone: '',
         relation: '',
       },
+      parentTypeList: ['부', '모', '조부', '조모', '그 외'],
     }
   },
   methods: {
@@ -59,7 +62,6 @@ export default {
     },
     cancel() {
       this.visible = false
-      this.reject(false)
     },
     confirm() {
       this.$withLoading(
@@ -71,7 +73,7 @@ export default {
             }
           })
           .catch((e) => {
-            this.$emit('show-error', e)
+            this.$showError(e)
           })
       )
     },

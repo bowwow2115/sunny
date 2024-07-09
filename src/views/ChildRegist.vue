@@ -414,7 +414,7 @@ export default {
       addChild(param)
         .then((response) => {
           if (response.code == '0') {
-            this.$emit('show-message', {
+            this.$showMessage({
               type: 'success',
               message: '원아 등록이 성공적으로 완료되었습니다.',
             })
@@ -422,7 +422,7 @@ export default {
           }
         })
         .catch((e) => {
-          this.$emit('show-error', e)
+          this.$showError(e)
         })
     },
     getClassList() {
@@ -438,7 +438,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.showError(error)
+          this.$showError(error)
         })
     },
     getRideList() {
@@ -449,13 +449,11 @@ export default {
               if (element.am) this.amRideNameList.push(element)
               else this.pmRideNameList.push(element)
             })
-            console.log(this.amRideNameList)
-            console.log(this.pmRideNameList)
           }
         })
         .catch((error) => {
           console.log(error)
-          this.showError(error)
+          this.$showError(error)
         })
     },
   },
