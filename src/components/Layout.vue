@@ -38,12 +38,7 @@
     <!-- Sizes your content based upon application components -->
     <v-main>
       <v-container fluid>
-        <error-dialog ref="errorDialog"></error-dialog>
-        <router-view
-          @show-error="showError"
-          @show-alert="showAlert"
-          @show-message="showMessage"
-        />
+        <router-view />
       </v-container>
     </v-main>
 
@@ -72,15 +67,6 @@ export default {
   methods: {
     logout() {
       auth.logout()
-    },
-    showError(err) {
-      this.$refs.errorDialog.showError(err)
-    },
-    showAlert(alert) {
-      this.$emit('show-alert', alert)
-    },
-    showMessage(msg) {
-      this.$emit('show-message', msg)
     },
   },
 }

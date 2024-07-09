@@ -235,7 +235,7 @@ export default {
             }
           })
           .catch((e) => {
-            this.$emit('show-error', e)
+            this.$showError(e)
           })
       )
     },
