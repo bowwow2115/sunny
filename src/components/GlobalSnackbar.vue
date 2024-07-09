@@ -1,15 +1,10 @@
 <template>
-  <v-snackbar v-model="snackbarBox.snackbar" :timeout="timeout">
+  <v-snackbar v-model="visible" :timeout="timeout">
     <v-icon :color="typeIcon.color">{{ typeIcon.name }}</v-icon>
-    {{ snackbarBox.message }}
+    {{ form.message }}
 
     <template v-slot:action="{ attrs }">
-      <v-btn
-        type="red"
-        text
-        v-bind="attrs"
-        @click="snackbarBox.snackbar = false"
-      >
+      <v-btn type="red" text v-bind="attrs" @click="visible = false">
         <v-icon small>mdi-close</v-icon>
       </v-btn>
     </template>
@@ -20,8 +15,8 @@
 export default {
   data() {
     return {
-      snackbarBox: {
-        snackbar: false,
+      visible: false,
+      form: {
         type: 'info',
         message: '',
       },
@@ -31,7 +26,7 @@ export default {
   computed: {
     typeIcon() {
       let typeIcon
-      switch (this.snackbarBox.type) {
+      switch (this.form.type) {
         case 'success':
           typeIcon = { name: 'mdi-check-circle', color: 'green' }
           break
@@ -46,15 +41,10 @@ export default {
     },
   },
   methods: {
-    showMessage(payload) {
-      this.snackbarBox.snackbar = true
-      this.snackbarBox.type = payload.type
-      this.snackbarBox.message = payload.message
-    },
-    closeMessage() {
-      this.snackbarBox.snackbar = false
-      this.snackbarBox.type = 'red'
-      this.snackbarBox.message = ''
+    open(type, message) {
+      this.visible = true
+      this.form.type = type
+      this.form.message = message
     },
   },
 }
