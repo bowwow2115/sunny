@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="400px">
+  <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title class="headline">부모정보수정</v-card-title>
       <v-card-text>
@@ -21,9 +21,9 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="accent" text @click="updateParents">수정</v-btn>
+        <v-btn color="accent" text @click="confirm">수정</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="red lighten-2" text @click="closeParents">닫기</v-btn>
+        <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -34,7 +34,9 @@ import { updateParents } from '@/api/api'
 export default {
   data() {
     return {
-      show: false,
+      visible: false,
+      resolve: null,
+      reject: null,
       form: {
         id: '',
         name: '',
@@ -44,30 +46,28 @@ export default {
     }
   },
   methods: {
-    showParents(payload) {
-      this.show = true
-      this.form.id = payload.id
-      this.form.name = payload.name
-      this.form.telephone = payload.telephone
-      this.form.relation = payload.relation
+    open({ id, name, telephone, relation }) {
+      this.visible = true
+      this.form.id = id
+      this.form.name = name
+      this.form.telephone = telephone
+      this.form.relation = relation
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve
+        this.reject = reject
+      })
     },
-    closeParents() {
-      this.show = false
-      this.form.id = ''
-      this.form.name = ''
-      this.form.telephone = ''
-      this.form.relation = ''
+    cancel() {
+      this.visible = false
+      this.reject(false)
     },
-    updateParents() {
+    confirm() {
       this.$withLoading(
         updateParents(this.form)
           .then((response) => {
             if (response.code == '0') {
-              this.$emit('show-message', {
-                type: 'success',
-                message: '수정이 완료되었습니다.',
-              })
-              this.closeParents()
+              this.visible = false
+              this.resolve(response.data)
             }
           })
           .catch((e) => {

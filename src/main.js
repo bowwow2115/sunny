@@ -12,6 +12,12 @@ import lodash from 'lodash'
 
 import LoadingPlugin from '@/plugins/loadingPlugin'
 
+import {
+  DialogPlugin,
+  ErrorDialogPlugin,
+  MessageDialogPlugin,
+} from '@/plugins/dialogPlugin'
+
 window.$ = require('jquery')
 window.jQuery = require('jquery')
 window.store = store
@@ -25,8 +31,12 @@ VueClipboard.config.autoSetContainer = true
 
 Vue.prototype.$lodash = lodash
 Vue.prototype.$Utils = Utils
+Vue.prototype.$set = Vue.set
 window.Utils = Utils
 Vue.use(VueClipboard)
+Vue.use(DialogPlugin)
+Vue.use(ErrorDialogPlugin)
+Vue.use(MessageDialogPlugin)
 Vue.use(LoadingPlugin)
 
 if (process.env.NODE_ENV === 'production') {

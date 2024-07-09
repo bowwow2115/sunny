@@ -6,7 +6,6 @@
     transition="dialog-bottom-transition"
     max-width="100%"
   >
-    <parents-dialog ref="parentsDialog"></parents-dialog>
     <v-card>
       <v-toolbar dark color="primary">
         <v-toolbar-title>원아정보 더보기</v-toolbar-title>
@@ -22,7 +21,10 @@
             <v-list-item-subtitle>보호자 정보</v-list-item-subtitle>
           </template>
           <div v-if="form.parentList.length != 0">
-            <v-list-item-group v-for="(item, index) in parentList" :key="index">
+            <v-list-item-group
+              v-for="(item, index) in form.parentList"
+              :key="index"
+            >
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
@@ -185,7 +187,7 @@
 import ParentsDialog from './ParentsDialog.vue'
 import { getChildById } from '@/api/api.js'
 export default {
-  components: { ParentsDialog },
+  components: {},
   name: 'ParentRideInfo',
   mounted() {},
   data() {
@@ -238,8 +240,26 @@ export default {
     phoneCall() {
       console.log('hi')
     },
-    showParents(item) {
-      this.$refs.parentsDialog.showParents(item)
+    async showParents(item) {
+      try {
+        const result = await this.$dialog(ParentsDialog, item)
+        if (result) {
+          this.$emit('show-message', {
+            type: 'success',
+            message: '수정이 완료되었습니다.',
+          })
+          let index = this.form.parentList.findIndex(
+            (item) => item.id == result.id
+          )
+          console.log(`index: ${index}`)
+          if (index !== -1) {
+            this.$set(this.form.parentList, index, result)
+          }
+        }
+        console.log('Dialog confirmed:', result)
+      } catch (error) {
+        console.log('Dialog cancelled:', error)
+      }
     },
     getParentsRideInfo() {
       this.$withLoading(
