@@ -296,6 +296,10 @@ export function getChildren() {
   return get(`/sunny/child/all`)
 }
 
+export function getChildById(id) {
+  return get(`/sunny/child?id=${id}`)
+}
+
 export function addChild(param) {
   return post2('/sunny/child', param)
 }
@@ -308,10 +312,18 @@ export function getRideList() {
   return get(`/sunny/ride`)
 }
 
+export function addParents(param) {
+  return post2(`/sunny/parents`, param)
+}
+
 export function updateParents(param) {
   return put('/sunny/parents', param)
 }
 
-export function getChildById(id) {
-  return get(`/sunny/child?id=${id}`)
+export function addChildRide(param) {
+  return post2(`/sunny/childRide`, param)
+}
+
+export function updateChildRide(param) {
+  return put('/sunny/childRide', param)
 }

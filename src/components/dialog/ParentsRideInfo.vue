@@ -16,7 +16,11 @@
       </v-toolbar>
       <!-- 보호자 리스트 -->
       <v-list>
-        <v-list-group :value="true" prepend-icon="mdi-human-male-female-child">
+        <v-list-group
+          :value="true"
+          prepend-icon="mdi-human-male-female-child"
+          :no-action="true"
+        >
           <template v-slot:activator>
             <v-list-item-subtitle>보호자 정보</v-list-item-subtitle>
           </template>
@@ -36,7 +40,7 @@
                   }}</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-spacer></v-spacer>
-                <v-list-item-icon @click="openParentsDialog(item)">
+                <v-list-item-icon @click="openParentsDialog(true, item)">
                   <v-icon color="accent">mdi-pencil</v-icon>
                 </v-list-item-icon>
               </v-list-item>
@@ -60,6 +64,13 @@
                 등록된 부모의 정보가 없습니다.
               </v-list-item-title>
             </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="padding: 0px">
+            <v-spacer></v-spacer>
+            <v-btn @click="openParentsDialog(false)"
+              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+            >
+            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
@@ -87,7 +98,11 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="accent">mdi-pencil</v-icon>
+                <v-icon
+                  color="accent"
+                  @click="openChildRideDialog(true, form.amRide)"
+                  >mdi-pencil</v-icon
+                >
               </v-list-item-icon>
             </v-list-item>
 
@@ -105,20 +120,29 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="accent">mdi-pencil</v-icon>
+                <v-icon color="red darken3">mdi-minus</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </v-list-item-group>
-          <v-list-item style="padding-left: 15%; padding-right: 8%" v-else>
-            <v-list-item-icon>
-              <v-icon>mdi-information-off</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                등록된 오전챠량의 정보가 없습니다.
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <div v-else>
+            <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item-icon>
+                <v-icon>mdi-information-off</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  등록된 오전챠량의 정보가 없습니다.
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item style="padding: 0px">
+              <v-spacer></v-spacer>
+              <v-btn @click="openChildRideDialog(false, form.amRide)"
+                ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-list-item>
+          </div>
         </v-list-group>
       </v-list>
       <v-divider></v-divider>
@@ -144,7 +168,11 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="accent">mdi-pencil</v-icon>
+                <v-icon
+                  @click="openChildRideDialog(true, form.pmRide)"
+                  color="accent"
+                  >mdi-pencil</v-icon
+                >
               </v-list-item-icon>
             </v-list-item>
 
@@ -162,20 +190,29 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="accent">mdi-pencil</v-icon>
+                <v-icon color="red darken3">mdi-minus</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </v-list-item-group>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
-            <v-list-item-icon>
-              <v-icon>mdi-information-off</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                등록된 오후챠량의 정보가 없습니다.
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <div v-else>
+            <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item-icon>
+                <v-icon>mdi-information-off</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  등록된 오후차량의 정보가 없습니다.
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item style="padding: 0px">
+              <v-spacer></v-spacer>
+              <v-btn @click="openChildRideDialog(false, form.pmRide)"
+                ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-list-item>
+          </div>
         </v-list-group>
       </v-list>
       <!-- 원아정보 -->
@@ -184,7 +221,8 @@
 </template>
 
 <script>
-import ParentsDialog from './ParentsDialog.vue'
+import ParentsDialog from '@/components/dialog/ParentsDialog.vue'
+import ChildRideDialog from '@/components/dialog/ChildRideDialog'
 import { getChildById } from '@/api/api.js'
 export default {
   components: {},
@@ -240,18 +278,53 @@ export default {
     phoneCall() {
       console.log('hi')
     },
-    async openParentsDialog(item) {
+    async openParentsDialog(isEdit, item = {}) {
+      item.isEdit = isEdit
+      item.childId = this.form.id
       const result = await this.$dialog(ParentsDialog, item)
       if (result) {
-        this.$showMessage({
-          type: 'success',
-          message: '수정이 완료되었습니다.',
-        })
-        let index = this.form.parentList.findIndex(
-          (item) => item.id == result.id
-        )
-        if (index !== -1) {
-          this.$set(this.form.parentList, index, result)
+        if (isEdit) {
+          this.$showMessage({
+            type: 'success',
+            message: '수정이 완료되었습니다.',
+          })
+          let index = this.form.parentList.findIndex(
+            (item) => item.id == result.id
+          )
+          if (index !== -1) {
+            this.$set(this.form.parentList, index, result)
+          }
+        } else {
+          this.$showMessage({
+            type: 'success',
+            message: '추가가 완료되었습니다.',
+          })
+          this.$set(this.form.parentList, this.form.parentList.length, result)
+        }
+      }
+    },
+    async openChildRideDialog(isEdit, item = {}) {
+      item.isEdit = isEdit
+      item.child.id = this.form.id
+      const result = await this.$dialog(ParentsDialog, item)
+      if (result) {
+        if (isEdit) {
+          this.$showMessage({
+            type: 'success',
+            message: '수정이 완료되었습니다.',
+          })
+          let index = this.form.parentList.findIndex(
+            (item) => item.id == result.id
+          )
+          if (index !== -1) {
+            this.$set(this.form.parentList, index, result)
+          }
+        } else {
+          this.$showMessage({
+            type: 'success',
+            message: '추가가 완료되었습니다.',
+          })
+          this.$set(this.form.parentList, this.form.parentList.length, result)
         }
       }
     },

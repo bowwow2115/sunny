@@ -233,17 +233,17 @@
               <div class="pickup" v-if="hasAmRide">
                 <v-subheader>오전</v-subheader>
                 <v-select
-                  v-model="form.amRide.time"
-                  :items="amRideTimeList"
-                  label="승차 시간"
-                  outlined
-                ></v-select>
-                <v-select
                   v-model="form.amRide.sunnyRide.id"
                   :items="amRideNameList"
                   item-text="name"
                   item-value="id"
                   label="코스를 선택하세요"
+                  outlined
+                ></v-select>
+                <v-select
+                  v-model="form.amRide.time"
+                  :items="amRideTimeList"
+                  label="승차 시간"
                   outlined
                 ></v-select>
                 <v-text-field
@@ -263,17 +263,17 @@
               <div class="pickup" v-if="hasPmRide">
                 <v-subheader>오후</v-subheader>
                 <v-select
-                  v-model="form.pmRide.time"
-                  :items="pmRideTimeList"
-                  label="하차 시간"
-                  outlined
-                ></v-select>
-                <v-select
                   v-model="form.pmRide.sunnyRide.id"
                   :items="pmRideNameList"
                   label="코스를 선택하세요."
                   item-text="name"
                   item-value="id"
+                  outlined
+                ></v-select>
+                <v-select
+                  v-model="form.pmRide.time"
+                  :items="pmRideTimeList"
+                  label="하차 시간"
                   outlined
                 ></v-select>
                 <v-text-field
@@ -352,9 +352,9 @@ export default {
       //   },
       // ],
       parentTypeList: ['부', '모', '조부', '조모', '그 외'],
-      amRideTimeList: getTimeIntervals('07:00', '10:00'),
+      amRideTimeList: Utils.getTimeIntervals('07:00', '10:00'),
       amRideNameList: [],
-      pmRideTimeList: getTimeIntervals('15:00', '19:00'),
+      pmRideTimeList: Utils.getTimeIntervals('15:00', '19:00'),
       pmRideNameList: [],
       // nameRules: [
       //   (v) => !!v || '필수 항목입니다',
@@ -457,36 +457,6 @@ export default {
         })
     },
   },
-}
-
-function getTimeIntervals(startTime, endTime) {
-  // 시간 문자열을 Date 객체로 변환하는 함수
-  function parseTime(timeStr) {
-    const [hours, minutes] = timeStr.split(':').map(Number)
-    const date = new Date()
-    date.setHours(hours)
-    date.setMinutes(minutes)
-    date.setSeconds(0)
-    return date
-  }
-
-  // Date 객체를 "HH:mm" 형식의 문자열로 변환하는 함수
-  function formatTime(date) {
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${hours}:${minutes}`
-  }
-
-  const start = parseTime(startTime)
-  const end = parseTime(endTime)
-  const intervals = []
-
-  while (start <= end) {
-    intervals.push(formatTime(start))
-    start.setMinutes(start.getMinutes() + 5) // 5분 단위로 증가
-  }
-
-  return intervals
 }
 </script>
 

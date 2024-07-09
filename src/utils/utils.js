@@ -70,6 +70,35 @@ const Utils = {
   convertDateToLocalDateTime(dateString) {
     return dateString + 'T00:00:00'
   },
+  getTimeIntervals(startTime, endTime) {
+    // 시간 문자열을 Date 객체로 변환하는 함수
+    function parseTime(timeStr) {
+      const [hours, minutes] = timeStr.split(':').map(Number)
+      const date = new Date()
+      date.setHours(hours)
+      date.setMinutes(minutes)
+      date.setSeconds(0)
+      return date
+    }
+
+    // Date 객체를 "HH:mm" 형식의 문자열로 변환하는 함수
+    function formatTime(date) {
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      return `${hours}:${minutes}`
+    }
+
+    const start = parseTime(startTime)
+    const end = parseTime(endTime)
+    const intervals = []
+
+    while (start <= end) {
+      intervals.push(formatTime(start))
+      start.setMinutes(start.getMinutes() + 5) // 5분 단위로 증가
+    }
+
+    return intervals
+  },
 }
 
 export default Utils
