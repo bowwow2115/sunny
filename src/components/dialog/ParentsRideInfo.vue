@@ -137,7 +137,7 @@
             </v-list-item>
             <v-list-item style="padding: 0px">
               <v-spacer></v-spacer>
-              <v-btn @click="openChildRideDialog(false, form.amRide)"
+              <v-btn @click="openChildRideDialog(false, {}, true)"
                 ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
               >
               <v-spacer></v-spacer>
@@ -207,7 +207,7 @@
             </v-list-item>
             <v-list-item style="padding: 0px">
               <v-spacer></v-spacer>
-              <v-btn @click="openChildRideDialog(false, form.pmRide)"
+              <v-btn @click="openChildRideDialog(false, {}, false)"
                 ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
               >
               <v-spacer></v-spacer>
@@ -303,29 +303,29 @@ export default {
         }
       }
     },
-    async openChildRideDialog(isEdit, item = {}) {
+    async openChildRideDialog(isEdit, item = {}, am = null) {
       item.isEdit = isEdit
+      item.child = {}
       item.child.id = this.form.id
-      const result = await this.$dialog(ParentsDialog, item)
+      if (am != null) {
+        item.sunnyRide = {}
+        item.sunnyRide.am = am
+      }
+      const result = await this.$dialog(ChildRideDialog, item)
       if (result) {
         if (isEdit) {
           this.$showMessage({
             type: 'success',
             message: '수정이 완료되었습니다.',
           })
-          let index = this.form.parentList.findIndex(
-            (item) => item.id == result.id
-          )
-          if (index !== -1) {
-            this.$set(this.form.parentList, index, result)
-          }
         } else {
           this.$showMessage({
             type: 'success',
             message: '추가가 완료되었습니다.',
           })
-          this.$set(this.form.parentList, this.form.parentList.length, result)
         }
+        if (result.sunnyRide.am) this.form.amRide = result
+        else this.form.pmRide = result
       }
     },
     getParentsRideInfo() {
