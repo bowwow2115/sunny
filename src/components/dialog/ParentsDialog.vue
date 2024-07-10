@@ -8,18 +8,21 @@
         <v-text-field
           prepend-icon="mdi-account"
           v-model="form.name"
+          label="보호자의 이름을 입력해주세요."
           clearable
         ></v-text-field>
         <v-select
           prepend-icon="mdi-account-multiple"
           v-model="form.relation"
           :items="parentTypeList"
+          label="보호자와의 관계를 입력해주세요."
           clearable
         ></v-select>
         <v-text-field
           prepend-icon="mdi-phone"
           color="green"
           v-model="form.telephone"
+          label="보호자의 전화번호를 입력해주세요."
           clearable
         ></v-text-field>
       </v-card-text>

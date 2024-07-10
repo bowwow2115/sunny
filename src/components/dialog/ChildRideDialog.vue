@@ -2,25 +2,32 @@
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title class="headline">{{
-        (form.isAm ? '오전' : '오후',
-        isEdit ? '차량 정보 수정' : '차량 정보 추가')
+        (form.sunnyRide.am ? '오전' : '오후') +
+        (isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>
       <v-card-text>
         <v-select
-          prepend-icon="mdi-account-multiple"
-          v-model="form.relation"
-          :items="parentTypeList"
+          prepend-icon="mdi-bus"
+          v-model="form.sunnyRide.id"
+          :items="form.sunnyRide.am ? amRideNameList : pmRideNameList"
+          item-text="name"
+          item-value="id"
+          :label="(form.sunnyRide.am ? '오전' : '오후') + '코스를 선택해주세요'"
           clearable
         ></v-select>
         <v-select
-          prepend-icon="mdi-account"
-          v-model="form.name"
+          prepend-icon="mdi-human-male-child"
+          v-model="form.time"
+          :label="
+            (form.sunnyRide.am ? '승차' : '하차') + '차량시간을 선택해주세요.'
+          "
+          :items="form.sunnyRide.am ? amRideTimeList : pmRideTimeList"
           clearable
         ></v-select>
         <v-text-field
-          prepend-icon="mdi-phone"
-          color="green"
-          v-model="form.telephone"
+          prepend-icon="mdi-comment"
+          v-model="form.comment"
+          label="비고"
           clearable
         ></v-text-field>
       </v-card-text>
@@ -38,7 +45,9 @@
 <script>
 import { getRideList, addChildRide, updateChildRide } from '@/api/api'
 export default {
-  mounted() {},
+  mounted() {
+    this.getRideList()
+  },
   data() {
     return {
       visible: false,
@@ -48,8 +57,8 @@ export default {
         id: '',
         comment: '',
         time: '',
-        sunnyRide: { rideId: '' },
-        child: { childId: '' },
+        sunnyRide: { id: '', am: false, comment: '', name: '' },
+        child: { id: '' },
       },
       isEdit: false,
       amRideTimeList: Utils.getTimeIntervals('07:00', '10:00'),
@@ -77,9 +86,9 @@ export default {
     open(item) {
       this.visible = true
       this.form.id = item.id
-      this.form.name = item.name
-      this.form.telephone = item.telephone
-      this.form.relation = item.relation
+      this.form.comment = item.comment
+      this.form.sunnyRide = item.sunnyRide
+      this.form.time = item.time
       this.form.child = item.child
       this.isEdit = item.isEdit
       return new Promise((resolve, reject) => {
@@ -93,7 +102,7 @@ export default {
     confirm() {
       if (this.isEdit) {
         this.$withLoading(
-          addChildRide(this.form)
+          updateChildRide(this.form)
             .then((response) => {
               if (response.code == '0') {
                 this.visible = false
@@ -106,7 +115,7 @@ export default {
         )
       } else {
         this.$withLoading(
-          updateChildRide(this.form)
+          addChildRide(this.form)
             .then((response) => {
               if (response.code == '0') {
                 this.visible = false
