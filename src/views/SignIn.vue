@@ -100,7 +100,7 @@ export default {
           })
           .catch((error) => {
             console.log(error)
-            this.showError(error)
+            this.$showError(error)
           })
       )
     },

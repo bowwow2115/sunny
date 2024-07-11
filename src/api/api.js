@@ -301,7 +301,7 @@ export function getChildById(id) {
 }
 
 export function addChild(param) {
-  return post2('/sunny/child', param)
+  return post2(`/sunny/child`, param)
 }
 
 export function getClassList() {
@@ -317,7 +317,7 @@ export function addParents(param) {
 }
 
 export function updateParents(param) {
-  return put('/sunny/parents', param)
+  return put(`/sunny/parents`, param)
 }
 
 export function addChildRide(param) {
@@ -325,5 +325,9 @@ export function addChildRide(param) {
 }
 
 export function updateChildRide(param) {
-  return put('/sunny/childRide', param)
+  return put(`/sunny/childRide`, param)
+}
+
+export function deleteParents(id) {
+  return deleteCall(`/sunny/parents?id=${id}`)
 }

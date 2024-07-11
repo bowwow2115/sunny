@@ -51,6 +51,10 @@
                 <v-list-item-content>
                   <v-list-item-title>{{ item.telephone }}</v-list-item-title>
                 </v-list-item-content>
+                <v-spacer></v-spacer>
+                <v-list-item-icon @click="deleteParents(item.id)">
+                  <v-icon color="red darken3">mdi-minus</v-icon>
+                </v-list-item-icon>
               </v-list-item>
               <v-divider v-if="index != form.parentList.length - 1"></v-divider>
             </v-list-item-group>
@@ -223,7 +227,7 @@
 <script>
 import ParentsDialog from '@/components/dialog/ParentsDialog.vue'
 import ChildRideDialog from '@/components/dialog/ChildRideDialog'
-import { getChildById } from '@/api/api.js'
+import { getChildById, deleteParents } from '@/api/api.js'
 export default {
   components: {},
   name: 'ParentRideInfo',
@@ -326,6 +330,30 @@ export default {
         }
         if (result.sunnyRide.am) this.form.amRide = result
         else this.form.pmRide = result
+      }
+    },
+    async deleteParents(id) {
+      const result = await this.$confirm({ message: '정말 삭제하시겠습니까?' })
+      if (result) {
+        deleteParents(id)
+          .then((response) => {
+            if (response.code == '0') {
+              this.$showMessage({
+                type: 'success',
+                message: '성공적으로 삭제했습니다.',
+              })
+              let index = this.form.parentList.findIndex(
+                (item) => item.id == id
+              )
+              console.log(index)
+              if (index !== -1) {
+                this.$delete(this.form.parentList, index)
+              }
+            }
+          })
+          .catch((e) => {
+            this.$showError(e)
+          })
       }
     },
     getParentsRideInfo() {
