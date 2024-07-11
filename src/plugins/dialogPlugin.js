@@ -19,6 +19,36 @@ const DialogPlugin = {
   },
 }
 
+const ConfirmPlugin = {
+  install(Vue) {
+    Vue.prototype.$confirm = async function (props) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          // 동적으로 컴포넌트 가져오기
+          const { default: ConfirmSheet } = await import(
+            '@/components/GlobalConfirmSheet.vue'
+          )
+          const DialogConstructor = Vue.extend(ConfirmSheet)
+
+          // 인스턴스 생성
+          const instance = new DialogConstructor({
+            vuetify: this.$root.$options.vuetify, // Vuetify 인스턴스 전달
+            el: document.createElement('div'),
+            propsData: props,
+          })
+
+          document.body.appendChild(instance.$el)
+
+          // 컴포넌트의 open 메소드 호출
+          instance.open(props).then(resolve).catch(reject)
+        } catch (error) {
+          reject(error)
+        }
+      })
+    }
+  },
+}
+
 const ErrorDialogPlugin = {
   install(Vue) {
     Vue.prototype.$showError = async function ({ code = '', message = '' }) {
@@ -59,4 +89,4 @@ const MessageDialogPlugin = {
   },
 }
 
-export { DialogPlugin, ErrorDialogPlugin, MessageDialogPlugin }
+export { DialogPlugin, ErrorDialogPlugin, MessageDialogPlugin, ConfirmPlugin }

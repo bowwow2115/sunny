@@ -16,6 +16,7 @@ import {
   DialogPlugin,
   ErrorDialogPlugin,
   MessageDialogPlugin,
+  ConfirmPlugin,
 } from '@/plugins/dialogPlugin'
 
 window.$ = require('jquery')
@@ -38,6 +39,7 @@ Vue.use(DialogPlugin)
 Vue.use(ErrorDialogPlugin)
 Vue.use(MessageDialogPlugin)
 Vue.use(LoadingPlugin)
+Vue.use(ConfirmPlugin)
 
 if (process.env.NODE_ENV === 'production') {
   window._consolelog = console.log
