@@ -1,12 +1,22 @@
 const { defineConfig } = require('@vue/cli-service')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 module.exports = defineConfig({
   productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
   transpileDependencies: ['vuetify'],
   runtimeCompiler: true,
-  // configureWebpack: (config) => {
-  //   config.devtool = "#source-map";
-  // },
-  publicPath: process.env.NODE_ENV === 'production' ? '/sunny/app' : '/',
+  configureWebpack: {
+    devtool:
+      process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map',
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'public/index.html',
+        inject: true,
+      }),
+    ],
+  },
+  publicPath: process.env.NODE_ENV === 'production' ? '/sunny/sunny/' : '/',
+  outputDir: 'static',
   devServer: {
     port: 8080,
     proxy: {

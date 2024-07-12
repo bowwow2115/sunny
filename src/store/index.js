@@ -9,10 +9,6 @@ Vue.use(Vuex)
 
 const state = {
   isLoading: false,
-  baseURL:
-    process.env.NODE_ENV !== 'production'
-      ? ''
-      : document.querySelector('meta[name="webbase"]').getAttribute('content'),
 }
 
 const store = new Vuex.Store({

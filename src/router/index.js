@@ -35,16 +35,16 @@ const router = new Router({
       name: 'FindId',
       component: FindId,
     },
-    {
-      path: 'admin/:id?/:secondId?',
-      name: 'AdminLayout',
-      component: AdminLayout,
-      meta: {
-        requiresAuth: true,
-        requiresAdmin: true,
-        name: ':nm?',
-      },
-    },
+    // {
+    //   path: 'admin/:id?/:secondId?',
+    //   name: 'AdminLayout',
+    //   component: AdminLayout,
+    //   meta: {
+    //     requiresAuth: true,
+    //     requiresAdmin: true,
+    //     name: ':nm?',
+    //   },
+    // },
     {
       path: '/',
       component: Layout,
