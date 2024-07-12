@@ -331,3 +331,7 @@ export function updateChildRide(param) {
 export function deleteParents(id) {
   return deleteCall(`/sunny/parents?id=${id}`)
 }
+
+export function deleteChildRide(id) {
+  return deleteCall(`/sunny/childRide?id=${id}`)
+}

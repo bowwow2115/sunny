@@ -52,7 +52,7 @@
                   <v-list-item-title>{{ item.telephone }}</v-list-item-title>
                 </v-list-item-content>
                 <v-spacer></v-spacer>
-                <v-list-item-icon @click="deleteParents(item.id)">
+                <v-list-item-icon @click="deleteParents(item)">
                   <v-icon color="red darken3">mdi-minus</v-icon>
                 </v-list-item-icon>
               </v-list-item>
@@ -124,7 +124,11 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="red darken3">mdi-minus</v-icon>
+                <v-icon
+                  color="red darken3"
+                  @click="deleteChildRide(form.amRide)"
+                  >mdi-minus</v-icon
+                >
               </v-list-item-icon>
             </v-list-item>
           </v-list-item-group>
@@ -194,7 +198,11 @@
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-list-item-icon>
-                <v-icon color="red darken3">mdi-minus</v-icon>
+                <v-icon
+                  color="red darken3"
+                  @click="deleteChildRide(form.pmRide)"
+                  >mdi-minus</v-icon
+                >
               </v-list-item-icon>
             </v-list-item>
           </v-list-item-group>
@@ -227,7 +235,7 @@
 <script>
 import ParentsDialog from '@/components/dialog/ParentsDialog.vue'
 import ChildRideDialog from '@/components/dialog/ChildRideDialog'
-import { getChildById, deleteParents } from '@/api/api.js'
+import { getChildById, deleteParents, deleteChildRide } from '@/api/api.js'
 export default {
   components: {},
   name: 'ParentRideInfo',
@@ -332,10 +340,12 @@ export default {
         else this.form.pmRide = result
       }
     },
-    async deleteParents(id) {
-      const result = await this.$confirm({ message: '정말 삭제하시겠습니까?' })
+    async deleteParents(parents) {
+      const result = await this.$confirm({
+        message: `${parents.name}님의 정보를 정말 삭제하시겠습니까?`,
+      })
       if (result) {
-        deleteParents(id)
+        deleteParents(parents.id)
           .then((response) => {
             if (response.code == '0') {
               this.$showMessage({
@@ -343,12 +353,35 @@ export default {
                 message: '성공적으로 삭제했습니다.',
               })
               let index = this.form.parentList.findIndex(
-                (item) => item.id == id
+                (item) => item.id == parents.id
               )
-              console.log(index)
               if (index !== -1) {
                 this.$delete(this.form.parentList, index)
               }
+            }
+          })
+          .catch((e) => {
+            this.$showError(e)
+          })
+      }
+    },
+    async deleteChildRide(childRide) {
+      const result = await this.$confirm({
+        message: `${
+          childRide.sunnyRide.am ? '오전정보' : '오후정보'
+        }를 정말 삭제하시겠습니까?`,
+      })
+      if (result) {
+        deleteChildRide(childRide.id)
+          .then((response) => {
+            if (response.code == '0') {
+              this.$showMessage({
+                type: 'success',
+                message: '성공적으로 삭제했습니다.',
+              })
+              childRide.sunnyRide.am
+                ? (this.form.amRide = null)
+                : (this.form.pmRide = null)
             }
           })
           .catch((e) => {
