@@ -10,11 +10,12 @@ const SignIn = () => import('@/views/SignIn')
 const ChildRegist = () => import('@/views/ChildRegist')
 const FindId = () => import('@/views/FindId')
 const ChildrenList = () => import('@/views/ChildrenList')
+const RideTimeline = () => import('@/views/RideTimeline')
 
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history',
+  // mode: 'history',   //WAS에 배포할 때는 주석처리
   routes: [
     {
       path: '/',
@@ -60,6 +61,12 @@ const router = new Router({
           path: '/ChildrenList',
           name: 'ChildrenList',
           component: ChildrenList,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: '/RideTimeline',
+          name: 'RideTimeline',
+          component: RideTimeline,
           meta: { requiresAuth: true },
         },
       ],

@@ -1,22 +1,15 @@
 const { defineConfig } = require('@vue/cli-service')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const houseDir =
+  '/Users/parksh/projects/intellij/sunny/src/main/resources/static'
 
 module.exports = defineConfig({
   productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
+  publicPath: process.env.NODE_ENV === 'production' ? '/sunny/app/' : '/',
+  outputDir: houseDir,
+  // publicPath: '/',
   transpileDependencies: ['vuetify'],
   runtimeCompiler: true,
-  configureWebpack: {
-    devtool:
-      process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map',
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: 'public/index.html',
-        inject: true,
-      }),
-    ],
-  },
-  publicPath: process.env.NODE_ENV === 'production' ? '/sunny/sunny/' : '/',
-  outputDir: 'static',
+  configureWebpack: {},
   devServer: {
     port: 8080,
     proxy: {
@@ -31,13 +24,6 @@ module.exports = defineConfig({
     },
   },
   lintOnSave: false,
-  // css: {
-  //   loaderOptions: {
-  //     sass: {
-  //       additionalData: '@import "@/assets/sass/variables.scss";',
-  //     },
-  //   },
-  // },
 
   css: {
     loaderOptions: {
