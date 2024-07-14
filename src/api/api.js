@@ -309,7 +309,7 @@ export function getClassList() {
 }
 
 export function getRideList() {
-  return get(`${constants.CONTEXT_PATH}/ride`)
+  return get(`${constants.CONTEXT_PATH}/ride/all`)
 }
 
 export function addParents(param) {
