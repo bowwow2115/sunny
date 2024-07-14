@@ -1,6 +1,5 @@
 <template>
   <div class="text-center">
-    <v-btn color="blue" dark @click="sheet = !sheet"> Open v-model </v-btn>
     <v-bottom-sheet v-model="sheet" inset>
       <v-sheet class="text-center" height="150px">
         <div class="py-3">
