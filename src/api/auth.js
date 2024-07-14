@@ -1,6 +1,7 @@
 import store from '@/store'
 import Utils from '@/utils/utils'
 import * as api from '@/api/api'
+import constants from '@/Constants'
 
 function parseToken(result, reset = false) {
   if (result.data) {
@@ -21,7 +22,8 @@ function loggedIn() {
   return new Promise((resolve, reject) => {
     let url = ''
     const sid = Utils.getCookie(constants.TOKEN)
-    if (sid != null && sid !== '') url = `/sunny/auth/validation?sid=${sid}`
+    if (sid != null && sid !== '')
+      url = `${constants.CONTEXT_PATH}/auth/validation?sid=${sid}`
     if (url !== '') {
       api
         .ax()
@@ -80,7 +82,7 @@ function renewJWT() {
 function login(form) {
   return new Promise((resolve, reject) => {
     api
-      .post2(`/sunny/login`, form)
+      .post2(`${constants.CONTEXT_PATH}/login`, form)
       .then((r) => {
         console.log('login call : ', r)
         if (r.code != '0') {
@@ -118,7 +120,7 @@ function resetPwdate(user) {
 
   return new Promise((resolve, reject) => {
     api
-      .post2(`/sunny/resetPwdate`, data)
+      .post2(`${constants.CONTEXT_PATH}/resetPwdate`, data)
       .then((r) => {
         resolve(r)
       })
@@ -150,7 +152,7 @@ function changePassword(passwordForm) {
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`/sunny/changePw`, jQuery.param(data), false)
+      .postUrl(`${constants.CONTEXT_PATH}/changePw`, jQuery.param(data), false)
       .then((r) => {
         resolve(r)
       })

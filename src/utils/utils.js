@@ -1,3 +1,4 @@
+import constants from '@/Constants'
 import CryptoJS from 'crypto-js'
 
 const Utils = {
@@ -62,7 +63,7 @@ const Utils = {
   },
   checkEnv(NODE_ENV) {
     if (NODE_ENV === 'production') {
-      return '/sunny/#/signIn'
+      return `${constants.CONTEXT_PATH}/#/signIn`
     } else {
       return '/'
     }

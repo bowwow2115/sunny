@@ -293,45 +293,45 @@ export function deleteBody(
 }
 
 export function getChildren() {
-  return get(`/sunny/child/all`)
+  return get(`${constants.CONTEXT_PATH}/child/all`)
 }
 
 export function getChildById(id) {
-  return get(`/sunny/child?id=${id}`)
+  return get(`${constants.CONTEXT_PATH}/child?id=${id}`)
 }
 
 export function addChild(param) {
-  return post2(`/sunny/child`, param)
+  return post2(`${constants.CONTEXT_PATH}/child`, param)
 }
 
 export function getClassList() {
-  return get(`/sunny/class`)
+  return get(`${constants.CONTEXT_PATH}/class`)
 }
 
 export function getRideList() {
-  return get(`/sunny/ride`)
+  return get(`${constants.CONTEXT_PATH}/ride`)
 }
 
 export function addParents(param) {
-  return post2(`/sunny/parents`, param)
+  return post2(`${constants.CONTEXT_PATH}/parents`, param)
 }
 
 export function updateParents(param) {
-  return put(`/sunny/parents`, param)
+  return put(`${constants.CONTEXT_PATH}/parents`, param)
 }
 
 export function addChildRide(param) {
-  return post2(`/sunny/childRide`, param)
+  return post2(`${constants.CONTEXT_PATH}/childRide`, param)
 }
 
 export function updateChildRide(param) {
-  return put(`/sunny/childRide`, param)
+  return put(`${constants.CONTEXT_PATH}/childRide`, param)
 }
 
 export function deleteParents(id) {
-  return deleteCall(`/sunny/parents?id=${id}`)
+  return deleteCall(`${constants.CONTEXT_PATH}/parents?id=${id}`)
 }
 
 export function deleteChildRide(id) {
-  return deleteCall(`/sunny/childRide?id=${id}`)
+  return deleteCall(`${constants.CONTEXT_PATH}/childRide?id=${id}`)
 }

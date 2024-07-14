@@ -19,10 +19,10 @@ const store = new Vuex.Store({
   getters,
 })
 
-;(async () => {
-  await store.dispatch('browserInit')
-  console.log('Browser has been initialized')
-  await import('../main')
-})()
+// ;(async () => {
+//   await store.dispatch('browserInit')
+//   console.log('Browser has been initialized')
+//   await import('../main')
+// })()
 
 export default store
