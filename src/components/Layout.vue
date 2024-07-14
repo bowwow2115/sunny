@@ -61,6 +61,7 @@ export default {
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: 'ChildRegist', icon: 'mdi-image', to: '/ChildRegist' },
       { title: 'ChildrenList', icon: 'mdi-image', to: '/ChildrenList' },
+      { title: 'RideTimeline', icon: 'mdi-image', to: '/RideTimeline' },
     ],
     right: null,
   }),
