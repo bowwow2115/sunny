@@ -19,13 +19,13 @@ const opts = {
     // default: 'light',
     themes: {
       light: {
-        primary: colors.yellow.darken1,
-        secondary: colors.cyan.lighten1,
-        tertiary: colors.teal.darken1,
+        primary: '#90ce00',
+        secondary: colors.cyan.lighten3,
+        tertiary: colors.yellow.darken1,
         accent: colors.cyan.darken4, //강조
-        error: colors.deepOrange.accent3, //오류
+        error: colors.deepOrange.accent2, //오류
         info: colors.blueGrey.lighten3, //정보
-        success: colors.teal.accent4, //성공
+        success: '#77D618', //성공
         warning: colors.amber.darken3, //경고
       },
       dark: {
@@ -41,8 +41,7 @@ const opts = {
     options: {
       customProperties: true, // Vuetify의 custom properties 사용
     },
-    default: {
-    },
+    default: {},
   },
 }
 
