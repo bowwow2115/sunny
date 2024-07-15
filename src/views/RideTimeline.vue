@@ -5,16 +5,26 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
 
-      <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/forest.jpg"
-        gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)"
-      >
+      <v-img gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)">
+        <!-- src="https://cdn.vuetifyjs.com/images/cards/forest.jpg" -->
         <v-container class="fill-height">
           <v-row align="center">
-            <strong class="text-h1 font-weight-regular mr-6">8</strong>
+            <strong class="text-h1 font-weight-regular mr-6">오전</strong>
             <v-row justify="end">
-              <div class="text-h5 font-weight-light">Monday</div>
-              <div class="text-uppercase font-weight-light">February 2015</div>
+              <v-col class="d-flex" cols="3" sm="1">
+                <v-select
+                  v-model="selectedAmPm"
+                  :items="['오전', '오후']"
+                ></v-select>
+              </v-col>
+              <v-col class="d-flex" cols="3" sm="1">
+                <v-select
+                  v-model="selectedRide"
+                  :items="selectedAmPm == '오전' ? amRideList : pmRideList"
+                ></v-select>
+              </v-col>
+              <!-- <div class="text-h5 font-weight-light">오전</div> -->
+              <!-- <div class="text-uppercase font-weight-light">February 2015</div> -->
             </v-row>
           </v-row>
         </v-container>
@@ -98,6 +108,10 @@ export default {
       input: null,
       nonce: 0,
       rideList: [],
+      amRideList: [],
+      pmRideList: [],
+      selectedRide: null,
+      selectedAmPm: '',
     }
   },
   mounted() {
@@ -128,6 +142,10 @@ export default {
           .then((response) => {
             if (response.code == '0') {
               this.rideList = response.data
+              response.data.foreach((item) => {
+                if (item.am) this.amRideList.push(item)
+                else this.pmRideList.push(item)
+              })
             }
           })
           .catch((e) => {
