@@ -46,10 +46,10 @@ $body-font-family: NanumSquareNeo, -apple-system, BlinkMacSystemFont, system-ui,
   Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
   'Malgun Gothic', sans-serif;
 
-$text-field-outlined-fieldset-border: 1px solid var(--v-primary-darken3);
+$text-field-outlined-fieldset-border-width: 1px !important;
 
 /* ***** 새로운 변수 ****** */
-$clr-primary-back: #f8f5e6;
+$clr-primary-back: #f5fbe8;
 
 
 

@@ -22,18 +22,24 @@
                 눌러주세요</label
               >
             </v-col>
-            <v-col cols="12" sm="6">
+          </v-row>
+          <v-row>
+            <v-col cols="5">
               <v-text-field
                 v-model="form.childCode"
                 label="원아코드"
+                :rules="numRules"
+                hide-details="auto"
                 required
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6">
+            <v-col cols="7" class="ps-0">
               <v-text-field
                 v-model="form.name"
                 label="원아이름"
+                :rules="nameRules"
+                hide-details="auto"
                 required
                 outlined
               ></v-text-field>
@@ -52,6 +58,7 @@
                   <v-text-field
                     v-model="form.admissionDate"
                     label="원아 입학일"
+                    hide-details="auto"
                     append-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -85,7 +92,9 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="form.birthday"
+                    :rules="datePicRules"
                     label="원아 생년월일"
+                    hide-details="auto"
                     append-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -121,13 +130,16 @@
               <v-select
                 v-model="form.className"
                 :items="classNameList"
+                :rules="classNameRules"
                 label="반명"
+                hide-details="auto"
                 outlined
+                :menu-props="{ offsetY: true }"
               ></v-select>
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col cols="8">
               <v-text-field
                 v-model="form.address.zipCode"
                 label="우편번호"
@@ -136,8 +148,16 @@
                 readonly
               ></v-text-field>
             </v-col>
-            <v-col>
-              <v-btn type="button" outlined x-large> 주소 검색 </v-btn>
+            <v-col cols="4" class="ps-0">
+              <v-btn
+                type="button"
+                color="primary"
+                class="btn label-with-btn"
+                depressed
+                block
+              >
+                주소 검색
+              </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -156,7 +176,6 @@
                 label="상세주소 입력"
                 hide-details="auto"
                 outlined
-                readonly
               ></v-text-field>
             </v-col>
           </v-row>
@@ -166,8 +185,10 @@
       <!-- ---------- 학부모 정보 ---------- -->
       <v-card class="my-4 pa-2 rounded-xl">
         <v-card-title>학부모 정보</v-card-title>
-        <v-card-subtitle>라라라</v-card-subtitle>
-        <v-card-text>
+        <v-card-subtitle
+          >학부모 정보는 버튼을 이용하여 추가할 수 있습니다.</v-card-subtitle
+        >
+        <v-card-text class="mt-6">
           <v-row
             class="parent-box"
             v-for="(parentBox, index) in form.parentList"
@@ -175,18 +196,21 @@
           >
             <v-col cols="12" md="6">
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="5">
                   <v-select
                     v-model="parentBox.relation"
                     :items="parentTypeList"
+                    :rules="pbRelationRules"
                     label="관계"
                     hide-details="auto"
                     outlined
+                    :menu-props="{ offsetY: true }"
                   ></v-select>
                 </v-col>
-                <v-col cols="12" md="8">
+                <v-col cols="7" class="ps-0">
                   <v-text-field
                     v-model="parentBox.name"
+                    :rules="nameRules"
                     label="학부모 이름"
                     hide-details="auto"
                     required
@@ -198,19 +222,21 @@
             <v-col cols="12" md="4">
               <v-text-field
                 v-model="parentBox.telephone"
+                :rules="numRules"
                 label="연락처"
+                hide-details="auto"
                 required
                 outlined
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="2">
-              <v-btn @click="addParentBox">
+              <v-btn @click="addParentBox" class="btn-add">
                 <v-icon>ri-add-line</v-icon>
               </v-btn>
               <v-btn
                 @click="removeParentBox(index)"
                 v-if="form.parentList.length > 1"
-                class="btn-pb"
+                class="btn-add"
               >
                 <v-icon>ri-subtract-line</v-icon>
               </v-btn>
@@ -239,12 +265,14 @@
                   item-value="id"
                   label="코스를 선택하세요"
                   outlined
+                  :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-select
                   v-model="form.amRide.time"
                   :items="amRideTimeList"
                   label="승차 시간"
                   outlined
+                  :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-text-field
                   v-model="form.amRide.comment"
@@ -269,12 +297,14 @@
                   item-text="name"
                   item-value="id"
                   outlined
+                  :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-select
                   v-model="form.pmRide.time"
                   :items="pmRideTimeList"
                   label="하차 시간"
                   outlined
+                  :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-text-field
                   v-model="form.pmRide.comment"
@@ -291,7 +321,7 @@
 
       <v-row class="justify-center">
         <v-col cols="12" md="6">
-          <v-btn @click="addChild" depressed block x-large class="btn-main"
+          <v-btn @click="addChild" depressed block x-large class="btn btn-main"
             >등록</v-btn
           >
         </v-col>
@@ -356,10 +386,17 @@ export default {
       amRideNameList: [],
       pmRideTimeList: Utils.getTimeIntervals('15:00', '19:00'),
       pmRideNameList: [],
-      // nameRules: [
-      //   (v) => !!v || '필수 항목입니다',
-      //   (v) => v.length <= 10 || 'Name must be less than 10 characters',
-      // ],
+      numRules: [
+        (v) => !!v || '필수 항목입니다.',
+        (v) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
+      ],
+      nameRules: [
+        (v) => !!v || '필수 항목입니다.',
+        (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.', // 한글자모음 정규식 // 한글정규식 /^[가-힣]*$/
+      ],
+      datePicRules: [(v) => !!v || '날짜를 선택해 주세요.'],
+      classNameRules: [(v) => !!v || '반을 선택해 주세요.'],
+      pbRelationRules: [(v) => !!v || '관계를 선택해 주세요.'],
     }
   },
   methods: {
