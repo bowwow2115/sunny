@@ -9,7 +9,9 @@
         <!-- src="https://cdn.vuetifyjs.com/images/cards/forest.jpg" -->
         <v-container class="fill-height">
           <v-row align="center">
-            <strong class="text-h1 font-weight-regular mr-6">오전</strong>
+            <strong class="text-h1 font-weight-regular mr-6">{{
+              selectedAmPm
+            }}</strong>
             <v-row justify="end">
               <v-col class="d-flex" cols="3" sm="1">
                 <v-select
@@ -19,8 +21,10 @@
               </v-col>
               <v-col class="d-flex" cols="3" sm="1">
                 <v-select
-                  v-model="selectedRide"
+                  v-model="selectedRideList"
                   :items="selectedAmPm == '오전' ? amRideList : pmRideList"
+                  item-text="name"
+                  item-value="sunnyChildRideList"
                 ></v-select>
               </v-col>
               <!-- <div class="text-h5 font-weight-light">오전</div> -->
@@ -32,64 +36,24 @@
     </v-card>
     <v-card-text class="py-0">
       <v-timeline align-top dense>
-        <v-timeline-item color="pink" small>
+        <v-timeline-item
+          color="pink"
+          small
+          v-for="(item, index) in selectedRideList"
+          :key="index"
+        >
           <v-row class="pt-1">
             <v-col cols="3">
-              <strong>5pm</strong>
+              <strong>{{ item.time }}</strong>
             </v-col>
             <v-col>
-              <strong>New Icon</strong>
-              <div class="text-caption">Mobile App</div>
-            </v-col>
-          </v-row>
-        </v-timeline-item>
-
-        <v-timeline-item color="teal lighten-3" small>
-          <v-row class="pt-1">
-            <v-col cols="3">
-              <strong>3-4pm</strong>
-            </v-col>
-            <v-col>
-              <strong>Design Stand Up</strong>
-              <div class="text-caption mb-2">Hangouts</div>
-              <v-avatar>
-                <v-img
-                  src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairFrida&accessoriesType=Kurt&hairColor=Red&facialHairType=BeardLight&facialHairColor=BrownDark&clotheType=GraphicShirt&clotheColor=Gray01&graphicType=Skull&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Disbelief&skinColor=Brown"
-                ></v-img>
-              </v-avatar>
-              <v-avatar>
-                <v-img
-                  src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairFrizzle&accessoriesType=Prescription02&hairColor=Black&facialHairType=MoustacheMagnum&facialHairColor=BrownDark&clotheType=BlazerSweater&clotheColor=Black&eyeType=Default&eyebrowType=FlatNatural&mouthType=Default&skinColor=Tanned"
-                ></v-img>
-              </v-avatar>
-              <v-avatar>
-                <v-img
-                  src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairMiaWallace&accessoriesType=Sunglasses&hairColor=BlondeGolden&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Surprised&eyebrowType=RaisedExcited&mouthType=Smile&skinColor=Pale"
-                ></v-img>
-              </v-avatar>
-            </v-col>
-          </v-row>
-        </v-timeline-item>
-
-        <v-timeline-item color="pink" small>
-          <v-row class="pt-1">
-            <v-col cols="3">
-              <strong>12pm</strong>
-            </v-col>
-            <v-col>
-              <strong>Lunch break</strong>
-            </v-col>
-          </v-row>
-        </v-timeline-item>
-
-        <v-timeline-item color="teal lighten-3" small>
-          <v-row class="pt-1">
-            <v-col cols="3">
-              <strong>9-11am</strong>
-            </v-col>
-            <v-col>
-              <strong>Finish Home Screen</strong>
-              <div class="text-caption">Web App</div>
+              <strong>{{ item.child.name }}</strong>
+              <div class="text-caption">
+                {{
+                  `${item.child.address.address} ${item.child.address.detailAddress}
+                  \n비고: ${item.comment}`
+                }}
+              </div>
             </v-col>
           </v-row>
         </v-timeline-item>
@@ -107,45 +71,29 @@ export default {
       events: [],
       input: null,
       nonce: 0,
+
       rideList: [],
       amRideList: [],
       pmRideList: [],
-      selectedRide: null,
-      selectedAmPm: '',
+      selectedRideList: [],
+      selectedAmPm: '오전',
     }
   },
   mounted() {
     this.getRideList()
   },
   methods: {
-    comment() {
-      const time = new Date().toTimeString()
-      this.events.push({
-        id: this.nonce++,
-        text: this.input,
-        time: time.replace(
-          /:\d{2}\sGMT-\d{4}\s\((.*)\)/,
-          (match, contents, offset) => {
-            return ` ${contents
-              .split(' ')
-              .map((v) => v.charAt(0))
-              .join('')}`
-          }
-        ),
-      })
-
-      this.input = null
-    },
     getRideList() {
       this.$withLoading(
         getRideList()
           .then((response) => {
             if (response.code == '0') {
               this.rideList = response.data
-              response.data.foreach((item) => {
+              response.data.forEach((item) => {
                 if (item.am) this.amRideList.push(item)
                 else this.pmRideList.push(item)
               })
+              this.selectedRideList = this.amRideList[0].sunnyChildRideList
             }
           })
           .catch((e) => {
