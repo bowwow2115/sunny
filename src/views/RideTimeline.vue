@@ -43,7 +43,7 @@
           :key="index"
         >
           <v-row class="pt-1">
-            <v-col cols="4">
+            <v-col cols="3">
               <strong>{{ item.time }}</strong>
             </v-col>
             <v-col cols="7">
