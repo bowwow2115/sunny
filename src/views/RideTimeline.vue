@@ -37,23 +37,27 @@
     <v-card-text class="py-0">
       <v-timeline align-top dense>
         <v-timeline-item
-          color="pink"
+          color="primary"
           small
           v-for="(item, index) in selectedRideList"
           :key="index"
         >
           <v-row class="pt-1">
-            <v-col cols="3">
+            <v-col cols="4">
               <strong>{{ item.time }}</strong>
             </v-col>
-            <v-col>
+            <v-col cols="7">
+              <!-- TODO: 이름 클릭 시 부모정보 보이게 -->
               <strong>{{ item.child.name }}</strong>
               <div class="text-caption">
                 {{
-                  `${item.child.address.address} ${item.child.address.detailAddress}
-                  \n비고: ${item.comment}`
+                  `${item.child.address.address} ${item.child.address.detailAddress}`
                 }}
               </div>
+              <div class="text-caption">{{ `${item.comment}` }}</div>
+            </v-col>
+            <v-col cols="2">
+              <v-icon color="secondary">mdi-pencil</v-icon>
             </v-col>
           </v-row>
         </v-timeline-item>

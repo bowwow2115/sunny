@@ -1,11 +1,12 @@
 const { defineConfig } = require('@vue/cli-service')
 const houseDir =
   '/Users/parksh/projects/intellij/sunny/src/main/resources/static'
+const workDir = 'C:/projects/intellij/sunny-back/src/main/resources/static'
 
 module.exports = defineConfig({
   productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
   publicPath: process.env.NODE_ENV === 'production' ? '/sunny/app/' : '/',
-  outputDir: houseDir,
+  outputDir: workDir,
   // publicPath: '/',
   transpileDependencies: ['vuetify'],
   runtimeCompiler: true,
