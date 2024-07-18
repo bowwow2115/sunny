@@ -41,12 +41,17 @@
                 </v-list-item-content>
                 <v-spacer></v-spacer>
                 <v-list-item-icon @click="openParentsDialog(true, item)">
-                  <v-icon color="accent">mdi-pencil</v-icon>
+                  <v-icon color="green accent-4">mdi-pencil</v-icon>
                 </v-list-item-icon>
               </v-list-item>
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-icon>
-                  <v-icon color="green" @click="phoneCall">mdi-phone</v-icon>
+                  <v-icon
+                    color="green"
+                    v-clipboard:copy="item.telephone"
+                    v-clipboard:success="phoneCall"
+                    >mdi-phone</v-icon
+                  >
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{ item.telephone }}</v-list-item-title>
@@ -103,7 +108,7 @@
               <v-spacer></v-spacer>
               <v-list-item-icon>
                 <v-icon
-                  color="accent"
+                  color="green accent-4"
                   @click="openChildRideDialog(true, form.amRide)"
                   >mdi-pencil</v-icon
                 >
@@ -178,7 +183,7 @@
               <v-list-item-icon>
                 <v-icon
                   @click="openChildRideDialog(true, form.pmRide)"
-                  color="accent"
+                  color="green accent-4"
                   >mdi-pencil</v-icon
                 >
               </v-list-item-icon>
@@ -233,8 +238,8 @@
 </template>
 
 <script>
-import ParentsDialog from '@/components/dialog/ParentsDialog.vue'
-import ChildRideDialog from '@/components/dialog/ChildRideDialog'
+import ParentsDialog from '@/components/dialog/ManageParentsDialog.vue'
+import ChildRideDialog from '@/components/dialog/ManageChildRideDialog'
 import { getChildById, deleteParents, deleteChildRide } from '@/api/api.js'
 export default {
   components: {},
@@ -286,9 +291,6 @@ export default {
       this.form.amRide = null
       this.form.pmRide = null
       this.form.name = null
-    },
-    phoneCall() {
-      console.log('hi')
     },
     async openParentsDialog(isEdit, item = {}) {
       item.isEdit = isEdit
@@ -401,6 +403,12 @@ export default {
             this.$showError(e)
           })
       )
+    },
+    phoneCall() {
+      this.$showMessage({
+        type: 'success',
+        message: '전화번호를 클립보드에 저장했습니다.',
+      })
     },
   },
 }
