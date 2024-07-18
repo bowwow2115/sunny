@@ -27,13 +27,35 @@
     </v-navigation-drawer>
 
     <!-- 상단 bar -->
-    <v-app-bar app>
+    <v-app-bar
+      absolute
+      color="#43a047"
+      dark
+      shrink-on-scroll
+      prominent
+      src="https://picsum.photos/1920/1080?random"
+      fade-img-on-scroll
+      scroll-target="#scrolling-techniques-5"
+      scroll-threshold="500"
+    >
+      <template v-slot:img="{ props }">
+        <v-img
+          v-bind="props"
+          gradient="to top right, rgba(55,236,186,.7), rgba(25,32,72,.7)"
+        ></v-img>
+      </template>
       <v-app-bar-nav-icon @click="drawer = !drawer"
         ><v-icon>mdi-menu</v-icon></v-app-bar-nav-icon
       >
       <v-toolbar-title>메뉴</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
+    <v-sheet
+      id="scrolling-techniques-5"
+      class="overflow-y-auto"
+      max-height="600"
+    >
+    </v-sheet>
 
     <!-- Sizes your content based upon application components -->
     <v-main>

@@ -2,7 +2,7 @@
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
   <div>
-    <h2 class="page-title">원아등록</h2>
+    <!-- <h2 class="page-title">원아등록</h2> -->
     <v-form v-model="valid">
       <!-- ---------- 원아 정보 ---------- -->
       <v-card class="my-4 pa-2 rounded-xl">
@@ -152,7 +152,7 @@
               <v-btn
                 type="button"
                 color="primary"
-                class="btn label-with-btn"
+                class="font-weight-bold btn label-with-btn"
                 depressed
                 block
               >
@@ -229,13 +229,15 @@
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="2">
-              <v-btn @click="addParentBox" class="btn-add">
+            <v-col cols="12" md="2" class="text-right">
+              <v-btn @click="addParentBox" icon color="primary" class="btn-add">
                 <v-icon>ri-add-line</v-icon>
               </v-btn>
               <v-btn
                 @click="removeParentBox(index)"
                 v-if="form.parentList.length > 1"
+                icon
+                color="primary"
                 class="btn-add"
               >
                 <v-icon>ri-subtract-line</v-icon>
@@ -252,10 +254,12 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" md="6">
-              <v-checkbox
+              <input
+                type="checkbox"
                 v-model="hasAmRide"
-                label="오전차량 사용여부"
-              ></v-checkbox>
+                class="chkbox-ride"
+                id="hasAmRideChk"
+              /><label for="hasAmRideChk">오전차량 사용여부</label>
               <div class="pickup" v-if="hasAmRide">
                 <v-subheader>오전</v-subheader>
                 <v-select
@@ -284,10 +288,12 @@
               </div>
             </v-col>
             <v-col cols="12" md="6">
-              <v-checkbox
+              <input
+                type="checkbox"
                 v-model="hasPmRide"
-                label="오후차량 사용여부"
-              ></v-checkbox>
+                class="chkbox-ride"
+                id="hasPmRideChk"
+              /><label for="hasPmRideChk">오후차량 사용여부</label>
               <div class="pickup" v-if="hasPmRide">
                 <v-subheader>오후</v-subheader>
                 <v-select
@@ -388,7 +394,7 @@ export default {
       pmRideNameList: [],
       numRules: [
         (v) => !!v || '필수 항목입니다.',
-        (v) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
+        (v) => /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
       ],
       nameRules: [
         (v) => !!v || '필수 항목입니다.',
