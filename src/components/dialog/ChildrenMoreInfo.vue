@@ -391,7 +391,7 @@ export default {
           })
       }
     },
-    getParentsRideInfo() {
+    getChildrenMoreInfo() {
       this.$withLoading(
         getChildById(this.form.id)
           .then((response) => {

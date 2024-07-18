@@ -58,9 +58,8 @@ export default {
   data: () => ({
     drawer: false,
     items: [
-      { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: '원아등록', icon: 'mdi-image', to: '/ChildRegist' },
-      { title: '원아조회', icon: 'mdi-image', to: '/ChildrenList' },
+      { title: '원아조회', icon: 'mdi-image', to: '/ChildList' },
       { title: '차량운행조회', icon: 'mdi-image', to: '/RideTimeline' },
     ],
     right: null,

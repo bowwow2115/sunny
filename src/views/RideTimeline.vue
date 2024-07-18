@@ -1,7 +1,14 @@
 <template>
   <v-card class="mx-auto" style="padding: 0">
     <v-card dark flat>
-      <v-btn absolute bottom color="pink" right fab>
+      <v-btn
+        @click="openRideChildDialog(false, selectedRide)"
+        absolute
+        bottom
+        color="pink"
+        left
+        fab
+      >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
 
@@ -21,7 +28,7 @@
               </v-col>
               <v-col class="d-flex" cols="3" sm="1">
                 <v-select
-                  v-model="selectedRideList"
+                  v-model="selectedRide"
                   :items="selectedAmPm == '오전' ? amRideList : pmRideList"
                   item-text="name"
                   item-value="sunnyChildRideList"
@@ -39,7 +46,7 @@
         <v-timeline-item
           color="primary"
           small
-          v-for="(item, index) in selectedRideList"
+          v-for="(item, index) in selectedRide"
           :key="index"
         >
           <v-row class="pt-1">
@@ -62,7 +69,11 @@
               <div class="text-caption">{{ `${item.comment}` }}</div>
             </v-col>
             <v-col cols="2">
-              <v-icon color="green accent-4">mdi-pencil</v-icon>
+              <v-icon
+                color="green accent-4"
+                @click="openRideChildDialog(true, item)"
+                >mdi-pencil</v-icon
+              >
             </v-col>
           </v-row>
         </v-timeline-item>
@@ -74,6 +85,7 @@
 <script>
 import { getRideList } from '@/api/api'
 import ReadParentsDialog from '@/components/dialog/ReadParentsDialog.vue'
+import ManageRideChildDialog from '@/components/dialog/ManageRideChildDialog.vue'
 export default {
   name: 'RideTimeline',
   data() {
@@ -84,7 +96,7 @@ export default {
       rideList: [],
       amRideList: [],
       pmRideList: [],
-      selectedRideList: [],
+      selectedRide: [],
       selectedAmPm: '오전',
     }
   },
@@ -102,7 +114,7 @@ export default {
                 if (item.am) this.amRideList.push(item)
                 else this.pmRideList.push(item)
               })
-              this.selectedRideList = this.amRideList[0].sunnyChildRideList
+              this.selectedRide = this.amRideList[0].sunnyChildRideList
             }
           })
           .catch((e) => {
@@ -112,6 +124,12 @@ export default {
     },
     async openParentsDialog(parentList) {
       await this.$dialog(ReadParentsDialog, parentList)
+    },
+    async openRideChildDialog(isEdit, ride) {
+      ride.isEdit = isEdit
+      ride.sunnyRide = this.selectedRide
+      console.log(ride)
+      const result = this.$dialog(ManageRideChildDialog, ride)
     },
   },
 }
