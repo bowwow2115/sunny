@@ -335,3 +335,7 @@ export function deleteParents(id) {
 export function deleteChildRide(id) {
   return deleteCall(`${constants.CONTEXT_PATH}/childRide?id=${id}`)
 }
+
+export function getUnRidedChildren() {
+  return get(`${constants.CONTEXT_PATH}/child/unRided`)
+}

@@ -43,12 +43,17 @@
           :key="index"
         >
           <v-row class="pt-1">
-            <v-col cols="3">
+            <v-col cols="4">
               <strong>{{ item.time }}</strong>
             </v-col>
-            <v-col cols="7">
-              <!-- TODO: 이름 클릭 시 부모정보 보이게 -->
-              <strong>{{ item.child.name }}</strong>
+            <v-col cols="6" style="padding-top: 0px">
+              <v-chip
+                class="ma-2"
+                @click="openParentsDialog(item.child.parentList)"
+                label
+                small
+                ><strong>{{ item.child.name }}</strong></v-chip
+              >
               <div class="text-caption">
                 {{
                   `${item.child.address.address} ${item.child.address.detailAddress}`
@@ -57,7 +62,7 @@
               <div class="text-caption">{{ `${item.comment}` }}</div>
             </v-col>
             <v-col cols="2">
-              <v-icon color="secondary">mdi-pencil</v-icon>
+              <v-icon color="green accent-4">mdi-pencil</v-icon>
             </v-col>
           </v-row>
         </v-timeline-item>
@@ -68,6 +73,7 @@
 
 <script>
 import { getRideList } from '@/api/api'
+import ReadParentsDialog from '@/components/dialog/ReadParentsDialog.vue'
 export default {
   name: 'RideTimeline',
   data() {
@@ -75,7 +81,6 @@ export default {
       events: [],
       input: null,
       nonce: 0,
-
       rideList: [],
       amRideList: [],
       pmRideList: [],
@@ -104,6 +109,9 @@ export default {
             this.$showError(e)
           })
       )
+    },
+    async openParentsDialog(parentList) {
+      await this.$dialog(ReadParentsDialog, parentList)
     },
   },
 }

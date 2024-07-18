@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
-      <v-card-title class="headline">{{
+      <v-card-title color="primary" class="headline">{{
         isEdit ? '보호자 정보 수정' : '보호자 정보 추가'
       }}</v-card-title>
       <v-card-text>

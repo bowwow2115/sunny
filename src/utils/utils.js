@@ -95,7 +95,7 @@ const Utils = {
 
     while (start <= end) {
       intervals.push(formatTime(start))
-      start.setMinutes(start.getMinutes() + 5) // 5분 단위로 증가
+      start.setMinutes(start.getMinutes() + 1) // 5분 단위로 증가
     }
 
     return intervals

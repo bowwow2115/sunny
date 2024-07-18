@@ -59,9 +59,9 @@ export default {
     drawer: false,
     items: [
       { title: 'dashboard', icon: 'mdi-view-dashboard', to: '/' },
-      { title: 'ChildRegist', icon: 'mdi-image', to: '/ChildRegist' },
-      { title: 'ChildrenList', icon: 'mdi-image', to: '/ChildrenList' },
-      { title: 'RideTimeline', icon: 'mdi-image', to: '/RideTimeline' },
+      { title: '원아등록', icon: 'mdi-image', to: '/ChildRegist' },
+      { title: '원아조회', icon: 'mdi-image', to: '/ChildrenList' },
+      { title: '차량운행조회', icon: 'mdi-image', to: '/RideTimeline' },
     ],
     right: null,
   }),
