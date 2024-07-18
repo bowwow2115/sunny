@@ -1,6 +1,6 @@
 <template>
   <div>
-    <parents-ride-info ref="parentsRideInfo"></parents-ride-info>
+    <children-more-info ref="childrenMoreInfo"></children-more-info>
     <v-data-iterator
       :items="childrenList"
       :items-per-page.sync="itemsPerPage"
@@ -166,9 +166,9 @@
 
 <script>
 import { getChildren } from '@/api/api'
-import ParentsRideInfo from '@/components/dialog/ParentsRideInfo.vue'
+import ChildrenMoreInfo from '@/components/dialog/ChildrenMoreInfo.vue'
 export default {
-  components: { ParentsRideInfo },
+  components: { ChildrenMoreInfo },
   name: 'ChildrenList',
   mounted() {
     this.getChildren()
@@ -240,7 +240,7 @@ export default {
       )
     },
     openInfoDialog(info) {
-      this.$refs.parentsRideInfo.showInfo({
+      this.$refs.childrenMoreInfo.showInfo({
         id: info.id,
         childCode: info.childCode,
         admissionDate: info.admissionDate,
