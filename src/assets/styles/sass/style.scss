@@ -2,11 +2,14 @@
 
 
 .v-text-field {
-  fieldset {}
+
   .v-label--active.primary--text {
     font-weight: 700 !important;
   }
   .v-icon.primary--text {}
+  fieldset {
+    color: rgba(0, 0, 0, 0.15);
+  }
 }
 .v-select {
   .v-list-item.primary--text {}
@@ -38,7 +41,7 @@ body, .v-main {
   vertical-align: top;
   margin-right: 5px;
 }
-.custom-chkbox[type=checkbox] {
+input[type=checkbox] {
   display: none;
 }
 .custom-chkbox[type=checkbox] + label {
@@ -60,12 +63,8 @@ body, .v-main {
   color: var(--v-primary-darken1) !important;
   font-weight: 400;
 }
-.btn {
-
-}
 .btn .v-btn__content {
   letter-spacing: -0.025em !important;
-  font-weight: 700;
 }
 .label-with-btn {
   min-height: 56px;
@@ -75,4 +74,7 @@ body, .v-main {
 }
 .btn-main .v-btn__content {
   color: #fff;
+}
+.btn-add {
+  box-shadow: none;
 }
