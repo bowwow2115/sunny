@@ -31,7 +31,7 @@
                   v-model="selectedRide"
                   :items="selectedAmPm == '오전' ? amRideList : pmRideList"
                   item-text="name"
-                  item-value="sunnyChildRideList"
+                  return-object
                 ></v-select>
               </v-col>
               <!-- <div class="text-h5 font-weight-light">오전</div> -->
@@ -46,7 +46,7 @@
         <v-timeline-item
           color="primary"
           small
-          v-for="(item, index) in selectedRide"
+          v-for="(item, index) in selectedRide.sunnyChildRideList"
           :key="index"
         >
           <v-row class="pt-1">
@@ -96,7 +96,7 @@ export default {
       rideList: [],
       amRideList: [],
       pmRideList: [],
-      selectedRide: [],
+      selectedRide: {},
       selectedAmPm: '오전',
     }
   },
@@ -114,7 +114,7 @@ export default {
                 if (item.am) this.amRideList.push(item)
                 else this.pmRideList.push(item)
               })
-              this.selectedRide = this.amRideList[0].sunnyChildRideList
+              this.selectedRide = this.amRideList[0]
             }
           })
           .catch((e) => {
@@ -127,8 +127,6 @@ export default {
     },
     async openRideChildDialog(isEdit, ride) {
       ride.isEdit = isEdit
-      ride.sunnyRide = this.selectedRide
-      console.log(ride)
       const result = this.$dialog(ManageRideChildDialog, ride)
     },
   },
