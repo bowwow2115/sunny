@@ -24,16 +24,6 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="5">
-              <v-text-field
-                v-model="form.childCode"
-                label="원아코드"
-                :rules="numRules"
-                hide-details="auto"
-                required
-                outlined
-              ></v-text-field>
-            </v-col>
             <v-col cols="7" class="ps-0">
               <v-text-field
                 v-model="form.name"
@@ -362,7 +352,6 @@ export default {
       hasPmRide: false,
       form: {
         id: '',
-        childCode: '',
         birthday: '',
         admissionDate: `${moment().format('YYYY-MM-DD')}`,
         className: '',

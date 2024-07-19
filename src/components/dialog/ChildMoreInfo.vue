@@ -148,14 +148,14 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item style="padding: 0px">
-              <v-spacer></v-spacer>
-              <v-btn @click="openChildRideDialog(false, {}, true)"
-                ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-list-item>
           </div>
+          <v-list-item style="padding: 0px">
+            <v-spacer></v-spacer>
+            <v-btn @click="openChildRideDialog(false, {}, true)"
+              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+            >
+            <v-spacer></v-spacer>
+          </v-list-item>
         </v-list-group>
       </v-list>
       <v-divider></v-divider>
@@ -222,14 +222,14 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item style="padding: 0px">
-              <v-spacer></v-spacer>
-              <v-btn @click="openChildRideDialog(false, {}, false)"
-                ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-list-item>
           </div>
+          <v-list-item style="padding: 0px">
+            <v-spacer></v-spacer>
+            <v-btn @click="openChildRideDialog(false, {}, false)"
+              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+            >
+            <v-spacer></v-spacer>
+          </v-list-item>
         </v-list-group>
       </v-list>
       <!-- 원아정보 -->
@@ -391,7 +391,7 @@ export default {
           })
       }
     },
-    getChildrenMoreInfo() {
+    getChildMoreInfo() {
       this.$withLoading(
         getChildById(this.form.id)
           .then((response) => {
