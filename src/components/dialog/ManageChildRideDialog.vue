@@ -2,26 +2,31 @@
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title class="headline">{{
-        (form.sunnyRide.am ? '오전' : '오후') +
+        (form.meetingLocation.sunnyRide.am ? '오전' : '오후') +
         (isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>
       <v-card-text>
         <v-select
           prepend-icon="mdi-bus"
-          v-model="form.sunnyRide.id"
-          :items="form.sunnyRide.am ? amRideNameList : pmRideNameList"
+          v-model="selectedRide"
+          :items="
+            form.meetingLocation.sunnyRide.am ? amRideNameList : pmRideNameList
+          "
           item-text="name"
-          item-value="id"
-          :label="(form.sunnyRide.am ? '오전' : '오후') + '코스를 선택해주세요'"
+          return-object
+          :label="
+            (form.meetingLocation.sunnyRide.am ? '오전' : '오후') +
+            '코스를 선택해주세요'
+          "
           clearable
         ></v-select>
         <v-select
           prepend-icon="mdi-human-male-child"
-          v-model="form.time"
-          :label="
-            (form.sunnyRide.am ? '승차' : '하차') + '차량시간을 선택해주세요.'
-          "
-          :items="form.sunnyRide.am ? amRideTimeList : pmRideTimeList"
+          v-model="form.meetingLocation"
+          :label="'승하차 장소를 선택해주세요.'"
+          item-text="name"
+          return-object
+          :items="selectedRide.meetingLocationList"
           clearable
         ></v-select>
         <v-text-field
@@ -56,14 +61,16 @@ export default {
       form: {
         id: '',
         comment: '',
-        time: '',
-        sunnyRide: { id: '', am: false, comment: '', name: '' },
+        meetingLocation: {
+          id: '',
+          name: '',
+          sunnyRide: { am: false, comment: '', name: '', time: '', id: '' },
+        },
         child: { id: '' },
       },
       isEdit: false,
-      amRideTimeList: Utils.getTimeIntervals('07:00', '10:00'),
+      selectedRide: { meetingLocationList: [] },
       amRideNameList: [],
-      pmRideTimeList: Utils.getTimeIntervals('15:00', '19:00'),
       pmRideNameList: [],
     }
   },
@@ -73,6 +80,10 @@ export default {
         .then((response) => {
           if (response.data != null) {
             response.data.forEach((element) => {
+              if (element.meetingLocationList != null)
+                element.meetingLocationList.forEach((meetingLocation) => {
+                  meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
+                })
               if (element.am) this.amRideNameList.push(element)
               else this.pmRideNameList.push(element)
             })
@@ -87,10 +98,11 @@ export default {
       this.visible = true
       this.form.id = item.id
       this.form.comment = item.comment
-      this.form.sunnyRide = item.sunnyRide
+      this.form.meetingLocation = item.meetingLocation
       this.form.time = item.time
       this.form.child = item.child
       this.isEdit = item.isEdit
+      this.selectedRide = this.form.meetingLocation.sunnyRide
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject

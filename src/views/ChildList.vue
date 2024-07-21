@@ -183,25 +183,9 @@ export default {
       page: 1,
       itemsPerPage: 4,
       sortBy: 'name',
-      sortByList: [
-        '이름',
-        '원아코드',
-        '입학일',
-        '반명',
-        '주소',
-        '생일',
-        '재원여부',
-      ],
+      sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'],
       keys: [
-        // 'name',
-        // 'childCode',
-        // 'admissionDate',
-        // 'className',
-        // 'address',
-        // 'birthday',
-        // 'status',
         { key: 'name', name: '이름' },
-        { key: 'childCode', name: '원아코드' },
         { key: 'admissionDate', name: '입학일' },
         { key: 'className', name: '반명' },
         { key: 'address', name: '주소' },
@@ -240,17 +224,25 @@ export default {
       )
     },
     openInfoDialog(info) {
+      let amChildRideList = []
+      let pmChildRideList = []
+      if (info.childRideList != null)
+        info.childRideList.forEach((childRide) => {
+          if (childRide.meetingLocation.sunnyRide.am)
+            amChildRideList.push(childRide)
+          else pmChildRideList.push(childRide)
+        })
+
       this.$refs.childMoreInfo.showInfo({
         id: info.id,
-        childCode: info.childCode,
         admissionDate: info.admissionDate,
         className: info.className,
         address: info.address,
         birthday: info.birthday,
         parentList: info.parentList,
         status: info.status,
-        amRide: info.amRide,
-        pmRide: info.pmRide,
+        amChildRideList: amChildRideList,
+        pmChildRideList: pmChildRideList,
         name: info.name,
       })
     },
@@ -267,8 +259,6 @@ export default {
       switch (key) {
         case 'name':
           return '이름'
-        case 'childCode':
-          return '원아코드'
         case 'admissionDate':
           return '입학일'
         case 'className':
