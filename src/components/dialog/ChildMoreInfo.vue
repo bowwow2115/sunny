@@ -98,11 +98,11 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  form.amRide.sunnyRide.name + ' 코스'
+                  form.amRide.meetingLocation.sunnyRide.name + ' 코스'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  form.amRide.sunnyRide.time ||
-                  '' + ' ' + form.amRide.sunnyRide.comment
+                  form.amRide.meetingLocation.sunnyRide.time ||
+                  '' + ' ' + form.amRide.meetingLocation.sunnyRide.comment
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -172,11 +172,11 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{
-                  form.pmRide.sunnyRide.name + ' 코스'
+                  form.pmRide.meetingLocation.sunnyRide.name + ' 코스'
                 }}</v-list-item-title>
                 <v-list-item-subtitle>{{
-                  form.pmRide.sunnyRide.time ||
-                  '' + ' ' + form.pmRide.sunnyRide.comment
+                  form.pmRide.meetingLocation.sunnyRide.time ||
+                  '' + ' ' + form.pmRide.meetingLocation.sunnyRide.comment
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
@@ -322,8 +322,8 @@ export default {
       item.child = {}
       item.child.id = this.form.id
       if (am != null) {
-        item.sunnyRide = {}
-        item.sunnyRide.am = am
+        item.meetingLocation.sunnyRide = {}
+        item.meetingLocation.sunnyRide.am = am
       }
       const result = await this.$dialog(ChildRideDialog, item)
       if (result) {
@@ -338,7 +338,7 @@ export default {
             message: '추가가 완료되었습니다.',
           })
         }
-        if (result.sunnyRide.am) this.form.amRide = result
+        if (result.meetingLocation.sunnyRide.am) this.form.amRide = result
         else this.form.pmRide = result
       }
     },
@@ -370,7 +370,7 @@ export default {
     async deleteChildRide(childRide) {
       const result = await this.$confirm({
         message: `${
-          childRide.sunnyRide.am ? '오전정보' : '오후정보'
+          childRide.meetingLocation.sunnyRide.am ? '오전정보' : '오후정보'
         }를 정말 삭제하시겠습니까?`,
       })
       if (result) {
@@ -381,7 +381,7 @@ export default {
                 type: 'success',
                 message: '성공적으로 삭제했습니다.',
               })
-              childRide.sunnyRide.am
+              childRide.meetingLocation.sunnyRide.am
                 ? (this.form.amRide = null)
                 : (this.form.pmRide = null)
             }
