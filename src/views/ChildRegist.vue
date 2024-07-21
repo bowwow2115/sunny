@@ -239,76 +239,129 @@
 
       <!-- ---------- 탑승차량 정보 ---------- -->
       <v-card class="my-4 pa-2 rounded-xl">
-        <v-card-title>탑승차량 정보</v-card-title>
-        <v-card-subtitle>라라라</v-card-subtitle>
+        <v-card-title
+          >탑승차량 정보
+          <v-spacer></v-spacer>
+          <v-checkbox
+            v-model="hasRide"
+            @click="form.childRideList = []"
+            label="차량 사용여부"
+          ></v-checkbox>
+        </v-card-title>
+        <v-card-subtitle>
+          <v-row align="center" justify="start">
+            <v-col
+              v-for="(childRide, i) in form.childRideList"
+              :key="i"
+              class="shrink"
+            >
+              <v-menu
+                v-model="form.childRideList[i].menuOpen"
+                bottom
+                right
+                transition="scale-transition"
+                origin="top left"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-chip
+                    close
+                    v-on="on"
+                    :dark="childRide.amPm == '오후'"
+                    @click:close="form.childRideList.splice(i, 1)"
+                  >
+                    <v-icon left>{{
+                      childRide.amPm == '오전'
+                        ? 'mdi-white-balance-sunny'
+                        : 'mdi-moon-waning-crescent'
+                    }}</v-icon>
+                    <!-- // `${childRide.rideName}, ${childRide.meetingLocation.name}, ${childRide.comment}` -->
+                    {{ truncateString(childRide.meetingLocation.name, 18) }}
+                  </v-chip>
+                </template>
+
+                <v-card width="300" dark>
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-icon>
+                        <v-icon>mdi-bus</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title>{{
+                          childRide.rideName
+                        }}</v-list-item-title>
+                        <v-list-item-subtitle>{{
+                          childRide.amPm
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-list-item-action>
+                        <v-btn
+                          icon
+                          @click="form.childRideList[i].menuOpen = false"
+                        >
+                          <v-icon>mdi-close-circle</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list>
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-icon>
+                        <v-icon>mdi-map-marker</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          {{ childRide.meetingLocation.name }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>{{
+                          childRide.comment
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card-subtitle>
         <v-card-text>
           <v-row>
             <v-col cols="12" md="6">
-              <input
-                type="checkbox"
-                v-model="hasAmRide"
-                class="chkbox-ride"
-                id="hasAmRideChk"
-              /><label for="hasAmRideChk">오전차량 사용여부</label>
-              <div class="pickup" v-if="hasAmRide">
-                <v-subheader>오전</v-subheader>
+              <div class="pickup" v-if="hasRide">
                 <v-select
-                  v-model="form.amRide.sunnyRide.id"
-                  :items="amRideNameList"
-                  item-text="name"
-                  item-value="id"
-                  label="코스를 선택하세요"
+                  v-model="amPm"
+                  :items="['오전', '오후']"
+                  label="시간대를 선택하세요"
                   outlined
                   :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-select
-                  v-model="form.amRide.time"
-                  :items="amRideTimeList"
-                  label="승차 시간"
+                  v-model="selectedRide"
+                  :items="amPm == '오전' ? amRideNameList : pmRideNameList"
+                  item-text="name"
+                  return-object
+                  :label="
+                    (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
+                  "
+                  outlined
+                  :menu-props="{ offsetY: true }"
+                ></v-select>
+                <v-select
+                  v-model="selectedMeetingLocation"
+                  :items="selectedRide.meetingLocationList"
+                  item-text="name"
+                  return-object
+                  :label="'승하차 장소를 선택해주세요'"
                   outlined
                   :menu-props="{ offsetY: true }"
                 ></v-select>
                 <v-text-field
-                  v-model="form.amRide.comment"
+                  v-model="childRideComment"
                   label="비고"
                   outlined
                   clearable
                 >
                 </v-text-field>
-              </div>
-            </v-col>
-            <v-col cols="12" md="6">
-              <input
-                type="checkbox"
-                v-model="hasPmRide"
-                class="chkbox-ride"
-                id="hasPmRideChk"
-              /><label for="hasPmRideChk">오후차량 사용여부</label>
-              <div class="pickup" v-if="hasPmRide">
-                <v-subheader>오후</v-subheader>
-                <v-select
-                  v-model="form.pmRide.sunnyRide.id"
-                  :items="pmRideNameList"
-                  label="코스를 선택하세요."
-                  item-text="name"
-                  item-value="id"
-                  outlined
-                  :menu-props="{ offsetY: true }"
-                ></v-select>
-                <v-select
-                  v-model="form.pmRide.time"
-                  :items="pmRideTimeList"
-                  label="하차 시간"
-                  outlined
-                  :menu-props="{ offsetY: true }"
-                ></v-select>
-                <v-text-field
-                  v-model="form.pmRide.comment"
-                  label="비고"
-                  outlined
-                  clearable
-                >
-                </v-text-field>
+                <v-btn @click="pushChildRideList()">추가</v-btn>
               </div>
             </v-col>
           </v-row>
@@ -328,7 +381,6 @@
 
 <script>
 import { addChild, getClassList, getRideList } from '@/api/api'
-
 export default {
   name: 'ChildRegist',
   components: {
@@ -339,17 +391,15 @@ export default {
   },
   data() {
     return {
-      items: [
-        { tab: '원아등록', content: '/ChildRegistForm' },
-        { tab: '학부모등록', content: '/parentRegistForm' },
-      ],
-      tab: null,
-      valid: true,
+      valid: false,
       birthdayWrap: false, //생년월일 필드와 picker를 묶는 역할
       addmisionDateWrap: false,
       activePicker: null,
-      hasAmRide: false,
-      hasPmRide: false,
+      hasRide: false,
+      amPm: '오전',
+      selectedRide: { meetingLocationList: [] },
+      selectedMeetingLocation: {},
+      childRideComment: '',
       form: {
         id: '',
         birthday: '',
@@ -364,10 +414,13 @@ export default {
             telephone: '',
           },
         ],
-        amRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
-        pmRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
+        childRideList: [
+          // { comment: '', meetingLocation: { name: '', time: '' } },
+        ],
+        // amRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
+        // pmRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
       },
-      classNameList: ['1반', '2반'],
+      classNameList: [],
       birthday: '',
       // parentBoxes: [
       //   {
@@ -377,9 +430,7 @@ export default {
       //   },
       // ],
       parentTypeList: ['부', '모', '조부', '조모', '그 외'],
-      amRideTimeList: Utils.getTimeIntervals('07:00', '10:00'),
       amRideNameList: [],
-      pmRideTimeList: Utils.getTimeIntervals('15:00', '19:00'),
       pmRideNameList: [],
       numRules: [
         (v) => !!v || '필수 항목입니다.',
@@ -440,22 +491,51 @@ export default {
       }
     },
     addChild() {
-      if (!this.hasAmRide) this.form.amRide = null
-      if (!this.hasPmRide) this.form.pmRide = null
       let param = this.form
-      addChild(param)
-        .then((response) => {
-          if (response.code == '0') {
-            this.$showMessage({
-              type: 'success',
-              message: '원아 등록이 성공적으로 완료되었습니다.',
-            })
-            //TODO: 화면이동 or 인풋값 초기화
-          }
+      if (
+        this.form.childRideList == null ||
+        this.form.childRideList.length == 0
+      )
+        this.form.childRideList = null
+
+      this.$withLoading(
+        addChild(param)
+          .then((response) => {
+            if (response.code == '0') {
+              this.$showMessage({
+                type: 'success',
+                message: '원아 등록이 성공적으로 완료되었습니다.',
+              })
+              //TODO: 화면이동 or 인풋값 초기화
+            }
+          })
+          .catch((e) => {
+            this.$showError(e)
+          })
+      )
+    },
+    pushChildRideList() {
+      if (
+        this.selectedMeetingLocation.name == null ||
+        this.selectedRide.name == null
+      ) {
+        this.$showMessage({
+          type: 'warning',
+          message: '차량코스와 승하차 장소를 선택해주세요',
         })
-        .catch((e) => {
-          this.$showError(e)
-        })
+        return
+      }
+      let childRide = {}
+      childRide.comment = this.childRideComment
+      childRide.meetingLocation = this.selectedMeetingLocation
+      childRide.rideName = this.selectedRide.name
+      childRide.amPm = this.amPm
+      childRide.menuOpen = false
+      this.form.childRideList.push(childRide)
+      //입력값 초기화
+      this.childRideComment = ''
+      this.selectedMeetingLocation = {}
+      this.selectedRide = { meetingLocationList: [] }
     },
     getClassList() {
       getClassList()
@@ -478,6 +558,10 @@ export default {
         .then((response) => {
           if (response.data != null) {
             response.data.forEach((element) => {
+              if (element.meetingLocationList != null)
+                element.meetingLocationList.forEach((meetingLocation) => {
+                  meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
+                })
               if (element.am) this.amRideNameList.push(element)
               else this.pmRideNameList.push(element)
             })
@@ -487,6 +571,12 @@ export default {
           console.log(error)
           this.$showError(error)
         })
+    },
+    truncateString(str, maxLength) {
+      if (str.length <= maxLength) {
+        return str
+      }
+      return str.slice(0, maxLength) + '...'
     },
   },
 }
