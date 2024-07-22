@@ -248,80 +248,8 @@
             label="차량 사용여부"
           ></v-checkbox>
         </v-card-title>
-        <v-card-subtitle>
-          <v-row align="center" justify="start">
-            <v-col
-              v-for="(childRide, i) in form.childRideList"
-              :key="i"
-              class="shrink"
-            >
-              <v-menu
-                v-model="form.childRideList[i].menuOpen"
-                bottom
-                right
-                transition="scale-transition"
-                origin="top left"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-chip
-                    close
-                    v-on="on"
-                    :dark="childRide.amPm == '오후'"
-                    @click:close="form.childRideList.splice(i, 1)"
-                  >
-                    <v-icon left>{{
-                      childRide.amPm == '오전'
-                        ? 'mdi-white-balance-sunny'
-                        : 'mdi-moon-waning-crescent'
-                    }}</v-icon>
-                    <!-- // `${childRide.rideName}, ${childRide.meetingLocation.name}, ${childRide.comment}` -->
-                    {{ truncateString(childRide.meetingLocation.name, 18) }}
-                  </v-chip>
-                </template>
-
-                <v-card width="300" dark>
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-bus</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>{{
-                          childRide.rideName
-                        }}</v-list-item-title>
-                        <v-list-item-subtitle>{{
-                          childRide.amPm
-                        }}</v-list-item-subtitle>
-                      </v-list-item-content>
-                      <v-list-item-action>
-                        <v-btn
-                          icon
-                          @click="form.childRideList[i].menuOpen = false"
-                        >
-                          <v-icon>mdi-close-circle</v-icon>
-                        </v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-list>
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-map-marker</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          {{ childRide.meetingLocation.name }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle>{{
-                          childRide.comment
-                        }}</v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list>
-                </v-card>
-              </v-menu>
-            </v-col>
-          </v-row>
+        <v-card-subtitle
+          >차량 사용 시 사용여부를 체크한 후 입력해주세요.
         </v-card-subtitle>
         <v-card-text>
           <v-row>
@@ -364,6 +292,79 @@
                 <v-btn @click="pushChildRideList()">추가</v-btn>
               </div>
             </v-col>
+            <v-row align="center" justify="start">
+              <v-col
+                v-for="(childRide, i) in form.childRideList"
+                :key="i"
+                class="shrink"
+              >
+                <v-menu
+                  v-model="form.childRideList[i].menuOpen"
+                  bottom
+                  right
+                  transition="scale-transition"
+                  origin="top left"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-chip
+                      close
+                      v-on="on"
+                      :dark="childRide.amPm == '오후'"
+                      @click:close="form.childRideList.splice(i, 1)"
+                    >
+                      <v-icon left>{{
+                        childRide.amPm == '오전'
+                          ? 'mdi-white-balance-sunny'
+                          : 'mdi-moon-waning-crescent'
+                      }}</v-icon>
+                      <!-- // `${childRide.rideName}, ${childRide.meetingLocation.name}, ${childRide.comment}` -->
+                      {{ truncateString(childRide.meetingLocation.name, 18) }}
+                    </v-chip>
+                  </template>
+
+                  <v-card width="300" dark>
+                    <v-list>
+                      <v-list-item>
+                        <v-list-item-icon>
+                          <v-icon>mdi-bus</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>{{
+                            childRide.rideName
+                          }}</v-list-item-title>
+                          <v-list-item-subtitle>{{
+                            childRide.amPm
+                          }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-btn
+                            icon
+                            @click="form.childRideList[i].menuOpen = false"
+                          >
+                            <v-icon>mdi-close-circle</v-icon>
+                          </v-btn>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-list>
+                    <v-list>
+                      <v-list-item>
+                        <v-list-item-icon>
+                          <v-icon>mdi-map-marker</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ childRide.meetingLocation.name }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle>{{
+                            childRide.comment
+                          }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
+              </v-col>
+            </v-row>
           </v-row>
         </v-card-text>
       </v-card>
