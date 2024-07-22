@@ -120,7 +120,7 @@
                 <v-list-item-icon>
                   <v-icon
                     color="green accent-4"
-                    @click="openChildRideDialog(true, childRide)"
+                    @click="openChildRideDialog(true, childRide, true)"
                     >mdi-pencil</v-icon
                   >
                 </v-list-item-icon>
@@ -179,7 +179,7 @@
           </template>
           <v-list-item-group
             v-if="
-              form.amChildRideList != null && form.amChildRideList.length !== 0
+              form.pmChildRideList != null && form.pmChildRideList.length !== 0
             "
           >
             <div
@@ -206,7 +206,7 @@
                 <v-list-item-icon>
                   <v-icon
                     color="green accent-4"
-                    @click="openChildRideDialog(true, childRide)"
+                    @click="openChildRideDialog(true, childRide, false)"
                     >mdi-pencil</v-icon
                   >
                 </v-list-item-icon>
@@ -338,15 +338,11 @@ export default {
         }
       }
     },
-    async openChildRideDialog(isEdit, item = {}, am = null) {
+    async openChildRideDialog(isEdit, item = {}, am) {
       item.isEdit = isEdit
       item.child = {}
       item.child.id = this.form.id
-      // if (am != null) {
-      //   item.meetingLocation.sunnyRide = {}
-      //   item.meetingLocation.sunnyRide.am = am
-      // }
-      console.log(item)
+      item.am = am
       const result = await this.$dialog(ChildRideDialog, item)
       if (result) {
         if (isEdit) {
@@ -354,14 +350,40 @@ export default {
             type: 'success',
             message: '수정이 완료되었습니다.',
           })
+          if (am) {
+            let index = this.form.amChildRideList.findIndex(
+              (item) => item.id == result.id
+            )
+            if (index !== -1) {
+              this.$set(this.form.amChildRideList, index, result)
+            }
+          } else {
+            let index = this.form.pmChildRideList.findIndex(
+              (item) => item.id == result.id
+            )
+            if (index !== -1) {
+              this.$set(this.form.pmChildRideList, index, result)
+            }
+          }
         } else {
           this.$showMessage({
             type: 'success',
             message: '추가가 완료되었습니다.',
           })
+          if (am) {
+            this.$set(
+              this.form.amChildRideList,
+              this.form.amChildRideList.length,
+              result
+            )
+          } else {
+            this.$set(
+              this.form.pmChildRideList,
+              this.form.pmChildRideList.length,
+              result
+            )
+          }
         }
-        if (result.meetingLocation.sunnyRide.am) this.childRide = result
-        else this.form.pmRide = result
       }
     },
     async deleteParents(parents) {
@@ -391,9 +413,7 @@ export default {
     },
     async deleteChildRide(childRide) {
       const result = await this.$confirm({
-        message: `${
-          childRide.meetingLocation.sunnyRide.am ? '오전정보' : '오후정보'
-        }를 정말 삭제하시겠습니까?`,
+        message: `${childRide.meetingLocation.sunnyRide.name}를 정말 삭제하시겠습니까?`,
       })
       if (result) {
         deleteChildRide(childRide.id)
@@ -403,9 +423,24 @@ export default {
                 type: 'success',
                 message: '성공적으로 삭제했습니다.',
               })
-              childRide.meetingLocation.sunnyRide.am
-                ? (this.childRide = null)
-                : (this.form.pmRide = null)
+              if (childRide.meetingLocation.sunnyRide.am) {
+                let index = this.form.amChildRideList.findIndex(
+                  (item) => item.id == childRide.id
+                )
+                if (index !== -1) {
+                  this.$delete(this.form.amChildRideList, index)
+                }
+              } else {
+                let index = this.form.pmChildRideList.findIndex(
+                  (item) => item.id == childRide.id
+                )
+                if (index !== -1) {
+                  this.$delete(this.form.pmChildRideList, index)
+                }
+              }
+              // childRide.meetingLocation.sunnyRide.am
+              //   ? (this.childRide = null)
+              //   : (this.form.pmRide = null)
             }
           })
           .catch((e) => {
