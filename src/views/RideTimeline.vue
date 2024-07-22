@@ -46,36 +46,42 @@
         <v-timeline-item
           color="primary"
           small
-          v-for="(item, index) in selectedRide.sunnyChildRideList"
+          v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
           :key="index"
         >
-          <v-row class="pt-1">
-            <v-col cols="4">
-              <strong>{{ item.time }}</strong>
-            </v-col>
-            <v-col cols="6" style="padding-top: 0px">
-              <v-chip
-                class="ma-2"
-                @click="openParentsDialog(item.child.parentList)"
-                label
-                small
-                ><strong>{{ item.child.name }}</strong></v-chip
-              >
+          <v-card>
+            <v-card-title>
+              {{ meetingLocation.time }}
+              <v-spacer></v-spacer>
+              <v-btn>더보기</v-btn>
+            </v-card-title>
+            <v-card-subtitle>{{ meetingLocation.name }}</v-card-subtitle>
+            <v-card-text>
               <div class="text-caption">
-                {{
-                  `${item.child.address.address} ${item.child.address.detailAddress}`
-                }}
+                <v-chip
+                  v-for="(childRide, j) in meetingLocation.childRideList"
+                  :key="j"
+                  x-small
+                >
+                  {{
+                    `${childRide.child.name}(${childRide.child.className})  ${
+                      childRide.comment || ''
+                    }`
+                  }}
+                </v-chip>
               </div>
-              <div class="text-caption">{{ `${item.comment}` }}</div>
-            </v-col>
-            <v-col cols="2">
+              <div class="text-caption">
+                {{ meetingLocation.comment || '' }}
+              </div>
+            </v-card-text>
+            <!-- <v-col cols="2">
               <v-icon
                 color="green accent-4"
                 @click="openRideChildDialog(true, item)"
                 >mdi-pencil</v-icon
               >
-            </v-col>
-          </v-row>
+            </v-col> -->
+          </v-card>
         </v-timeline-item>
       </v-timeline>
     </v-card-text>
