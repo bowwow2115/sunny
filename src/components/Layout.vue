@@ -16,9 +16,9 @@
       <!-- 메뉴 navi - list -->
       <v-list dense nav>
         <v-list-item v-for="item in items" :key="item.title" link :to="item.to">
-          <v-item-icon>
+          <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
-          </v-item-icon>
+          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
@@ -80,9 +80,24 @@ export default {
   data: () => ({
     drawer: false,
     items: [
-      { title: '원아등록', icon: 'mdi-image', to: '/ChildRegist' },
-      { title: '원아조회', icon: 'mdi-image', to: '/ChildList' },
-      { title: '차량운행조회', icon: 'mdi-image', to: '/RideTimeline' },
+      {
+        title: '원아등록',
+        icon: 'mdi-image',
+        to: '/ChildRegist',
+        name: 'ChildRegist',
+      },
+      {
+        title: '원아조회',
+        icon: 'mdi-image',
+        to: '/ChildList',
+        name: 'ChildList',
+      },
+      {
+        title: '차량운행조회',
+        icon: 'mdi-image',
+        to: '/RideTimeline',
+        name: 'RideTimeline',
+      },
     ],
     right: null,
   }),

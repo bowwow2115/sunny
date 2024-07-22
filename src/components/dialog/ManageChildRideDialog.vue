@@ -14,14 +14,15 @@
             return-object
             :rules="rideRule"
             :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
+            @input="resetMeetingLocation()"
           ></v-select>
           <v-select
             prepend-icon="mdi-human-male-child"
-            v-model="form.meetingLocation"
+            v-model="form.meetingLocation.id"
             :label="'승하차 장소를 선택해주세요.'"
             :rules="meetingLocationRule"
             item-text="name"
-            return-object
+            item-value="id"
             :items="selectedSunnyRide.meetingLocationList"
           ></v-select>
           <v-text-field
@@ -76,7 +77,7 @@ export default {
       am: false,
       amRideNameList: [],
       pmRideNameList: [],
-      selectedSunnyRide: {},
+      selectedSunnyRide: { meetingLocationList: [] },
       rideRule: [(v) => !!v || '필수 항목입니다.'],
       meetingLocationRule: [(v) => !!v || '필수 항목입니다.'],
     }
@@ -86,14 +87,23 @@ export default {
       getRideList()
         .then((response) => {
           if (response.data != null) {
-            response.data.forEach((element) => {
-              if (element.meetingLocationList != null)
-                element.meetingLocationList.forEach((meetingLocation) => {
+            response.data.forEach((ride) => {
+              if (ride.meetingLocationList != null)
+                ride.meetingLocationList.forEach((meetingLocation) => {
                   meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
                 })
-              if (element.am) this.amRideNameList.push(element)
-              else this.pmRideNameList.push(element)
+              if (ride.am) this.amRideNameList.push(ride)
+              else this.pmRideNameList.push(ride)
             })
+            if (this.isEdit) {
+              this.selectedSunnyRide = this.am
+                ? this.amRideNameList.find(
+                    (item) => item.id == this.form.meetingLocation.sunnyRide.id
+                  )
+                : this.pmRideNameList.find(
+                    (item) => item.id == this.form.meetingLocation.sunnyRide.id
+                  )
+            }
           }
         })
         .catch((error) => {
@@ -102,19 +112,14 @@ export default {
         })
     },
     open(item) {
+      console.log(item)
       this.visible = true
       this.form.id = item.id
       this.form.comment = item.comment
-      this.form.meetingLocation = item.meetingLocation
-      this.form.time = item.time
+      if (item.isEdit) this.form.meetingLocation = item.meetingLocation
       this.form.child = item.child
       this.isEdit = item.isEdit
       this.am = item.am
-      if (
-        item.meetingLocation != null &&
-        item.meetingLocation.sunnyRide != null
-      )
-        this.selectedSunnyRide = item.meetingLocation.sunnyRide
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
@@ -152,6 +157,9 @@ export default {
               })
           )
         }
+    },
+    resetMeetingLocation() {
+      this.form.meetingLocation.id = ''
     },
   },
 }
