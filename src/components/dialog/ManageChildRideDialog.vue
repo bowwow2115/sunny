@@ -2,40 +2,36 @@
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title class="headline">{{
-        (form.meetingLocation.sunnyRide.am ? '오전' : '오후') +
-        (isEdit ? '차량 정보 수정' : '차량 정보 추가')
+        (am ? '오전' : '오후') + (isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>
-      <v-card-text>
-        <v-select
-          prepend-icon="mdi-bus"
-          v-model="selectedRide"
-          :items="
-            form.meetingLocation.sunnyRide.am ? amRideNameList : pmRideNameList
-          "
-          item-text="name"
-          return-object
-          :label="
-            (form.meetingLocation.sunnyRide.am ? '오전' : '오후') +
-            '코스를 선택해주세요'
-          "
-          clearable
-        ></v-select>
-        <v-select
-          prepend-icon="mdi-human-male-child"
-          v-model="form.meetingLocation"
-          :label="'승하차 장소를 선택해주세요.'"
-          item-text="name"
-          return-object
-          :items="selectedRide.meetingLocationList"
-          clearable
-        ></v-select>
-        <v-text-field
-          prepend-icon="mdi-comment"
-          v-model="form.comment"
-          label="비고"
-          clearable
-        ></v-text-field>
-      </v-card-text>
+      <v-form v-model="isValid" ref="form" lazy-validation>
+        <v-card-text>
+          <v-select
+            prepend-icon="mdi-bus"
+            v-model="selectedSunnyRide"
+            :items="am ? amRideNameList : pmRideNameList"
+            item-text="name"
+            return-object
+            :rules="rideRule"
+            :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
+          ></v-select>
+          <v-select
+            prepend-icon="mdi-human-male-child"
+            v-model="form.meetingLocation"
+            :label="'승하차 장소를 선택해주세요.'"
+            :rules="meetingLocationRule"
+            item-text="name"
+            return-object
+            :items="selectedSunnyRide.meetingLocationList"
+          ></v-select>
+          <v-text-field
+            prepend-icon="mdi-comment"
+            v-model="form.comment"
+            label="비고"
+            clearable
+          ></v-text-field>
+        </v-card-text>
+      </v-form>
       <v-card-actions>
         <v-btn color="accent" text @click="confirm">{{
           isEdit ? '수정' : '추가'
@@ -55,6 +51,7 @@ export default {
   },
   data() {
     return {
+      isValid: false,
       visible: false,
       resolve: null,
       reject: null,
@@ -64,14 +61,24 @@ export default {
         meetingLocation: {
           id: '',
           name: '',
-          sunnyRide: { am: false, comment: '', name: '', time: '', id: '' },
+          sunnyRide: {
+            am: false,
+            comment: '',
+            name: '',
+            time: '',
+            id: '',
+            meetingLocationList: [],
+          },
         },
         child: { id: '' },
       },
       isEdit: false,
-      selectedRide: { meetingLocationList: [] },
+      am: false,
       amRideNameList: [],
       pmRideNameList: [],
+      selectedSunnyRide: {},
+      rideRule: [(v) => !!v || '필수 항목입니다.'],
+      meetingLocationRule: [(v) => !!v || '필수 항목입니다.'],
     }
   },
   methods: {
@@ -102,7 +109,12 @@ export default {
       this.form.time = item.time
       this.form.child = item.child
       this.isEdit = item.isEdit
-      this.selectedRide = this.form.meetingLocation.sunnyRide
+      this.am = item.am
+      if (
+        item.meetingLocation != null &&
+        item.meetingLocation.sunnyRide != null
+      )
+        this.selectedSunnyRide = item.meetingLocation.sunnyRide
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
@@ -112,33 +124,34 @@ export default {
       this.visible = false
     },
     confirm() {
-      if (this.isEdit) {
-        this.$withLoading(
-          updateChildRide(this.form)
-            .then((response) => {
-              if (response.code == '0') {
-                this.visible = false
-                this.resolve(response.data)
-              }
-            })
-            .catch((e) => {
-              this.$showError(e)
-            })
-        )
-      } else {
-        this.$withLoading(
-          addChildRide(this.form)
-            .then((response) => {
-              if (response.code == '0') {
-                this.visible = false
-                this.resolve(response.data)
-              }
-            })
-            .catch((e) => {
-              this.$showError(e)
-            })
-        )
-      }
+      if (this.$refs.form.validate())
+        if (this.isEdit) {
+          this.$withLoading(
+            updateChildRide(this.form)
+              .then((response) => {
+                if (response.code == '0') {
+                  this.visible = false
+                  this.resolve(response.data)
+                }
+              })
+              .catch((e) => {
+                this.$showError(e)
+              })
+          )
+        } else {
+          this.$withLoading(
+            addChildRide(this.form)
+              .then((response) => {
+                if (response.code == '0') {
+                  this.visible = false
+                  this.resolve(response.data)
+                }
+              })
+              .catch((e) => {
+                this.$showError(e)
+              })
+          )
+        }
     },
   },
 }
