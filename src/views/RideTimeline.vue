@@ -53,10 +53,13 @@
             <v-card-title>
               {{ meetingLocation.time }}
               <v-spacer></v-spacer>
-              <v-btn>더보기</v-btn>
+              <v-icon color="green accent-4">mdi-pencil</v-icon>
             </v-card-title>
             <v-card-subtitle>{{ meetingLocation.name }}</v-card-subtitle>
-            <v-card-text>
+            <v-card-text
+              @click="openParentsDialog(meetingLocation.childRideList)"
+              style="background-color: #fafafa"
+            >
               <div class="text-caption">
                 <v-chip
                   v-for="(childRide, j) in meetingLocation.childRideList"
@@ -128,8 +131,8 @@ export default {
           })
       )
     },
-    async openParentsDialog(parentList) {
-      await this.$dialog(ReadParentsDialog, parentList)
+    async openParentsDialog(childRideList) {
+      await this.$dialog(ReadParentsDialog, childRideList)
     },
     async openRideChildDialog(isEdit, ride) {
       ride.isEdit = isEdit
