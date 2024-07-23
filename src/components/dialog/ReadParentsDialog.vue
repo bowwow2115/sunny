@@ -1,7 +1,13 @@
 <template>
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
-      <v-toolbar color="primary" dark> 보호자 정보 </v-toolbar>
+      <v-toolbar color="primary" dark>
+        <v-toolbar-title> 보호자 정보 </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon dark @click="cancel">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
       <v-list>
         <v-list-group
           :value="index == 0 ? true : false"

@@ -53,7 +53,11 @@
             <v-card-title>
               {{ meetingLocation.time }}
               <v-spacer></v-spacer>
-              <v-icon color="green accent-4">mdi-pencil</v-icon>
+              <v-icon
+                color="green accent-4"
+                @click="openManageMeetingLocationDialog(meetingLocation)"
+                >mdi-pencil</v-icon
+              >
             </v-card-title>
             <v-card-subtitle>{{ meetingLocation.name }}</v-card-subtitle>
             <v-card-text
@@ -94,7 +98,7 @@
 <script>
 import { getRideList } from '@/api/api'
 import ReadParentsDialog from '@/components/dialog/ReadParentsDialog.vue'
-import ManageRideChildDialog from '@/components/dialog/ManageRideChildDialog.vue'
+import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
 export default {
   name: 'RideTimeline',
   data() {
@@ -134,10 +138,14 @@ export default {
     async openParentsDialog(childRideList) {
       await this.$dialog(ReadParentsDialog, childRideList)
     },
-    async openRideChildDialog(isEdit, ride) {
-      ride.isEdit = isEdit
-      const result = this.$dialog(ManageRideChildDialog, ride)
+    async openManageMeetingLocationDialog(meetingLocation) {
+      console.log(meetingLocation)
+      const result = await this.$dialog(
+        ManageMeetingLocationDialog,
+        meetingLocation
+      )
     },
+    async openRideChildDialog() {},
   },
 }
 </script>

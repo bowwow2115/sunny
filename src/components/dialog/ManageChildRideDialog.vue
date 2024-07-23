@@ -17,7 +17,7 @@
             @input="resetMeetingLocation()"
           ></v-select>
           <v-select
-            prepend-icon="mdi-human-male-child"
+            prepend-icon="mdi-map-marker-radius"
             v-model="form.meetingLocation.id"
             :label="'승하차 장소를 선택해주세요.'"
             :rules="meetingLocationRule"
@@ -112,7 +112,6 @@ export default {
         })
     },
     open(item) {
-      console.log(item)
       this.visible = true
       this.form.id = item.id
       this.form.comment = item.comment
