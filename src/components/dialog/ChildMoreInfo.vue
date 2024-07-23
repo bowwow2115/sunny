@@ -128,7 +128,7 @@
 
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-icon>
-                  <v-icon>mdi-human-male-child</v-icon>
+                  <v-icon>mdi-map-marker-radius</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{
@@ -214,7 +214,7 @@
 
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-icon>
-                  <v-icon>mdi-human-male-child</v-icon>
+                  <v-icon>mdi-map-marker-radius</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{
