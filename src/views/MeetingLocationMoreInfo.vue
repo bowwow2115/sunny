@@ -32,7 +32,7 @@
                 <v-list-item-subtitle>{{ form.time }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
-              <v-list-item-icon @click="openMeetingLoactionDialog(true, item)">
+              <v-list-item-icon @click="openMeetingLoactionDialog(form)">
                 <v-icon color="green accent-4">mdi-pencil</v-icon>
               </v-list-item-icon>
             </v-list-item>
@@ -95,6 +95,7 @@
 
 <script>
 import {} from '@/api/api'
+import MeetingLocaiotnDialog from '@/components/dialog/MeetingLocaiotnDialog.vue'
 export default {
   mounted() {},
   data() {
@@ -130,6 +131,7 @@ export default {
       this.visible = false
       this.resolve()
     },
+    async openMeetingLocaiotnDialog() {},
   },
 }
 </script>
