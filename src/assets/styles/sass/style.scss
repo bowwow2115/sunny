@@ -1,5 +1,11 @@
 @import '../variables.scss';
 
+.v-application {
+  [class*='text-'] {
+    font-family: $body-font-family !important; /* variables에서 재정의 하는 것만으로 안먹히는 곳이 있어서 확실히하기 */
+  }
+  font-family: $body-font-family !important;
+}
 
 .v-text-field {
 
@@ -17,29 +23,21 @@
 .v-btn--is-primary {
   color: black !important;
 }
-.v-card__title {
-  font-weight: 700 !important;
-  letter-spacing: -0.025em !important;
-}
 .v-card__title + .v-card__subtitle {
   border-bottom: 1px dashed #e0e0e0;
 }
 body, .v-main {
   background: #f2f2f2;
 }
-.page-title {
-  font-weight: 800;
-  text-align: center;
-}
-.page-title::before {
+._card-title::before {
   content: '';
   display: inline-block;
   width: 10px;
   height: 10px;
   background: linear-gradient(120deg, var(--v-primary-base), var(--v-primary-lighten3));
   border-radius: 100%;
-  vertical-align: top;
-  margin-right: 5px;
+  transform: translatey(-10px);
+  margin-right: 3px;
 }
 input[type=checkbox] {
   display: none;
@@ -61,20 +59,7 @@ input[type=checkbox] {
 }
 .custom-chkbox[type=checkbox]:checked + label > .v-icon {
   color: var(--v-primary-darken1) !important;
-  font-weight: 400;
-}
-.btn .v-btn__content {
-  letter-spacing: -0.025em !important;
 }
 .label-with-btn {
   min-height: 56px;
-}
-.btn-main {
-  background: linear-gradient(160deg, var(--v-primary-base), var(--v-secondary-darken1));
-}
-.btn-main .v-btn__content {
-  color: #fff;
-}
-.btn-add {
-  box-shadow: none;
 }
