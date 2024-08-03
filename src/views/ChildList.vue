@@ -166,7 +166,7 @@
 
 <script>
 import { getChildren } from '@/api/api'
-import ChildMoreInfo from '@/components/dialog/ChildMoreInfo.vue'
+import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
 export default {
   components: { ChildMoreInfo },
   name: 'ChildrenList',

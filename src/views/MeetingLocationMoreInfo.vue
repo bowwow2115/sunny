@@ -95,7 +95,8 @@
 
 <script>
 import {} from '@/api/api'
-import MeetingLocaiotnDialog from '@/components/dialog/MeetingLocaiotnDialog.vue'
+import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
+
 export default {
   mounted() {},
   data() {
@@ -131,7 +132,12 @@ export default {
       this.visible = false
       this.resolve()
     },
-    async openMeetingLocaiotnDialog() {},
+    async openMeetingLoactionDialog(meetingLocation) {
+      const result = await this.$dialog(
+        ManageMeetingLocationDialog,
+        meetingLocation
+      )
+    },
   },
 }
 </script>
