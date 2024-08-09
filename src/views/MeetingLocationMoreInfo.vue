@@ -82,7 +82,7 @@
           </v-list-item>
           <v-list-item style="padding: 0px">
             <v-spacer></v-spacer>
-            <v-btn @click="openAddChildRideDialog(false, {}, true)"
+            <v-btn @click="openAddChildRideDialog()"
               ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
             >
             <v-spacer></v-spacer>
@@ -94,9 +94,9 @@
 </template>
 
 <script>
-import { deleteChildRide } from '@/api/api'
+import { deleteChildRide, getAllChildren } from '@/api/api'
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
-
+import SearchChildDialog from '@/components/dialog/SearchChildDialog.vue'
 export default {
   mounted() {},
   data() {
@@ -162,6 +162,33 @@ export default {
             })
         )
       }
+    },
+    async openAddChildRideDialog() {
+      //원아정보 전달 시 현재 코스에 등록되어있는 원아 필터링 후 넘김(여기서 검색)
+      let item = {}
+      item.meetingLocationName = this.form.name
+      item.childList = await this.getAllChildren()
+      const result = await this.$dialog(SearchChildDialog, item)
+    },
+    async getAllChildren() {
+      let childList = []
+      await this.$withLoading(
+        getAllChildren()
+          .then((response) => {
+            if (response.code == '0') {
+              childList = response.data.filter((child) => {
+                for (let childRide of this.form.childRideList) {
+                  if (childRide.child.id === child.id) return false
+                }
+                return true
+              })
+            }
+          })
+          .catch((e) => {
+            this.$showError(e)
+          })
+      )
+      return childList
     },
   },
 }

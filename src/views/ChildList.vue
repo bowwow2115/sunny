@@ -165,13 +165,13 @@
 </template>
 
 <script>
-import { getChildren } from '@/api/api'
+import { getAllChildren } from '@/api/api'
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
 export default {
   components: { ChildMoreInfo },
   name: 'ChildrenList',
   mounted() {
-    this.getChildren()
+    this.getAllChildren()
   },
   data() {
     return {
@@ -206,9 +206,9 @@ export default {
     },
   },
   methods: {
-    getChildren() {
+    getAllChildren() {
       this.$withLoading(
-        getChildren()
+        getAllChildren()
           .then((response) => {
             if (response.code == '0') {
               response.data.forEach((element) => {
