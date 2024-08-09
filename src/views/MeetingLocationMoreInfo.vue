@@ -63,7 +63,7 @@
                   }}</v-list-item-subtitle>
                   <v-spacer></v-spacer>
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteChildRide(childRide.child)">
+                <v-list-item-icon @click="deleteChildRide(childRide)">
                   <v-icon color="red darken3">mdi-minus</v-icon>
                 </v-list-item-icon>
               </v-list-item>
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import {} from '@/api/api'
+import { deleteChildRide } from '@/api/api'
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
 
 export default {
@@ -127,16 +127,41 @@ export default {
     },
     cancel() {
       this.visible = false
-    },
-    confirm() {
-      this.visible = false
-      this.resolve()
+      this.resolve(true)
     },
     async openMeetingLoactionDialog(meetingLocation) {
       const result = await this.$dialog(
         ManageMeetingLocationDialog,
         meetingLocation
       )
+      if (result != null) {
+        this.form.name = result.name
+        this.form.time = result.time
+      }
+    },
+    async deleteChildRide(childRide) {
+      const result = await this.$confirm({
+        message: `${childRide.child.name}을 정말 ${this.form.name}에서 제외시키겠습니까?`,
+      })
+      if (result) {
+        this.$withLoading(
+          deleteChildRide(childRide.id)
+            .then((response) => {
+              if (response.code == '0') {
+                this.form.childRideList = this.form.childRideList.filter(
+                  (childRide) => childRide.id !== childRide.id
+                )
+                this.$showMessage({
+                  type: 'success',
+                  message: '성공적으로 삭제했습니다.',
+                })
+              }
+            })
+            .catch((e) => {
+              this.$showError(e)
+            })
+        )
+      }
     },
   },
 }

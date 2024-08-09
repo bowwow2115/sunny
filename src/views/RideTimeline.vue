@@ -118,6 +118,10 @@ export default {
   },
   methods: {
     getRideList() {
+      this.rideList = []
+      this.amRideList = []
+      this.pmRideList = []
+      this.selectedRide = null
       this.$withLoading(
         getRideList()
           .then((response) => {
@@ -139,11 +143,11 @@ export default {
       await this.$dialog(ReadParentsDialog, childRideList)
     },
     async openMeetingLocationMoreInfo(meetingLocation) {
-      console.log(meetingLocation)
       const result = await this.$dialog(
         MeetingLocationMoreInfo,
         meetingLocation
       )
+      if (result) this.getRideList()
     },
     async openRideChildDialog() {},
   },
