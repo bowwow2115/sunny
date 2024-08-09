@@ -339,3 +339,7 @@ export function deleteChildRide(id) {
 export function getUnRidedChildren() {
   return get(`${constants.CONTEXT_PATH}/child/unRided`)
 }
+
+export function updateMeetingLoaction(param) {
+  return put(`${constants.CONTEXT_PATH}/meetingLocation`, param)
+}
