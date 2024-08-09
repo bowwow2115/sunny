@@ -292,7 +292,7 @@ export function deleteBody(
   })
 }
 
-export function getChildren() {
+export function getAllChildren() {
   return get(`${constants.CONTEXT_PATH}/child/all`)
 }
 
