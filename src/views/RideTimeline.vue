@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" style="padding: 0">
+  <v-card class="mx-auto" style="padding: 0; margin-top: 56px">
     <v-card dark flat>
       <v-btn
         @click="openRideChildDialog(false, selectedRide)"
@@ -109,19 +109,18 @@ export default {
       rideList: [],
       amRideList: [],
       pmRideList: [],
-      selectedRide: {},
+      selectedRide: { meetingLocationList: [], am: false },
       selectedAmPm: '오전',
     }
   },
   mounted() {
-    this.getRideList()
+    this.getRideList(true)
   },
   methods: {
-    getRideList() {
+    getRideList(init = false) {
       this.rideList = []
       this.amRideList = []
       this.pmRideList = []
-      this.selectedRide = null
       this.$withLoading(
         getRideList()
           .then((response) => {
@@ -131,7 +130,18 @@ export default {
                 if (item.am) this.amRideList.push(item)
                 else this.pmRideList.push(item)
               })
-              this.selectedRide = this.amRideList[0]
+              if (init) this.selectedRide = this.amRideList[0]
+              else {
+                if (this.selectedRide.am) {
+                  this.selectedRide = this.amRideList.find(
+                    (amRide) => amRide.id == this.selectedRide.id
+                  )
+                } else {
+                  this.selectedRide = this.pmRideList.find(
+                    (pmRide) => pmRide.id == this.selectedRide.id
+                  )
+                }
+              }
             }
           })
           .catch((e) => {
