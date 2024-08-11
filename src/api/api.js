@@ -324,6 +324,10 @@ export function addChildRide(param) {
   return post2(`${constants.CONTEXT_PATH}/childRide`, param)
 }
 
+export function addChildRideList(param) {
+  return post2(`${constants.CONTEXT_PATH}/childRide/list`, param)
+}
+
 export function updateChildRide(param) {
   return put(`${constants.CONTEXT_PATH}/childRide`, param)
 }

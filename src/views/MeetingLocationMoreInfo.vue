@@ -148,13 +148,16 @@ export default {
           deleteChildRide(childRide.id)
             .then((response) => {
               if (response.code == '0') {
-                this.form.childRideList = this.form.childRideList.filter(
-                  (childRide) => childRide.id !== childRide.id
-                )
                 this.$showMessage({
                   type: 'success',
                   message: '성공적으로 삭제했습니다.',
                 })
+                let index = this.form.childRideList.findIndex(
+                  (item) => item.id === childRide.id
+                )
+                if (index !== 1) {
+                  this.$delete(this.form.childRideList, index)
+                }
               }
             })
             .catch((e) => {
@@ -167,8 +170,23 @@ export default {
       //원아정보 전달 시 현재 코스에 등록되어있는 원아 필터링 후 넘김(여기서 검색)
       let item = {}
       item.meetingLocationName = this.form.name
+      item.meetingLocationId = this.form.id
       item.childList = await this.getAllChildren()
       const result = await this.$dialog(SearchChildDialog, item)
+      console.log(result)
+      if (result != null) {
+        this.$showMessage({
+          type: 'success',
+          message: '성공적으로 추가했습니다.',
+        })
+        for (let item of result) {
+          this.$set(
+            this.form.childRideList,
+            this.form.childRideList.length,
+            item
+          )
+        }
+      }
     },
     async getAllChildren() {
       let childList = []

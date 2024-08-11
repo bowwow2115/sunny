@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-top: 56px">
     <child-more-info ref="childMoreInfo"></child-more-info>
     <v-data-iterator
       :items="childrenList"
