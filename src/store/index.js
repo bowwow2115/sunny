@@ -9,6 +9,7 @@ Vue.use(Vuex)
 
 const state = {
   isLoading: false,
+  isAdmin: false,
 }
 
 const store = new Vuex.Store({

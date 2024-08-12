@@ -90,6 +90,8 @@ function login(form) {
           return
         } else {
           parseToken(r)
+          if (r.data.roles[0].authority == 'ROLE_ADMIN')
+            store.commit('SET_ADMIN', true)
           resolve(r.data)
         }
       })
@@ -108,6 +110,8 @@ function logout(user) {
   Utils.deleteCookie('refreshToken', '/')
 
   Utils.deleteCookie('lang')
+
+  store.commit('SET_ADMIN', false)
 
   location.href = Utils.checkEnv(process.env.NODE_ENV)
   window.location.reload()

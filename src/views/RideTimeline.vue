@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" style="padding: 0; margin-top: 56px">
+  <v-card class="mx-auto" style="padding: 0">
     <v-card dark flat>
       <v-btn
         @click="openRideChildDialog(false, selectedRide)"
