@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import auth from '@/api/auth'
 import constants from '@/Constants.js'
+import store from '@/store/index.js'
 
 const Layout = () => import('@/components/Layout')
-const AdminLayout = () => import('@/components/admin/AdminLayout')
+const AdminMenu = () => import('@/components/admin/AdminMenu')
 const SignUp = () => import('@/views/SignUp')
 const SignIn = () => import('@/views/SignIn')
 const ChildRegist = () => import('@/views/ChildRegist')
@@ -69,6 +70,12 @@ const router = new Router({
           component: RideTimeline,
           meta: { requiresAuth: true },
         },
+        {
+          path: '/AdminMenu',
+          name: 'AdminMenu',
+          component: AdminMenu,
+          meta: { requiresAuth: true, requiresAdmin: true },
+        },
       ],
     },
     // {
@@ -105,7 +112,15 @@ router.beforeEach((to, from, next) => {
     ;(async () => {
       let isValidate = await validate()
       if (isValidate) {
-        next()
+        next() // TODO:정식 배포 시 주석 후 밑에 주석해제
+        // if (!requiresAdmin) next()
+        // else {
+        //   if (store.getters.isAdmin) next()
+        //   else {
+        //     alert('관리자만 접근할 수 있습니다.')
+        //     return
+        //   }
+        // }
       } else {
         redirectLoginPage()
       }

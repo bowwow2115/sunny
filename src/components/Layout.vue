@@ -1,13 +1,16 @@
 <template>
   <v-app>
     <!-- 상단 bar -->
-    <v-app-bar fixed elevate-on-scroll class="elevation-4">
+    <v-app-bar elevate-on-scroll class="elevation-4">
       <v-app-bar-nav-icon @click="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-app-bar-nav-icon>
       <v-toolbar-title class="text-subtitle-1 font-weight-bold pl-0">{{
         currentTitle
       }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <!-- TODO: 정식 배포 시 밑 주석 <v-btn v-if="isAdmin" @click="goToAdminMenu">어드민 페이지</v-btn> -->
+      <v-btn @click="goToAdminMenu">어드민 페이지</v-btn>
     </v-app-bar>
 
     <!-- 메뉴 navi -->
@@ -49,11 +52,10 @@
 
 <script>
 import auth from '@/api/auth'
-import ErrorDialog from '@/components/dialog/ErrorDialog.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Layout',
-  components: { ErrorDialog },
   data() {
     return {
       drawer: false,
@@ -86,10 +88,16 @@ export default {
       const item = this.items.find((item) => item.name === currentRouteName)
       return item ? item.title : '메뉴'
     },
+    ...mapGetters(['isAdmin']),
   },
   methods: {
     logout() {
       auth.logout()
+    },
+    goToAdminMenu() {
+      if (this.$route.path !== '/AdminMenu') {
+        this.$router.push('/AdminMenu')
+      }
     },
   },
 }
