@@ -9,7 +9,7 @@
     <v-card>
       <v-toolbar color="primary" dark>
         <v-toolbar-title>
-          {{ '반 설정' }}
+          {{ '차량 설정' }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="cancel">
@@ -25,21 +25,26 @@
           <template v-slot:activator>
             <v-list-item-subtitle>반</v-list-item-subtitle>
           </template>
-          <div v-if="form.classList.length != 0">
+          <div v-if="form.rideList.length != 0">
             <v-list-item-group
-              v-for="(sunnyClass, index) in form.classList"
+              v-for="(ride, index) in form.rideList"
               :key="index"
             >
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-content>
-                  <v-list-item-title>{{ sunnyClass.name }}</v-list-item-title>
+                  <v-list-item-title>{{
+                    `${ride.name}(${ride.time})`
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    ride.comment
+                  }}</v-list-item-subtitle>
                   <!-- <v-spacer></v-spacer> -->
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteClass(sunnyClass)">
+                <v-list-item-icon @click="deleteClass(ride)">
                   <v-icon color="red darken3">mdi-minus</v-icon>
                 </v-list-item-icon>
               </v-list-item>
-              <v-divider v-if="index != form.classList.length - 1"></v-divider>
+              <v-divider v-if="index != form.rideList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
           <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
@@ -48,7 +53,7 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
-                등록된 반의 정보가 없습니다.
+                등록된 차량의 정보가 없습니다.
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -66,12 +71,12 @@
 </template>
 
 <script>
-import { getClassList, deleteClass } from '@/api/api'
+import { getRideList } from '@/api/api'
 import AddClassDialog from './AddClassDialog.vue'
 
 export default {
   mounted() {
-    this.getClassList()
+    this.getRideList()
   },
   data() {
     return {
@@ -79,7 +84,7 @@ export default {
       resolve: null,
       reject: null,
       form: {
-        classList: [],
+        rideList: [],
       },
       isEdit: false,
     }
@@ -96,24 +101,24 @@ export default {
       this.visible = false
       this.resolve(true)
     },
-    async deleteClass(sunnyClass) {
+    async deleteClass(ride) {
       const result = await this.$confirm({
-        message: `${sunnyClass.name}을 정말 삭제하시겠습니까?`,
+        message: `${ride.name}을 정말 삭제하시겠습니까?`,
       })
       if (result) {
         this.$withLoading(
-          deleteClass(sunnyClass.id)
+          deleteClass(ride.id)
             .then((response) => {
               if (response.code == '0') {
                 this.$showMessage({
                   type: 'success',
                   message: '성공적으로 삭제했습니다.',
                 })
-                let index = this.form.classList.findIndex(
-                  (item) => item.id === sunnyClass.id
+                let index = this.form.rideList.findIndex(
+                  (item) => item.id === ride.id
                 )
                 if (index !== 1) {
-                  this.$delete(this.form.classList, index)
+                  this.$delete(this.form.rideList, index)
                 }
               }
             })
@@ -130,14 +135,14 @@ export default {
           type: 'success',
           message: '성공적으로 추가했습니다.',
         })
-        this.$set(this.form.classList, this.form.classList.length, result)
+        this.$set(this.form.rideList, this.form.rideList.length, result)
       }
     },
-    getClassList() {
-      getClassList()
+    getRideList() {
+      getRideList()
         .then((response) => {
           if (response.code == '0') {
-            this.form.classList = response.data
+            this.form.rideList = response.data
           }
         })
         .catch((e) => {
