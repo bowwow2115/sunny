@@ -328,6 +328,10 @@ export function addChildRideList(param) {
   return post2(`${constants.CONTEXT_PATH}/childRide/list`, param)
 }
 
+export function addClass(param) {
+  return post2(`${constants.CONTEXT_PATH}/class`, param)
+}
+
 export function updateChildRide(param) {
   return put(`${constants.CONTEXT_PATH}/childRide`, param)
 }
@@ -338,6 +342,10 @@ export function deleteParents(id) {
 
 export function deleteChildRide(id) {
   return deleteCall(`${constants.CONTEXT_PATH}/childRide?id=${id}`)
+}
+
+export function deleteClass(id) {
+  return deleteCall(`${constants.CONTEXT_PATH}/class?id=${id}`)
 }
 
 export function getUnRidedChildren() {
