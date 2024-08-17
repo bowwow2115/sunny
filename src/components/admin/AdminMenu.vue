@@ -2,21 +2,18 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-btn @click="openManageClassDialog()">반 설정</v-btn>
+        <v-btn @click="openManageClassDialog()">반 관리</v-btn>
       </v-col>
       <v-col>
-        <v-btn @click="openManageRideDialog()">차량 설정</v-btn>
-      </v-col>
-      <v-col>
-        <v-btn>유저 설정</v-btn>
+        <v-btn @click="openManageUserDialog()">사용자 관리</v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ManageClassDialog from '@/components/dialog/ManageClassDialog.vue'
-import ManageRideDialog from '@/components/dialog/ManageRideDialog.vue'
+import ManageClassDialog from '@/components/admin/ManageClassDialog.vue'
+import ManageUserDialog from '@/components/admin/ManageUserDialog.vue'
 export default {
   name: 'AdminMenu',
   mounted() {},
@@ -29,8 +26,8 @@ export default {
     async openManageClassDialog() {
       await this.$dialog(ManageClassDialog, null)
     },
-    async openManageRideDialog() {
-      await this.$dialog(ManageRideDialog, null)
+    async openManageUserDialog() {
+      await this.$dialog(ManageUserDialog, null)
     },
   },
 }

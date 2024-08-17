@@ -9,7 +9,7 @@
     <v-card>
       <v-toolbar color="primary" dark>
         <v-toolbar-title>
-          {{ '차량 설정' }}
+          {{ '사용자 관리' }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="cancel">
@@ -23,28 +23,25 @@
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>반</v-list-item-subtitle>
+            <v-list-item-subtitle>사용자</v-list-item-subtitle>
           </template>
-          <div v-if="form.rideList.length != 0">
+          <div v-if="form.userList.length != 0">
             <v-list-item-group
-              v-for="(ride, index) in form.rideList"
+              v-for="(user, index) in form.userList"
               :key="index"
             >
               <v-list-item style="padding-left: 15%; padding-right: 8%">
                 <v-list-item-content>
-                  <v-list-item-title>{{
-                    `${ride.name}(${ride.time})`
-                  }}</v-list-item-title>
+                  <v-list-item-title>{{ `${user.userId}` }}</v-list-item-title>
                   <v-list-item-subtitle>{{
-                    ride.comment
+                    user.userName
                   }}</v-list-item-subtitle>
-                  <!-- <v-spacer></v-spacer> -->
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteClass(ride)">
+                <!-- <v-list-item-icon @click="deleteuser(user)">
                   <v-icon color="red darken3">mdi-minus</v-icon>
-                </v-list-item-icon>
+                </v-list-item-icon> -->
               </v-list-item>
-              <v-divider v-if="index != form.rideList.length - 1"></v-divider>
+              <v-divider></v-divider>
             </v-list-item-group>
           </div>
           <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
@@ -53,17 +50,17 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
-                등록된 차량의 정보가 없습니다.
+                등록된 유저의 정보가 없습니다.
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item style="padding: 0px">
+          <!-- <v-list-item style="padding: 0px">
             <v-spacer></v-spacer>
             <v-btn @click="openAddClassDialog()"
               ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
             >
             <v-spacer></v-spacer>
-          </v-list-item>
+          </v-list-item> -->
         </v-list-group>
       </v-list>
     </v-card>
@@ -71,12 +68,12 @@
 </template>
 
 <script>
-import { getRideList } from '@/api/api'
-import AddClassDialog from './AddClassDialog.vue'
+import { getUsers } from '@/api/api'
+import AddClassDialog from '@/components/admin/AddClassDialog.vue'
 
 export default {
   mounted() {
-    this.getRideList()
+    this.getUsers()
   },
   data() {
     return {
@@ -84,7 +81,7 @@ export default {
       resolve: null,
       reject: null,
       form: {
-        rideList: [],
+        userList: [],
       },
       isEdit: false,
     }
@@ -101,24 +98,24 @@ export default {
       this.visible = false
       this.resolve(true)
     },
-    async deleteClass(ride) {
+    async deleteClass(user) {
       const result = await this.$confirm({
-        message: `${ride.name}을 정말 삭제하시겠습니까?`,
+        message: `${user.name}을 정말 삭제하시겠습니까?`,
       })
       if (result) {
         this.$withLoading(
-          deleteClass(ride.id)
+          deleteClass(user.id)
             .then((response) => {
               if (response.code == '0') {
                 this.$showMessage({
                   type: 'success',
                   message: '성공적으로 삭제했습니다.',
                 })
-                let index = this.form.rideList.findIndex(
-                  (item) => item.id === ride.id
+                let index = this.form.userList.findIndex(
+                  (item) => item.id === user.id
                 )
                 if (index !== 1) {
-                  this.$delete(this.form.rideList, index)
+                  this.$delete(this.form.userList, index)
                 }
               }
             })
@@ -135,14 +132,14 @@ export default {
           type: 'success',
           message: '성공적으로 추가했습니다.',
         })
-        this.$set(this.form.rideList, this.form.rideList.length, result)
+        this.$set(this.form.userList, this.form.userList.length, result)
       }
     },
-    getRideList() {
-      getRideList()
+    getUsers() {
+      getUsers()
         .then((response) => {
           if (response.code == '0') {
-            this.form.rideList = response.data
+            this.form.userList = response.data
           }
         })
         .catch((e) => {
