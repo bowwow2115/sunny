@@ -348,8 +348,8 @@ export function deleteClass(id) {
   return deleteCall(`${constants.CONTEXT_PATH}/class?id=${id}`)
 }
 
-export function getUnRidedChildren() {
-  return get(`${constants.CONTEXT_PATH}/child/unRided`)
+export function getUsers() {
+  return get(`${constants.CONTEXT_PATH}/user/all`)
 }
 
 export function updateMeetingLoaction(param) {
