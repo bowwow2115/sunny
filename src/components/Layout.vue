@@ -62,6 +62,12 @@ export default {
       isScrolled: false, // 스크롤 상태 추적
       items: [
         {
+          title: '홈',
+          icon: 'mdi-image',
+          to: '/Home',
+          name: 'Home',
+        },
+        {
           title: '원아등록',
           icon: 'mdi-image',
           to: '/ChildRegist',

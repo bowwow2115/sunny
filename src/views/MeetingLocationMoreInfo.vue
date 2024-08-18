@@ -89,12 +89,21 @@
           </v-list-item>
         </v-list-group>
       </v-list>
+      <div class="deleteButton">
+        <v-btn color="red darken1" dark @click="deleteMeetingLocation()">
+          {{ `${this.form.name} 삭제` }}
+        </v-btn>
+      </div>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import { deleteChildRide, getAllChildren } from '@/api/api'
+import {
+  deleteChildRide,
+  getAllChildren,
+  deleteMeetingLocation,
+} from '@/api/api'
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
 import SearchChildDialog from '@/components/dialog/SearchChildDialog.vue'
 export default {
@@ -130,6 +139,7 @@ export default {
       this.resolve(true)
     },
     async openMeetingLoactionDialog(meetingLocation) {
+      meetingLocation.isEdit = true
       const result = await this.$dialog(
         ManageMeetingLocationDialog,
         meetingLocation
@@ -166,6 +176,28 @@ export default {
         )
       }
     },
+    async deleteMeetingLocation() {
+      const result = await this.$confirm({
+        message: `주의: ${this.form.name}을 정말 삭제하시겠습니까?`,
+      })
+      if (result) {
+        this.$withLoading(
+          deleteMeetingLocation(this.form.id)
+            .then((response) => {
+              if (response.code == '0') {
+                this.$showMessage({
+                  type: 'success',
+                  message: '성공적으로 삭제했습니다.',
+                })
+                this.cancel()
+              }
+            })
+            .catch((e) => {
+              this.$showError(e)
+            })
+        )
+      }
+    },
     async openAddChildRideDialog() {
       //원아정보 전달 시 현재 코스에 등록되어있는 원아 필터링 후 넘김(여기서 검색)
       let item = {}
@@ -173,7 +205,7 @@ export default {
       item.meetingLocationId = this.form.id
       item.childList = await this.getAllChildren()
       const result = await this.$dialog(SearchChildDialog, item)
-      console.log(result)
+
       if (result != null) {
         this.$showMessage({
           type: 'success',

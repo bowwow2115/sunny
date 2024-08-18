@@ -2,7 +2,7 @@
   <v-dialog v-model="visible" max-width="400px">
     <v-card>
       <v-card-title color="primary" class="headline">{{
-        '승하차 장소 정보 수정'
+        isEdit ? '승하차 장소 정보 수정' : '승하차 장소 정보 추가'
       }}</v-card-title>
       <v-form v-model="isValid" ref="form" lazy-validation>
         <v-card-text>
@@ -22,7 +22,9 @@
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="accent" text @click="confirm">수정</v-btn>
+          <v-btn color="accent" text @click="confirm">{{
+            isEdit ? '수정' : '추가'
+          }}</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
         </v-card-actions>
@@ -32,7 +34,7 @@
 </template>
 
 <script>
-import { updateMeetingLoaction } from '@/api/api'
+import { updateMeetingLoaction, addMeetingLocation } from '@/api/api'
 export default {
   mounted() {},
   data() {
@@ -46,6 +48,7 @@ export default {
         name: '',
         time: '',
         timeInput: '',
+        sunnyRide: { id: '' },
       },
       isEdit: false,
       nameRule: [(v) => !!v || '필수 항목입니다.'],
@@ -59,9 +62,14 @@ export default {
   methods: {
     open(item) {
       this.visible = true
+      this.isEdit = item.isEdit
+      if (!item.isEdit) {
+        this.form.sunnyRide = item.sunnyRide
+      } else {
+        this.form.timeInput = item.time.replace(':', '')
+      }
       this.form.id = item.id
       this.form.name = item.name
-      this.form.timeInput = item.time.replace(':', '')
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
@@ -74,18 +82,33 @@ export default {
       if (this.$refs.form.validate()) {
         this.form.time =
           this.form.timeInput.slice(0, 2) + ':' + this.form.timeInput.slice(2)
-        this.$withLoading(
-          updateMeetingLoaction(this.form)
-            .then((response) => {
-              if (response.code == '0') {
-                this.visible = false
-                this.resolve(response.data)
-              }
-            })
-            .catch((e) => {
-              this.$showError(e)
-            })
-        )
+        if (this.isEdit) {
+          this.$withLoading(
+            updateMeetingLoaction(this.form)
+              .then((response) => {
+                if (response.code == '0') {
+                  this.visible = false
+                  this.resolve(response.data)
+                }
+              })
+              .catch((e) => {
+                this.$showError(e)
+              })
+          )
+        } else {
+          this.$withLoading(
+            addMeetingLocation(this.form)
+              .then((response) => {
+                if (response.code == '0') {
+                  this.visible = false
+                  this.resolve(response.data)
+                }
+              })
+              .catch((e) => {
+                this.$showError(e)
+              })
+          )
+        }
       }
     },
   },

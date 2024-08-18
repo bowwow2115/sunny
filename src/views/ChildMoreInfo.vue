@@ -10,7 +10,7 @@
       <v-toolbar dark color="primary">
         <v-toolbar-title>원아정보 더보기</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon dark @click="closeInfo">
+        <v-btn icon dark @click="cancel">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
@@ -256,7 +256,11 @@
           </v-list-item>
         </v-list-group>
       </v-list>
-      <!-- 원아정보 -->
+      <div class="deleteButton">
+        <v-btn color="red darken1" dark @click="deleteChild()">
+          {{ `${this.form.name} 삭제` }}
+        </v-btn>
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -264,7 +268,12 @@
 <script>
 import ParentsDialog from '@/components/dialog/ManageParentsDialog.vue'
 import ChildRideDialog from '@/components/dialog/ManageChildRideDialog'
-import { getChildById, deleteParents, deleteChildRide } from '@/api/api.js'
+import {
+  getChildById,
+  deleteParents,
+  deleteChildRide,
+  deleteChild,
+} from '@/api/api.js'
 export default {
   components: {},
   name: 'childMoreInfo',
@@ -272,6 +281,8 @@ export default {
   data() {
     return {
       show: false,
+      resolve: null,
+      reject: null,
       form: {
         id: '',
         admissionDate: '',
@@ -287,7 +298,7 @@ export default {
     }
   },
   methods: {
-    showInfo(info) {
+    open(info) {
       this.show = true
       this.form.id = info.id
       this.form.admissionDate = info.admissionDate
@@ -299,19 +310,17 @@ export default {
       this.form.amChildRideList = info.amChildRideList
       this.form.pmChildRideList = info.pmChildRideList
       this.form.name = info.name
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve
+        this.reject = reject
+      })
     },
-    closeInfo() {
+    cancel() {
       this.show = false
-      this.form.id = null
-      this.form.admissionDate = null
-      this.form.className = null
-      this.form.address = null
-      this.form.birthday = null
-      this.form.parentList = []
-      this.form.status = null
-      this.form.amChildRideList = []
-      this.form.pmChildRideList = []
-      this.form.name = null
+    },
+    confirm(data) {
+      this.show = false
+      this.resolve(data)
     },
     async openParentsDialog(isEdit, item = {}) {
       item.isEdit = isEdit
@@ -466,6 +475,24 @@ export default {
         type: 'success',
         message: '전화번호를 클립보드에 저장했습니다.',
       })
+    },
+    async deleteChild() {
+      const result = await this.$confirm({
+        message: `주의: ${this.form.name}을 정말 삭제하시겠습니까?`,
+      })
+      if (result) {
+        this.$withLoading(
+          deleteChild(this.form.id)
+            .then((response) => {
+              if (response.code == '0') {
+                this.confirm(true)
+              }
+            })
+            .catch((e) => {
+              this.$showError(e)
+            })
+        )
+      }
     },
   },
 }
