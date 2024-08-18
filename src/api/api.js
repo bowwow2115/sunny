@@ -348,10 +348,22 @@ export function deleteClass(id) {
   return deleteCall(`${constants.CONTEXT_PATH}/class?id=${id}`)
 }
 
+export function deleteMeetingLocation(id) {
+  return deleteCall(`${constants.CONTEXT_PATH}/meetingLocation?id=${id}`)
+}
+
+export function deleteChild(id) {
+  return deleteCall(`${constants.CONTEXT_PATH}/child?id=${id}`)
+}
+
 export function getUsers() {
   return get(`${constants.CONTEXT_PATH}/user/all`)
 }
 
 export function updateMeetingLoaction(param) {
   return put(`${constants.CONTEXT_PATH}/meetingLocation`, param)
+}
+
+export function addMeetingLocation(param) {
+  return post2(`${constants.CONTEXT_PATH}/meetingLocation`, param)
 }

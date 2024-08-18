@@ -19,7 +19,7 @@
             solo-inverted
             hide-details
             prepend-inner-icon="mdi-magnify"
-            label="이름을 입력하세요"
+            label="검색어를 입력하세요."
           ></v-text-field>
           <template>
             <v-spacer></v-spacer>
@@ -166,6 +166,7 @@
 
 <script>
 import { getAllChildren } from '@/api/api'
+
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
 export default {
   components: { ChildMoreInfo },
@@ -191,6 +192,7 @@ export default {
         { key: 'address', name: '주소' },
         { key: 'birthday', name: '생일' },
         { key: 'status', name: '재원여부' },
+        { key: 'parents', name: '보호자' },
       ],
     }
   },
@@ -212,6 +214,11 @@ export default {
           .then((response) => {
             if (response.code == '0') {
               response.data.forEach((element) => {
+                let parentNameList = ''
+                element.parentList.forEach((parent) => {
+                  parentNameList += parent.name + ' '
+                })
+                element.parents = parentNameList
                 element.address = `${element.address.address} ${element.address.detailAddress}`
                 element.status = element.status ? '재원' : '졸업 or 퇴원'
               })
@@ -223,7 +230,7 @@ export default {
           })
       )
     },
-    openInfoDialog(info) {
+    async openInfoDialog(info) {
       let amChildRideList = []
       let pmChildRideList = []
       if (info.childRideList != null)
@@ -232,8 +239,7 @@ export default {
             amChildRideList.push(childRide)
           else pmChildRideList.push(childRide)
         })
-
-      this.$refs.childMoreInfo.showInfo({
+      const result = await this.$dialog(ChildMoreInfo, {
         id: info.id,
         admissionDate: info.admissionDate,
         className: info.className,
@@ -245,6 +251,16 @@ export default {
         pmChildRideList: pmChildRideList,
         name: info.name,
       })
+      if (result) {
+        this.$showMessage({
+          type: 'success',
+          message: '성공적으로 삭제했습니다.',
+        })
+        let index = this.childrenList.findIndex((item) => item.id === info.id)
+        if (index !== 1) {
+          this.$delete(this.childrenList, index)
+        }
+      }
     },
     nextPage() {
       if (this.page + 1 <= this.numberOfPages) this.page += 1

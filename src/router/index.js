@@ -12,6 +12,7 @@ const ChildRegist = () => import('@/views/ChildRegist')
 const FindId = () => import('@/views/FindId')
 const ChildList = () => import('@/views/ChildList')
 const RideTimeline = () => import('@/views/RideTimeline')
+const Home = () => import('@/views/Home')
 
 Vue.use(Router)
 
@@ -75,6 +76,12 @@ const router = new Router({
           name: 'AdminMenu',
           component: AdminMenu,
           meta: { requiresAuth: true, requiresAdmin: true },
+        },
+        {
+          path: '/Home',
+          name: 'Home',
+          component: Home,
+          meta: { requiresAuth: true },
         },
       ],
     },

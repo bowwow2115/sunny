@@ -2,7 +2,7 @@
   <v-card class="mx-auto" style="padding: 0">
     <v-card dark flat>
       <v-btn
-        @click="openRideChildDialog(false, selectedRide)"
+        @click="openAddMeetingLocationDialog(selectedRide)"
         absolute
         bottom
         color="pink"
@@ -99,6 +99,7 @@
 import { getRideList } from '@/api/api'
 import ReadParentsDialog from '@/components/dialog/ReadParentsDialog.vue'
 import MeetingLocationMoreInfo from '@/views/MeetingLocationMoreInfo.vue'
+import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
 export default {
   name: 'RideTimeline',
   data() {
@@ -159,7 +160,13 @@ export default {
       )
       if (result) this.getRideList()
     },
-    async openRideChildDialog() {},
+    async openAddMeetingLocationDialog(selectedRide) {
+      let item = {}
+      item.isEdit = false
+      item.sunnyRide = selectedRide
+      const result = await this.$dialog(ManageMeetingLocationDialog, item)
+      if (result) this.getRideList()
+    },
   },
 }
 </script>
