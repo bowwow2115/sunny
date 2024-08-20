@@ -9,7 +9,7 @@
     <v-card>
       <v-toolbar color="primary" dark>
         <v-toolbar-title>
-          {{ '사용자 관리' }}
+          {{ '차량 설정' }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="cancel">
@@ -17,31 +17,35 @@
         </v-btn>
       </v-toolbar>
       <v-list>
-        <v-list-group
-          :value="true"
-          prepend-icon="mdi-account-box-multiple"
-          :no-action="true"
-        >
+        <v-list-group :value="true" prepend-icon="mdi-bus" :no-action="true">
           <template v-slot:activator>
-            <v-list-item-subtitle>사용자</v-list-item-subtitle>
+            <v-list-item-subtitle>차량</v-list-item-subtitle>
           </template>
-          <div v-if="form.userList.length != 0">
+          <div v-if="form.rideList.length != 0">
             <v-list-item-group
-              v-for="(user, index) in form.userList"
+              v-for="(ride, index) in form.rideList"
               :key="index"
             >
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item style="padding-left: 8%; padding-right: 8%">
+                <v-list-item-icon @click="openRideAddDialog(true, ride)">
+                  <v-icon color="green accent-4">mdi-pencil</v-icon>
+                </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ `${user.userId}` }}</v-list-item-title>
+                  <v-list-item-title>{{
+                    (ride.am ? '(오전)' : '(오후)') +
+                    ride.name +
+                    (ride.time ? `(${ride.time})` : '')
+                  }}</v-list-item-title>
                   <v-list-item-subtitle>{{
-                    user.userName
+                    ride.comment
                   }}</v-list-item-subtitle>
+                  <!-- <v-spacer></v-spacer> -->
                 </v-list-item-content>
-                <!-- <v-list-item-icon @click="deleteuser(user)">
+                <v-list-item-icon @click="deleteRide(ride)">
                   <v-icon color="red darken3">mdi-minus</v-icon>
-                </v-list-item-icon> -->
+                </v-list-item-icon>
               </v-list-item>
-              <v-divider></v-divider>
+              <v-divider v-if="index != form.rideList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
           <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
@@ -50,17 +54,17 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
-                등록된 유저의 정보가 없습니다.
+                등록된 차량의 정보가 없습니다.
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <!-- <v-list-item style="padding: 0px">
+          <v-list-item style="padding: 0px">
             <v-spacer></v-spacer>
-            <v-btn @click="openAddClassDialog()"
+            <v-btn @click="openRideAddDialog(false)"
               ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
             >
             <v-spacer></v-spacer>
-          </v-list-item> -->
+          </v-list-item>
         </v-list-group>
       </v-list>
     </v-card>
@@ -68,12 +72,12 @@
 </template>
 
 <script>
-import { getUsers } from '@/api/api'
-import AddClassDialog from '@/components/admin/AddClassDialog.vue'
+import { getRideList, deleteRide } from '@/api/api'
+import RideAddDialog from './RideAddDialog.vue'
 
 export default {
   mounted() {
-    this.getUsers()
+    this.getRideList()
   },
   data() {
     return {
@@ -81,7 +85,7 @@ export default {
       resolve: null,
       reject: null,
       form: {
-        userList: [],
+        rideList: [],
       },
       isEdit: false,
     }
@@ -98,24 +102,24 @@ export default {
       this.visible = false
       this.resolve(true)
     },
-    async deleteClass(user) {
+    async deleteRide(ride) {
       const result = await this.$confirm({
-        message: `${user.name}을 정말 삭제하시겠습니까?`,
+        message: `주의: ${ride.name}을 삭제하시면 하위에 있는 승하차장소의 정보들도 삭제됩니다. 정말 삭제하시겠습니까?`,
       })
       if (result) {
         this.$withLoading(
-          deleteClass(user.id)
+          deleteRide(ride.id)
             .then((response) => {
               if (response.code == '0') {
                 this.$showMessage({
                   type: 'success',
                   message: '성공적으로 삭제했습니다.',
                 })
-                let index = this.form.userList.findIndex(
-                  (item) => item.id === user.id
+                let index = this.form.rideList.findIndex(
+                  (item) => item.id === ride.id
                 )
                 if (index !== 1) {
-                  this.$delete(this.form.userList, index)
+                  this.$delete(this.form.rideList, index)
                 }
               }
             })
@@ -125,21 +129,29 @@ export default {
         )
       }
     },
-    async openAddClassDialog() {
-      const result = await this.$dialog(AddClassDialog, null)
+    async openRideAddDialog(isEdit = false, ride = {}) {
+      ride.isEdit = isEdit
+      const result = await this.$dialog(RideAddDialog, ride)
       if (result != null) {
         this.$showMessage({
           type: 'success',
           message: '성공적으로 추가했습니다.',
         })
-        this.$set(this.form.userList, this.form.userList.length, result)
+        if (isEdit) {
+          const index = this.form.rideList.findIndex(
+            (item) => item.id == result.id
+          )
+          this.$set(this.form.rideList, index, result)
+        } else {
+          this.$set(this.form.rideList, this.form.rideList.length, result)
+        }
       }
     },
-    getUsers() {
-      getUsers()
+    getRideList() {
+      getRideList()
         .then((response) => {
           if (response.code == '0') {
-            this.form.userList = response.data
+            this.form.rideList = response.data
           }
         })
         .catch((e) => {
