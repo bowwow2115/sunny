@@ -332,8 +332,16 @@ export function addClass(param) {
   return post2(`${constants.CONTEXT_PATH}/class`, param)
 }
 
+export function addRide(param) {
+  return post2(`${constants.CONTEXT_PATH}/ride`, param)
+}
+
 export function updateChildRide(param) {
   return put(`${constants.CONTEXT_PATH}/childRide`, param)
+}
+
+export function updateRide(param) {
+  return put(`${constants.CONTEXT_PATH}/ride`, param)
 }
 
 export function deleteParents(id) {
