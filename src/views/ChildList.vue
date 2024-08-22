@@ -11,51 +11,49 @@
       hide-default-footer
     >
       <template v-slot:header>
-        <v-toolbar dark color="primary" class="mb-1">
+        <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
           <v-text-field
             v-model="search"
             clearable
             flat
             solo-inverted
             hide-details
-            prepend-inner-icon="mdi-magnify"
+            prepend-inner-icon="ri-search-line"
             label="검색어를 입력하세요."
           ></v-text-field>
-          <template>
-            <v-spacer></v-spacer>
-            <v-select
-              v-model="sortBy"
-              flat
-              solo-inverted
-              hide-details
-              :items="keys"
-              item-text="name"
-              item-value="key"
-              prepend-inner-icon="mdi-sort"
-              label="정렬"
-            >
-            </v-select>
-            <v-spacer></v-spacer>
-            <v-btn
-              v-if="!sortDesc"
-              small
-              depressed
-              light
-              color="primary"
-              @click="sortDesc = true"
-            >
-              <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn
-              v-else
-              small
-              depressed
-              color="primary"
-              @click="sortDesc = false"
-            >
-              <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
-          </template>
+          <v-select
+            v-model="sortBy"
+            flat
+            solo-inverted
+            hide-details
+            :items="keys"
+            item-text="name"
+            item-value="key"
+            prepend-inner-icon="ri-sort-desc"
+            label="정렬"
+            class="ml-2"
+          >
+          </v-select>
+          <v-btn
+            v-if="!sortDesc"
+            fab
+            depressed
+            small
+            color="primary"
+            @click="sortDesc = true"
+          >
+            <v-icon>ri-arrow-up-fill</v-icon>
+          </v-btn>
+          <v-btn
+            v-else
+            fab
+            depressed
+            small
+            color="primary"
+            @click="sortDesc = false"
+          >
+            <v-icon>ri-arrow-down-fill</v-icon>
+          </v-btn>
         </v-toolbar>
       </template>
 
@@ -69,35 +67,43 @@
             md="4"
             lg="3"
           >
-            <v-card>
-              <v-card-title class="subheading font-weight-bold">
+            <v-card class="pa-2 rounded-xl">
+              <v-card-title class="font-weight-bold justify-space-between">
                 {{ item.name }}
-                <v-spacer></v-spacer>
-                <v-btn small color="plus" @click="openInfoDialog(item)"
-                  ><v-icon left>mdi-plus</v-icon>더보기</v-btn
+                <v-btn
+                  small
+                  depressed
+                  color="plus"
+                  @click="openInfoDialog(item)"
+                  >더보기<v-icon right>ri-add-circle-fill</v-icon></v-btn
                 >
               </v-card-title>
 
-              <v-divider></v-divider>
+              <!-- <v-divider></v-divider> -->
 
-              <v-list dense>
-                <v-list-item
-                  v-for="(itemKey, index) in filteredKeys"
-                  :key="index"
-                >
-                  <v-list-item-content
-                    :class="{ 'blue--text': sortBy === itemKey.key }"
+              <v-card-text>
+                <v-list>
+                  <v-list-item
+                    v-for="(itemKey, index) in filteredKeys"
+                    :key="index"
+                    class="text-body-1 pa-0 _list-item"
                   >
-                    {{ itemKey.name }}:
-                  </v-list-item-content>
-                  <v-list-item-content
-                    class="align-end"
-                    :class="{ 'blue--text': sortBy === itemKey.key }"
-                  >
-                    {{ item[itemKey.key] }}
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
+                    <v-icon small color="primary">ri-check-line</v-icon>
+                    <v-list-item-content
+                      :class="{ 'blue--text': sortBy === itemKey.key }"
+                      class="_list-item-name"
+                    >
+                      {{ itemKey.name }}
+                    </v-list-item-content>
+                    <v-list-item-content
+                      :class="{ 'blue--text': sortBy === itemKey.key }"
+                      class="_list-item-key"
+                    >
+                      <span>{{ item[itemKey.key] }}</span>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -291,4 +297,27 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+._custom-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: unset;
+}
+._custom-toolbar >>> .v-select {
+  width: min-content;
+}
+._list-item {
+  gap: 0 10px;
+}
+._list-item >>> .v-list-item__content {
+  flex: unset;
+}
+._list-item-name {
+  min-width: 80px;
+  margin: 0;
+}
+._list-item-key {
+  opacity: 0.65;
+}
+</style>
