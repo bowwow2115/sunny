@@ -1,12 +1,12 @@
 <template>
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
-  <v-form v-model="valid" class="mt-12">
+  <v-form v-model="valid">
     <!-- ---------- 원아 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
       <v-card-title class="_card-title font-weight-bold">원아정보</v-card-title>
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
-      <v-card-text class="mt-4">
+      <v-card-text class="pt-6">
         <v-row>
           <v-col>
             <input
@@ -134,7 +134,8 @@
           <v-col cols="4" class="ps-0">
             <v-btn
               type="button"
-              class="text-body-1 label-with-btn"
+              class="text-body-1 font-weight-bold label-with-btn"
+              color="primary"
               outlined
               block
               @click="openPostcode"
@@ -189,7 +190,7 @@
       <v-card-subtitle
         >학부모 정보는 버튼을 이용하여 추가할 수 있습니다.</v-card-subtitle
       >
-      <v-card-text class="mt-6">
+      <v-card-text class="pt-6">
         <v-row
           class="parent-box"
           v-for="(parentBox, index) in form.parentList"
@@ -256,7 +257,7 @@
       <v-card-subtitle
         >차량 사용 시 사용여부를 체크한 후 입력해주세요.
       </v-card-subtitle>
-      <v-card-text class="mt-4">
+      <v-card-text class="pt-6">
         <v-row>
           <v-col>
             <input
@@ -272,61 +273,74 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="6">
+          <v-col cols="12">
             <div class="pickup" v-if="hasRide">
-              <v-select
-                v-model="amPm"
-                :items="['오전', '오후']"
-                label="시간대를 선택하세요"
-                outlined
-                :menu-props="{ offsetY: true }"
-                hide-details="auto"
-                class="mb-6"
-              ></v-select>
-              <v-select
-                v-model="selectedRide"
-                :items="amPm == '오전' ? amRideNameList : pmRideNameList"
-                item-text="name"
-                return-object
-                :label="
-                  (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
-                "
-                outlined
-                :menu-props="{ offsetY: true }"
-                hide-details="auto"
-                class="mb-6"
-              ></v-select>
-              <v-select
-                v-model="selectedMeetingLocation"
-                :items="selectedRide.meetingLocationList"
-                item-text="name"
-                return-object
-                :label="'승하차 장소를 선택해주세요'"
-                outlined
-                :menu-props="{ offsetY: true }"
-                hide-details="auto"
-                class="mb-6"
-              ></v-select>
-              <v-text-field
-                v-model="childRideComment"
-                label="비고"
-                outlined
-                clearable
-                hide-details="auto"
-                class="mb-6"
-              >
-              </v-text-field>
-              <v-btn
-                @click="pushChildRideList()"
-                type="button"
-                color="primary"
-                outlined
-                large
-                >추가하기</v-btn
-              >
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="amPm"
+                    :items="['오전', '오후']"
+                    label="시간대를 선택하세요"
+                    outlined
+                    :menu-props="{ offsetY: true }"
+                    hide-details="auto"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="selectedRide"
+                    :items="amPm == '오전' ? amRideNameList : pmRideNameList"
+                    item-text="name"
+                    return-object
+                    :label="
+                      (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
+                    "
+                    outlined
+                    :menu-props="{ offsetY: true }"
+                    hide-details="auto"
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="selectedMeetingLocation"
+                    :items="selectedRide.meetingLocationList"
+                    item-text="name"
+                    return-object
+                    :label="'승하차 장소를 선택해주세요'"
+                    outlined
+                    :menu-props="{ offsetY: true }"
+                    hide-details="auto"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="childRideComment"
+                    label="비고"
+                    outlined
+                    clearable
+                    hide-details="auto"
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="justify-center">
+                <v-col cols="12" md="6">
+                  <v-btn
+                    @click="pushChildRideList()"
+                    type="button"
+                    color="primary"
+                    outlined
+                    block
+                    class="text-body-1 font-weight-bold label-with-btn"
+                    >추가하기</v-btn
+                  >
+                </v-col>
+              </v-row>
             </div>
           </v-col>
-          <v-row align="center" justify="start">
+          <v-row justify="start">
             <v-col
               v-for="(childRide, i) in form.childRideList"
               :key="i"

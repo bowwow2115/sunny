@@ -6,25 +6,17 @@
   }
   font-family: $body-font-family !important;
 }
-
 .v-text-field {
-
   .v-label--active.primary--text {
     font-weight: 700 !important;
   }
-  .v-icon.primary--text {}
   fieldset {
     color: rgba(0, 0, 0, 0.15);
   }
 }
-.v-select {
-  .v-list-item.primary--text {}
-}
-.v-btn--is-primary {
-  color: black !important;
-}
-.v-card__title + .v-card__subtitle {
-  border-bottom: 1px dashed #e0e0e0;
+.v-card__title + .v-card__text,
+.v-card__subtitle + .v-card__text {
+  border-top: 1px dashed #e0e0e0;
 }
 body, .v-main {
   background: #f2f2f2;
