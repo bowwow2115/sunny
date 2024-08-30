@@ -4,6 +4,7 @@
     fullscreen
     hide-overlay
     transition="dialog-bottom-transition"
+    style="width: 1280px"
   >
     <v-card class="rounded-0">
       <v-toolbar

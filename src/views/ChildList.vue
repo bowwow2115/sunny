@@ -65,7 +65,7 @@
             cols="12"
             sm="6"
             md="4"
-            lg="3"
+            lg="6"
           >
             <v-card class="pa-2 rounded-xl">
               <v-card-title class="font-weight-bold justify-space-between">

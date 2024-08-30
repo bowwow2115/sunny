@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- 상단 bar -->
-    <v-app-bar elevate-on-scroll class="elevation-4">
+    <v-app-bar elevate-on-scroll class="elevation-4" v-if="!drawer">
       <v-app-bar-nav-icon @click="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-app-bar-nav-icon>
@@ -9,8 +9,6 @@
         currentTitle
       }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- TODO: 정식 배포 시 밑 주석 <v-btn v-if="isAdmin" @click="goToAdminMenu">어드민 페이지</v-btn> -->
-      <v-btn @click="goToAdminMenu">어드민 페이지</v-btn>
     </v-app-bar>
 
     <!-- 메뉴 navi -->
