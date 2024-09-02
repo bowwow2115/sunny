@@ -375,3 +375,7 @@ export function updateMeetingLoaction(param) {
 export function addMeetingLocation(param) {
   return post2(`${constants.CONTEXT_PATH}/meetingLocation`, param)
 }
+
+export function getBirthMonthChlid() {
+  return get(`${constants.CONTEXT_PATH}/child/birth`)
+}
