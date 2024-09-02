@@ -12,6 +12,7 @@ const DialogPlugin = {
         })
 
         document.body.appendChild(instance.$el)
+        instance.$el.style.width = props.width || '1280px'
 
         instance.open(props).then(resolve).catch(reject)
       })
@@ -39,6 +40,8 @@ const ConfirmPlugin = {
 
           document.body.appendChild(instance.$el)
 
+          instance.$el.style.width = props.width || '1280px'
+
           // 컴포넌트의 open 메소드 호출
           instance.open(props).then(resolve).catch(reject)
         } catch (error) {
@@ -63,6 +66,8 @@ const ErrorDialogPlugin = {
       })
 
       document.body.appendChild(instance.$el)
+
+      instance.$el.style.width = props.width || '1280px'
 
       return instance.open(code, message)
     }

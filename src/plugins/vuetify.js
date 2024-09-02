@@ -24,7 +24,7 @@ const opts = {
         tertiary: colors.yellow.darken1,
         accent: colors.cyan.darken4, //강조
         error: colors.deepOrange.accent2, //오류
-        info: colors.blueGrey.lighten3, //정보
+        info: colors.blueGrey.lighten2, //정보
         success: '#77D618', //성공
         warning: colors.amber.darken3, //경고
       },

@@ -21,7 +21,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12">
             <v-text-field
               v-model="form.name"
               label="원아이름"
@@ -31,7 +31,7 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12">
             <v-menu
               ref="menu"
               v-model="addmisionDateWrap"
@@ -66,7 +66,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12">
             <v-menu
               ref="menu"
               v-model="birthdayWrap"
@@ -221,7 +221,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12">
             <v-text-field
               v-model="parentBox.telephone"
               :rules="numRules"
