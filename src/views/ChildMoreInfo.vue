@@ -4,14 +4,21 @@
     fullscreen
     hide-overlay
     transition="dialog-bottom-transition"
-    max-width="100%"
+    style="width: 1280px"
   >
-    <v-card>
-      <v-toolbar dark color="primary">
-        <v-toolbar-title>원아정보 더보기</v-toolbar-title>
+    <v-card class="rounded-0">
+      <v-toolbar
+        dark
+        elevation="0"
+        color="primary"
+        class="darken-2 full-width-toolbar"
+      >
+        <v-toolbar-title class="font-weight-bold"
+          >원아정보 더보기</v-toolbar-title
+        >
         <v-spacer></v-spacer>
         <v-btn icon dark @click="cancel">
-          <v-icon>mdi-close</v-icon>
+          <v-icon>ri-close-fill</v-icon>
         </v-btn>
       </v-toolbar>
       <!-- 보호자 리스트 -->
@@ -29,38 +36,56 @@
               v-for="(item, index) in form.parentList"
               :key="index"
             >
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
-                <v-list-item-icon>
-                  <v-icon>mdi-account</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.name }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    item.relation
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-spacer></v-spacer>
-                <v-list-item-icon @click="openParentsDialog(true, item)">
-                  <v-icon color="green accent-4">mdi-pencil</v-icon>
-                </v-list-item-icon>
-              </v-list-item>
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
-                <v-list-item-icon>
-                  <v-icon
-                    color="green"
-                    v-clipboard:copy="item.telephone"
-                    v-clipboard:success="phoneCall"
-                    >mdi-phone</v-icon
+              <div class="d-flex justify-space-between align-center mx-4">
+                <div>
+                  <v-list-item class="pa-0">
+                    <v-list-item-icon>
+                      <v-icon>mdi-account</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >{{ item.name }}
+                        <span class="grey--text"
+                          >({{ item.relation }})</span
+                        ></v-list-item-title
+                      >
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item class="pa-0">
+                    <v-list-item-icon>
+                      <v-icon
+                        color="green"
+                        v-clipboard:copy="item.telephone"
+                        v-clipboard:success="phoneCall"
+                        >mdi-phone</v-icon
+                      >
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>{{
+                        item.telephone
+                      }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </div>
+                <div>
+                  <v-btn
+                    icon
+                    block
+                    @click="openParentsDialog(true, item)"
+                    class="mb-4"
+                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
                   >
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.telephone }}</v-list-item-title>
-                </v-list-item-content>
-                <v-spacer></v-spacer>
-                <v-list-item-icon @click="deleteParents(item)">
-                  <v-icon color="red darken3">mdi-minus</v-icon>
-                </v-list-item-icon>
-              </v-list-item>
+                  <!-- <v-list-item-icon @click="openParentsDialog(true, item)">
+                      <v-icon color="green accent-4">mdi-pencil</v-icon>
+                    </v-list-item-icon> -->
+                  <v-btn icon block @click="deleteParents(item)"
+                    ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
+                  >
+                  <!-- <v-list-item-icon @click="deleteParents(item)">
+                      <v-icon color="red darken3">mdi-minus</v-icon>
+                    </v-list-item-icon> -->
+                </div>
+              </div>
               <v-divider v-if="index != form.parentList.length - 1"></v-divider>
             </v-list-item-group>
           </div>

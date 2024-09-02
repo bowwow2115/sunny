@@ -65,7 +65,7 @@
             cols="12"
             sm="6"
             md="4"
-            lg="3"
+            lg="6"
           >
             <v-card class="pa-2 rounded-xl">
               <v-card-title class="font-weight-bold justify-space-between">
@@ -110,60 +110,40 @@
       </template>
 
       <template v-slot:footer>
-        <v-row class="mt-2" align="center" justify="center">
-          <span class="grey--text">Items per page</span>
-          <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                dark
-                text
-                color="primary"
-                class="ml-2"
-                v-bind="attrs"
-                v-on="on"
-              >
-                {{ itemsPerPage }}
-                <v-icon>mdi-chevron-down</v-icon>
+        <v-row class="justify-space-between">
+          <v-col>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn text outlined v-bind="attrs" v-on="on">
+                  목록 더보기
+                  {{ itemsPerPage }}
+                  <v-icon>ri-arrow-down-s-fill</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(number, index) in itemsPerPageArray"
+                  :key="index"
+                  @click="updateItemsPerPage(number)"
+                >
+                  <v-list-item-title>{{ number }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+          <v-col class="d-flex align-center justify-end">
+            <div>
+              <v-btn fab small depressed @click="formerPage">
+                <v-icon>ri-arrow-left-s-line</v-icon>
               </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(number, index) in itemsPerPageArray"
-                :key="index"
-                @click="updateItemsPerPage(number)"
-              >
-                <v-list-item-title>{{ number }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-spacer></v-spacer>
-
-          <span class="mr-4 grey--text">
-            Page {{ page }} of {{ numberOfPages }}
-          </span>
-          <v-row>
-            <v-btn
-              fab
-              small
-              dark
-              color="primary"
-              class="mr-1"
-              @click="formerPage"
-            >
-              <v-icon>mdi-chevron-left</v-icon>
-            </v-btn>
-            <v-btn
-              fab
-              small
-              dark
-              color="primary"
-              class="ml-1"
-              @click="nextPage"
-            >
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
-          </v-row>
+              <span class="grey--text mx-4">
+                {{ page }} / {{ numberOfPages }}
+              </span>
+              <v-btn fab small depressed @click="nextPage">
+                <v-icon>ri-arrow-right-s-line</v-icon>
+              </v-btn>
+            </div>
+          </v-col>
         </v-row>
       </template>
     </v-data-iterator>
