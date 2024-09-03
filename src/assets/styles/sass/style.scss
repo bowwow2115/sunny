@@ -6,6 +6,23 @@
   }
   font-family: $body-font-family !important;
 }
+.v-application a {
+  color: black !important;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--v-primary-base) !important;
+  }
+}
+.v-application .v-btn {
+  letter-spacing: normal;
+  font-weight: bold;
+
+  &.v-btn--disabled {
+    color: gray;
+    background-color: #e0e0e0;
+  }
+}
 .v-text-field {
   .v-label--active.primary--text {
     font-weight: 700 !important;
