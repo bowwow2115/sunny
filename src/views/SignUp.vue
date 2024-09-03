@@ -1,90 +1,97 @@
 <template>
   <v-main>
     <v-container>
-      <div class="id-form">
-        <h2 class="id-tit">회원가입</h2>
-        <v-form v-model="valid" @submit.prevent="join">
-          <!-- 아이디 -->
-          <div class="input-caption">
-            <div class="input-btn-wrap">
+      <v-row class="justify-center">
+        <v-col cols="12" sm="8" md="6">
+          <h2 class="headline font-weight-bold text-center">회원가입</h2>
+          <v-card class="my-6 pa-6 rounded-xl">
+            <v-form v-model="valid" @submit.prevent="join">
+              <!-- 아이디 -->
+              <div class="d-flex">
+                <v-text-field
+                  v-model="form.joinId"
+                  label="아이디 입력"
+                  prepend-inner-icon="ri-user-5-fill"
+                  required
+                  outlined
+                  clearable
+                  hide-details="auto"
+                ></v-text-field>
+                <v-btn
+                  type="button"
+                  @click="duplicateId"
+                  depressed
+                  outlined
+                  class="text-body-1 label-with-btn ml-2"
+                  >중복확인
+                </v-btn>
+              </div>
+              <p class="mt-2 text-body-2 grey--text">
+                <i class="ri-asterisk"></i>최소 4자이상 영문과 숫자로만 혼용
+                가능합니다.(특수문자 불가)
+              </p>
+              <!-- 비밀번호 -->
               <v-text-field
-                v-model="form.joinId"
-                label="아이디 입력"
-                prepend-inner-icon="ri-user-line"
+                v-model="form.joinPw"
+                type="password"
+                label="비밀번호 입력"
+                prepend-inner-icon="ri-lock-password-fill"
+                required
+                outlined
+                clearable
+                hide-details="auto"
+              ></v-text-field>
+              <p class="mt-2 text-body-2 grey--text">
+                <i class="ri-asterisk"></i>최소 4자이상 최대 10자이하 영문과
+                숫자로만 혼용 가능합니다.(특수문자 불가)
+              </p>
+              <!-- 이름 -->
+              <v-text-field
+                v-model="form.userName"
+                label="이름"
+                prepend-inner-icon="ri-user-smile-fill"
                 required
                 outlined
                 clearable
               ></v-text-field>
-              <v-btn type="button" @click="duplicateId" depressed>
-                중복확인
+              <!-- 전화번호 -->
+              <v-text-field
+                v-model="form.userPhoneNum"
+                :rules="phoneRules"
+                label="전화번호"
+                prepend-inner-icon="ri-smartphone-line"
+                required
+                outlined
+                clearable
+                hide-details="auto"
+              ></v-text-field>
+              <p class="mt-2 text-body-2 grey--text">
+                <i class="ri-asterisk"></i>하이픈(-)을 제외하고 숫자만
+                입력하세요.
+              </p>
+              <!-- 이메일 : 선택사항으로 required 제외 -->
+              <v-text-field
+                v-model="form.userEmail"
+                type="email"
+                label="이메일주소(본인확인용 선택사항)"
+                prepend-inner-icon="ri-mail-fill"
+                outlined
+                clearable
+              ></v-text-field>
+              <v-btn
+                type="submit"
+                block
+                depressed
+                outlined
+                x-large
+                color="primary"
+              >
+                회원가입 하기
               </v-btn>
-            </div>
-            <p class="cap">
-              <i class="ri-asterisk ricon"></i>
-              영문, 숫자 혼용 6자리~10자리 이하 등록(특수문자 사용불가)
-            </p>
-          </div>
-          <!-- 비밀번호 -->
-          <div class="input-caption">
-            <v-text-field
-              v-model="form.joinPw"
-              type="password"
-              label="비밀번호 입력"
-              prepend-inner-icon="ri-lock-line"
-              required
-              outlined
-              clearable
-            ></v-text-field>
-            <p class="cap">
-              <i class="ri-asterisk ricon"></i>
-              영문, 숫자 혼용 6자리~10자리 이하 등록(특수문자 사용불가)
-            </p>
-          </div>
-          <!-- 이름 -->
-          <v-text-field
-            v-model="form.userName"
-            label="이름"
-            prepend-inner-icon="ri-user-line"
-            required
-            outlined
-            clearable
-          ></v-text-field>
-          <!-- 전화번호 -->
-          <div class="input-caption">
-            <v-text-field
-              v-model="form.userPhoneNum"
-              :rules="phoneRules"
-              label="전화번호"
-              prepend-inner-icon="ri-smartphone-line"
-              required
-              outlined
-              clearable
-            ></v-text-field>
-            <p class="cap">
-              <i class="ri-asterisk ricon"></i> 하이픈(-)을 제외하고 숫자만
-              입력하세요.
-            </p>
-          </div>
-          <!-- 이메일 : 선택사항으로 required 제외 -->
-          <v-text-field
-            v-model="form.userEmail"
-            type="email"
-            label="이메일주소(본인확인용 선택사항)"
-            prepend-inner-icon="ri-mail-line"
-            outlined
-            clearable
-          ></v-text-field>
-          <v-btn
-            type="submit"
-            block
-            depressed
-            color="primary"
-            class="btn-submit"
-          >
-            가입하기
-          </v-btn>
-        </v-form>
-      </div>
+            </v-form>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </v-main>
 </template>
