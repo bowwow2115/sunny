@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-model="show" :fullscreen="isMobile" hide-overlay width="500px">
+  <v-dialog
+    v-model="show"
+    :fullscreen="isMobile"
+    :hide-overlay="isMobile"
+    width="500px"
+  >
     <v-card class="rounded-0">
       <v-toolbar
         dark
@@ -275,11 +280,19 @@
           </v-list-item>
         </v-list-group>
       </v-list>
-      <div class="deleteButton">
-        <v-btn color="red darken1" dark @click="deleteChild()">
-          {{ `${this.form.name} 삭제` }}
-        </v-btn>
-      </div>
+      <v-container>
+        <v-row v-for="i in 3" :key="i">
+          <v-col></v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col cols="8"></v-col>
+          <v-col cols="4">
+            <v-btn color="red darken1" dark @click="deleteChild()">
+              {{ `${this.form.name} 삭제` }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
