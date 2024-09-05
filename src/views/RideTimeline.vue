@@ -15,28 +15,25 @@
       <v-img gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)">
         <!-- src="https://cdn.vuetifyjs.com/images/cards/forest.jpg" -->
         <v-container class="fill-height">
-          <v-row align="center">
-            <strong class="text-h1 font-weight-regular mr-6">{{
-              selectedAmPm
-            }}</strong>
-            <v-row justify="end">
-              <v-col class="d-flex" cols="3" sm="1">
-                <v-select
-                  v-model="selectedAmPm"
-                  :items="['오전', '오후']"
-                ></v-select>
-              </v-col>
-              <v-col class="d-flex" cols="3" sm="1">
-                <v-select
-                  v-model="selectedRide"
-                  :items="selectedAmPm == '오전' ? amRideList : pmRideList"
-                  item-text="name"
-                  return-object
-                ></v-select>
-              </v-col>
-              <!-- <div class="text-h5 font-weight-light">오전</div> -->
-              <!-- <div class="text-uppercase font-weight-light">February 2015</div> -->
-            </v-row>
+          <v-row>
+            <v-col>
+              <strong class="text-h1 font-weight-regular mr-6">{{
+                selectedAmPm
+              }}</strong>
+            </v-col>
+            <v-col class="d-flex" cols="7">
+              <v-select
+                v-model="selectedAmPm"
+                :items="['오전', '오후']"
+              ></v-select>
+              <v-select
+                v-model="selectedRide"
+                :items="selectedAmPm == '오전' ? amRideList : pmRideList"
+                item-text="name"
+                return-object
+              ></v-select>
+            </v-col>
+            <!-- <v-col class="d-flex" cols="3" sm="1"> </v-col> -->
           </v-row>
         </v-container>
       </v-img>
@@ -49,7 +46,7 @@
           v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
           :key="index"
         >
-          <v-card>
+          <v-card :width="isMobile ? '100%' : '50%'">
             <v-card-title>
               {{ meetingLocation.time }}
               <v-spacer></v-spacer>
@@ -62,7 +59,7 @@
             <v-card-subtitle>{{ meetingLocation.name }}</v-card-subtitle>
             <v-card-text
               @click="openParentsDialog(meetingLocation.childRideList)"
-              style="background-color: #fafafa"
+              style="background-color: #fafafa; cursor: pointer"
             >
               <div class="text-caption">
                 <v-chip
@@ -112,10 +109,12 @@ export default {
       pmRideList: [],
       selectedRide: { meetingLocationList: [], am: false },
       selectedAmPm: '오전',
+      isMobile: false,
     }
   },
   mounted() {
     this.getRideList(true)
+    this.checkIfMobile()
   },
   methods: {
     getRideList(init = false) {
@@ -166,6 +165,20 @@ export default {
       item.sunnyRide = selectedRide
       const result = await this.$dialog(ManageMeetingLocationDialog, item)
       if (result) this.getRideList()
+    },
+    checkIfMobile() {
+      // 사용자 에이전트 문자열에서 모바일 기기를 확인
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+
+      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
+      if (
+        /android/i.test(userAgent) ||
+        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+      ) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
     },
   },
 }

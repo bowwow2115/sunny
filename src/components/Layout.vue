@@ -10,7 +10,6 @@
       }}</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
-
     <!-- 메뉴 navi -->
     <v-navigation-drawer v-model="drawer" app>
       <!-- 메뉴 navi - home title -->
@@ -38,7 +37,9 @@
 
     <v-main>
       <v-container fluid>
-        <router-view />
+        <v-col lg="8" sm="8" xs="12">
+          <router-view />
+        </v-col>
       </v-container>
     </v-main>
 

@@ -1,11 +1,5 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-    max-width="100%"
-  >
+  <v-dialog v-model="visible" :fullscreen="isMobile" hide-overlay width="500px">
     <v-card>
       <v-toolbar color="primary" dark>
         <v-toolbar-title>
@@ -107,7 +101,9 @@ import {
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
 import SearchChildDialog from '@/components/dialog/SearchChildDialog.vue'
 export default {
-  mounted() {},
+  mounted() {
+    this.checkIfMobile()
+  },
   data() {
     return {
       visible: false,
@@ -120,6 +116,7 @@ export default {
         childRideList: [],
       },
       isEdit: false,
+      isMobile: false,
     }
   },
   methods: {
@@ -239,6 +236,20 @@ export default {
           })
       )
       return childList
+    },
+    checkIfMobile() {
+      // 사용자 에이전트 문자열에서 모바일 기기를 확인
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+
+      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
+      if (
+        /android/i.test(userAgent) ||
+        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+      ) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
     },
   },
 }
