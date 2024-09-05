@@ -1,11 +1,5 @@
 <template>
-  <v-dialog
-    v-model="show"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-    style="width: 1280px"
-  >
+  <v-dialog v-model="show" :fullscreen="isMobile" hide-overlay width="500px">
     <v-card class="rounded-0">
       <v-toolbar
         dark
@@ -302,7 +296,9 @@ import {
 export default {
   components: {},
   name: 'childMoreInfo',
-  mounted() {},
+  mounted() {
+    this.checkIfMobile()
+  },
   data() {
     return {
       show: false,
@@ -320,6 +316,7 @@ export default {
         pmChildRideList: [],
         name: '',
       },
+      isMobile: false,
     }
   },
   methods: {
@@ -517,6 +514,20 @@ export default {
               this.$showError(e)
             })
         )
+      }
+    },
+    checkIfMobile() {
+      // 사용자 에이전트 문자열에서 모바일 기기를 확인
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+
+      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
+      if (
+        /android/i.test(userAgent) ||
+        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+      ) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
       }
     },
   },
