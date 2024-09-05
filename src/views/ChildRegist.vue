@@ -1,7 +1,7 @@
 <template>
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
-  <v-form v-model="valid">
+  <v-form v-model="isValid" ref="form">
     <!-- ---------- 원아 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
       <v-card-title class="_card-title font-weight-bold">원아정보</v-card-title>
@@ -439,7 +439,7 @@ export default {
   },
   data() {
     return {
-      valid: false,
+      isValid: false,
       birthdayWrap: false, // 생년월일 필드와 picker를 묶는 역할
       addmisionDateWrap: false,
       activePicker: null,
@@ -541,28 +541,35 @@ export default {
       }
     },
     addChild() {
-      let param = this.form
-      if (
-        this.form.childRideList == null ||
-        this.form.childRideList.length == 0
-      )
-        this.form.childRideList = null
+      if (this.$refs.form.validate()) {
+        let param = this.form
+        if (
+          this.form.childRideList == null ||
+          this.form.childRideList.length == 0
+        )
+          this.form.childRideList = null
 
-      this.$withLoading(
-        addChild(param)
-          .then((response) => {
-            if (response.code == '0') {
-              this.$showMessage({
-                type: 'success',
-                message: '원아 등록이 성공적으로 완료되었습니다.',
-              })
-              //TODO: 화면이동 or 인풋값 초기화
-            }
-          })
-          .catch((e) => {
-            this.$showError(e)
-          })
-      )
+        this.form.parentList.forEach((parents) => {
+          parents.telephone = this.formatPhoneNumber(parents.telephone)
+        })
+
+        this.$withLoading(
+          addChild(param)
+            .then((response) => {
+              if (response.code == '0') {
+                this.$showMessage({
+                  type: 'success',
+                  message: '원아 등록이 성공적으로 완료되었습니다.',
+                })
+                this.$refs.form.reset()
+                //TODO: 화면이동 or 인풋값 초기화
+              }
+            })
+            .catch((e) => {
+              this.$showError(e)
+            })
+        )
+      }
     },
     pushChildRideList() {
       if (
@@ -684,6 +691,19 @@ export default {
           height: '100%',
         }).embed(document.getElementById('postcode'))
       })
+    },
+    formatPhoneNumber(phoneNumber) {
+      // 숫자만 추출
+      const cleaned = phoneNumber.replace(/\D/g, '')
+
+      // 전화번호가 10자리일 경우 (예: 02-1234-5678) 또는 11자리일 경우 (예: 010-1234-5678)
+      const match = cleaned.match(/^(\d{2,3})(\d{3,4})(\d{4})$/)
+
+      if (match) {
+        return `${match[1]}-${match[2]}-${match[3]}`
+      }
+
+      return null // 잘못된 형식의 전화번호일 경우 null 반환
     },
   },
 }
