@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Utils from '@/utils/utils'
+import constants from '@/Constants'
 
 export function ax(contentType = null) {
   let headers = {}
@@ -378,4 +379,8 @@ export function addMeetingLocation(param) {
 
 export function getBirthMonthChlid() {
   return get(`${constants.CONTEXT_PATH}/child/birth`)
+}
+
+export function refreshToken(param) {
+  return post2(`${constants.CONTEXT_PATH}/jwt/refresh`, param)
 }

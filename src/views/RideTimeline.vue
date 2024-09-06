@@ -33,7 +33,14 @@
                 return-object
               ></v-select>
             </v-col>
-            <!-- <v-col class="d-flex" cols="3" sm="1"> </v-col> -->
+          </v-row>
+          <v-row>
+            <v-col cols="10"></v-col>
+            <v-col cols="2"
+              ><v-btn @click="openRideTable()"
+                ><v-icon>mid-printer-outline</v-icon></v-btn
+              >
+            </v-col>
           </v-row>
         </v-container>
       </v-img>
@@ -179,6 +186,18 @@ export default {
       } else {
         this.isMobile = false
       }
+    },
+    openRideTable() {
+      // 새 창에서 특정 라우터 경로 열기
+      console.log(this.selectedRide.id)
+      let param = {}
+      param.id = this.selectedRide.id
+
+      const url = this.$router.resolve({
+        name: 'RideTimelineTable',
+        query: param,
+      }).href
+      window.open(url, '_blank')
     },
   },
 }

@@ -34,16 +34,19 @@ function loggedIn() {
           if (response.data.code == '0') {
             resolve(response.data)
           } else if (response.data.code == 'EXPIRED-TOKEN') {
-            Utils.deleteCookie('auth', '/')
-            Utils.deleteCookie('lang')
-
-            router.push({
-              path: '/signIn',
+            const refreshToken = Utils.getCookie('refreshToken')
+            let param = {}
+            param.refreshToken = refreshToken
+            api.refreshToken(param).then((response) => {
+              if (response.data.code == '0') resolve(response.data)
+              else {
+                Utils.deleteCookie('auth', '/')
+                Utils.deleteCookie('lang')
+                router.push({
+                  path: '/signIn',
+                })
+              }
             })
-            // if (window.validateHandle) {
-            //   clearInterval(window.validateHandle);
-            //   window.validateHandle = null;
-            // }
           } else {
             reject(new Error('validation failure'))
           }
