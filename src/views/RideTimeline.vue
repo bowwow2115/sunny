@@ -36,9 +36,9 @@
           </v-row>
           <v-row>
             <v-col cols="10"></v-col>
-            <v-col cols="2"
-              ><v-btn @click="openRideTable()"
-                ><v-icon>mid-printer-outline</v-icon></v-btn
+            <v-col cols="2" style="display: flex; justify-content: center"
+              ><v-btn @click="openRideTable()">
+                <v-icon>mdi-printer-outline</v-icon></v-btn
               >
             </v-col>
           </v-row>
