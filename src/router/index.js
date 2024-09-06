@@ -13,6 +13,7 @@ const FindId = () => import('@/views/FindId')
 const ChildList = () => import('@/views/ChildList')
 const RideTimeline = () => import('@/views/RideTimeline')
 const Home = () => import('@/views/Home')
+const RideTimelineTable = () => import('@/views/RideTimelineTable')
 
 Vue.use(Router)
 
@@ -37,6 +38,12 @@ const router = new Router({
       path: '/FindId',
       name: 'FindId',
       component: FindId,
+    },
+    {
+      path: '/RideTimelineTable',
+      name: 'RideTimelineTable',
+      component: RideTimelineTable,
+      meta: { requiresAuth: true },
     },
     // {
     //   path: 'admin/:id?/:secondId?',
