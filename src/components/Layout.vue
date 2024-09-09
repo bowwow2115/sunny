@@ -36,7 +36,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-container fluid>
+      <v-container fluid style="padding: 0">
         <v-col lg="8" sm="8" xs="12">
           <router-view />
         </v-col>
@@ -62,25 +62,25 @@ export default {
       items: [
         {
           title: '홈',
-          icon: 'mdi-image',
-          to: '/Home',
-          name: 'Home',
+          icon: 'mdi-home',
+          to: '/SunnyHome',
+          name: 'SunnyHome',
         },
         {
           title: '원아등록',
-          icon: 'mdi-image',
+          icon: 'mdi-account-plus',
           to: '/ChildRegist',
           name: 'ChildRegist',
         },
         {
           title: '원아조회',
-          icon: 'mdi-image',
+          icon: 'mdi-account-search',
           to: '/ChildList',
           name: 'ChildList',
         },
         {
           title: '차량운행조회',
-          icon: 'mdi-image',
+          icon: 'mdi-car-search',
           to: '/RideTimeline',
           name: 'RideTimeline',
         },
@@ -95,6 +95,9 @@ export default {
     },
     ...mapGetters(['isAdmin']),
   },
+  mounted() {
+    this.showAdmin()
+  },
   methods: {
     logout() {
       auth.logout()
@@ -102,6 +105,16 @@ export default {
     goToAdminMenu() {
       if (this.$route.path !== '/AdminMenu') {
         this.$router.push('/AdminMenu')
+      }
+    },
+    showAdmin() {
+      if (this.isAdmin) {
+        let menu = {}
+        menu.title = '관리자'
+        menu.icon = 'mdi-account-box'
+        menu.to = '/AdminMenu'
+        menu.name = 'AdminMenu'
+        this.items.push(menu)
       }
     },
   },
