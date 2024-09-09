@@ -12,7 +12,7 @@ const ChildRegist = () => import('@/views/ChildRegist')
 const FindId = () => import('@/views/FindId')
 const ChildList = () => import('@/views/ChildList')
 const RideTimeline = () => import('@/views/RideTimeline')
-const Home = () => import('@/views/Home')
+const SunnyHome = () => import('@/views/SunnyHome')
 const RideTimelineTable = () => import('@/views/RideTimelineTable')
 
 Vue.use(Router)
@@ -85,9 +85,9 @@ const router = new Router({
           meta: { requiresAuth: true, requiresAdmin: true },
         },
         {
-          path: '/Home',
-          name: 'Home',
-          component: Home,
+          path: '/SunnyHome',
+          name: 'SunnyHome',
+          component: SunnyHome,
           meta: { requiresAuth: true },
         },
       ],

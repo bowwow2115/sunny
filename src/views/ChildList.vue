@@ -155,7 +155,6 @@ import { getAllChildren } from '@/api/api'
 
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
 export default {
-  components: { ChildMoreInfo },
   name: 'ChildrenList',
   mounted() {
     this.getAllChildren()

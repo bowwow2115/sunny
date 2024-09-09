@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row style="height: 50vh">
       <v-col cols="6" xs="12">
         <v-card style="height: 50vh">
@@ -7,7 +7,9 @@
           <v-card-text
             v-for="(child, index) in birthMonthChildList"
             :key="index"
-            >{{ `${child.name}(${child.className})` }}
+            ><strong>{{
+              `${child.name}(${child.className}, ${child.birthday})`
+            }}</strong>
           </v-card-text>
         </v-card>
       </v-col>
@@ -17,20 +19,21 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row style="height: 50vh">
+    <!-- <v-row style="height: 50vh">
       <v-col cols="6">
         <v-card>
           <v-card-title>원아 등록</v-card-title>
         </v-card>
       </v-col>
       <v-col cols="6"></v-col>
-    </v-row>
-  </v-container>
+    </v-row> -->
+  </div>
 </template>
 
 <script>
 import { getBirthMonthChlid } from '@/api/api'
 export default {
+  name: 'SunnyHome',
   data() {
     return {
       birthMonthChildList: [],

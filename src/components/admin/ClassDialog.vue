@@ -1,10 +1,9 @@
 <template>
   <v-dialog
     v-model="visible"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-    max-width="100%"
+    :fullscreen="isMobile"
+    :hide-overlay="isMobile"
+    width="500px"
   >
     <v-card>
       <v-toolbar color="primary" dark>
@@ -72,6 +71,7 @@ import ClassAddDialog from './ClassAddDialog.vue'
 export default {
   mounted() {
     this.getClassList()
+    this.checkIfMobile()
   },
   data() {
     return {
@@ -82,6 +82,7 @@ export default {
         classList: [],
       },
       isEdit: false,
+      isMobile: false,
     }
   },
   methods: {
@@ -143,6 +144,20 @@ export default {
         .catch((e) => {
           this.$showError(e)
         })
+    },
+    checkIfMobile() {
+      // 사용자 에이전트 문자열에서 모바일 기기를 확인
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+
+      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
+      if (
+        /android/i.test(userAgent) ||
+        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+      ) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
     },
   },
 }
