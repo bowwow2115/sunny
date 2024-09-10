@@ -1,4 +1,5 @@
-<template>
+<!-- ********** 카드 타입 ********** -->
+<!-- <template>
   <div>
     <child-more-info ref="childMoreInfo"></child-more-info>
     <v-data-iterator
@@ -56,16 +57,13 @@
           </v-btn>
         </v-toolbar>
       </template>
-
       <template v-slot:default="props">
         <v-row>
           <v-col
             v-for="(item, index) in props.items"
             :key="index"
             cols="12"
-            sm="6"
-            md="4"
-            lg="6"
+            md="6"
           >
             <v-card class="pa-2 rounded-xl">
               <v-card-title class="font-weight-bold justify-space-between">
@@ -78,8 +76,6 @@
                   >더보기<v-icon right>ri-add-circle-fill</v-icon></v-btn
                 >
               </v-card-title>
-
-              <!-- <v-divider></v-divider> -->
 
               <v-card-text>
                 <v-list>
@@ -148,11 +144,128 @@
       </template>
     </v-data-iterator>
   </div>
+</template> -->
+
+<!-- ********** 테이블 타입 ********** -->
+<template>
+  <div>
+    <child-more-info ref="childMoreInfo"></child-more-info>
+    <v-data-table
+      :items="childrenList"
+      :items-per-page.sync="itemsPerPage"
+      :page.sync="page"
+      :search="search"
+      :sort-by="sortBy"
+      :sort-desc="sortDesc"
+      :headers="headers"
+      item-key="id"
+      class="elevation-1 mt-0 _mobile-table"
+    >
+      <template v-slot:top>
+        <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
+          <v-text-field
+            v-model="search"
+            clearable
+            flat
+            solo-inverted
+            hide-details
+            prepend-inner-icon="ri-search-line"
+            label="검색어를 입력하세요."
+          ></v-text-field>
+          <v-select
+            v-model="sortBy"
+            flat
+            solo-inverted
+            hide-details
+            :items="keys"
+            item-text="name"
+            item-value="key"
+            prepend-inner-icon="ri-sort-desc"
+            label="정렬"
+            class="ml-2"
+          >
+          </v-select>
+          <v-btn
+            v-if="!sortDesc"
+            fab
+            depressed
+            small
+            color="primary"
+            @click="sortDesc = true"
+          >
+            <v-icon>ri-arrow-up-fill</v-icon>
+          </v-btn>
+          <v-btn
+            v-else
+            fab
+            depressed
+            small
+            color="primary"
+            @click="sortDesc = false"
+          >
+            <v-icon>ri-arrow-down-fill</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </template>
+      <template v-slot:item="{ item }">
+        <tr>
+          <td class="text-no-wrap px-3">{{ item.name }}</td>
+          <td class="text-no-wrap px-3">{{ item.admissionDate }}</td>
+          <td class="text-no-wrap px-3">{{ item.className }}</td>
+          <td class="px-3">{{ item.address }}</td>
+          <td class="text-no-wrap px-3">{{ item.birthday }}</td>
+          <td class="text-no-wrap px-3">{{ item.status }}</td>
+          <td class="px-3">{{ item.parents }}</td>
+          <td>
+            <v-btn icon @click="openInfoDialog(item)">
+              <v-icon>ri-more-2-line</v-icon>
+            </v-btn>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:bottom>
+        <v-row class="justify-space-between">
+          <v-col>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn text outlined v-bind="attrs" v-on="on">
+                  목록 더보기
+                  {{ itemsPerPage }}
+                  <v-icon>ri-arrow-down-s-fill</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(number, index) in itemsPerPageArray"
+                  :key="index"
+                  @click="updateItemsPerPage(number)"
+                >
+                  <v-list-item-title>{{ number }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+          <v-col class="d-flex align-center justify-end">
+            <div>
+              <v-btn fab small depressed @click="formerPage">
+                <v-icon>ri-arrow-left-s-line</v-icon>
+              </v-btn>
+              <span class="grey--text mx-4">
+                {{ page }} / {{ numberOfPages }}
+              </span>
+              <v-btn fab small depressed @click="nextPage">
+                <v-icon>ri-arrow-right-s-line</v-icon>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
 import { getAllChildren } from '@/api/api'
-
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
 export default {
   name: 'ChildrenList',
@@ -162,14 +275,24 @@ export default {
   data() {
     return {
       childrenList: [],
-      itemsPerPageArray: [4, 8, 12],
+      // itemsPerPageArray: [4, 8, 12],
       search: '',
       filter: {},
       sortDesc: false,
       page: 1,
       itemsPerPage: 4,
       sortBy: 'name',
-      sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'],
+      //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
+      headers: [
+        { text: '이름', value: 'name' },
+        { text: '입학일', value: 'admissionDate' },
+        { text: '반명', value: 'className' },
+        { text: '주소', value: 'address' },
+        { text: '생일', value: 'birthday' },
+        { text: '재원여부', value: 'status' },
+        { text: '보호자', value: 'parents' },
+        { text: '작업', value: 'actions', sortable: false },
+      ],
       keys: [
         { key: 'name', name: '이름' },
         { key: 'admissionDate', name: '입학일' },
@@ -185,12 +308,12 @@ export default {
     numberOfPages() {
       return Math.ceil(this.childrenList.length / this.itemsPerPage)
     },
-    filteredKeys() {
-      return this.keys.filter((item) => item.key !== 'name')
-    },
-    sortByNameList() {
-      return this.keys.map((item) => item.name)
-    },
+    // filteredKeys() {
+    //   return this.keys.filter((item) => item.key !== 'name')
+    // },
+    // sortByNameList() {
+    //   return this.keys.map((item) => item.name)
+    // }, 안쓰게 됨? (확인해줘)
   },
   methods: {
     getAllChildren() {
@@ -256,22 +379,22 @@ export default {
     updateItemsPerPage(number) {
       this.itemsPerPage = number
     },
-    keyToName(key) {
-      switch (key) {
-        case 'name':
-          return '이름'
-        case 'admissionDate':
-          return '입학일'
-        case 'className':
-          return '반명'
-        case 'address':
-          return '주소'
-        case 'birthday':
-          return '생일'
-        case 'status':
-          return '재원여부'
-      }
-    },
+    // keyToName(key) {
+    //   switch (key) {
+    //     case 'name':
+    //       return '이름'
+    //     case 'admissionDate':
+    //       return '입학일'
+    //     case 'className':
+    //       return '반명'
+    //     case 'address':
+    //       return '주소'
+    //     case 'birthday':
+    //       return '생일'
+    //     case 'status':
+    //       return '재원여부'
+    //   }
+    // }, 안쓰게 됨? (확인해줘)
   },
 }
 </script>

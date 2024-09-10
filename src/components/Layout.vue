@@ -36,10 +36,11 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-container fluid style="padding: 0">
-        <v-col lg="8" sm="8" xs="12">
+      <v-container fluid>
+        <!-- <v-col lg="8" sm="8" xs="12">
           <router-view />
-        </v-col>
+        </v-col> -->
+        <router-view />
       </v-container>
     </v-main>
 

@@ -21,7 +21,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="form.name"
               label="원아이름"
@@ -31,7 +31,7 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="12" sm="6">
             <v-menu
               ref="menu"
               v-model="addmisionDateWrap"
@@ -44,7 +44,7 @@
                   v-model="form.admissionDate"
                   label="원아 입학일"
                   hide-details="auto"
-                  append-icon="mdi-calendar"
+                  append-icon="ri-calendar-2-fill"
                   readonly
                   v-bind="attrs"
                   v-on="on"
@@ -66,7 +66,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="12" sm="6">
             <v-menu
               ref="menu"
               v-model="birthdayWrap"
@@ -80,7 +80,7 @@
                   :rules="datePicRules"
                   label="원아 생년월일"
                   hide-details="auto"
-                  append-icon="mdi-calendar"
+                  append-icon="ri-calendar-2-fill"
                   readonly
                   v-bind="attrs"
                   v-on="on"
@@ -107,9 +107,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
+          <v-col cols="12" sm="6">
             <v-select
               v-model="form.className"
               :items="classNameList"
@@ -122,7 +120,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="8">
+          <v-col cols="8" md="4">
             <v-text-field
               v-model="form.address.zipCode"
               label="우편번호"
@@ -131,7 +129,7 @@
               readonly
             ></v-text-field>
           </v-col>
-          <v-col cols="4" class="ps-0">
+          <v-col cols="4" md="2">
             <v-btn
               type="button"
               class="text-body-1 font-weight-bold label-with-btn"
@@ -209,7 +207,7 @@
                   :menu-props="{ offsetY: true }"
                 ></v-select>
               </v-col>
-              <v-col cols="7" class="ps-0">
+              <v-col cols="7">
                 <v-text-field
                   v-model="parentBox.name"
                   :rules="nameRules"
@@ -221,7 +219,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="10" md="5">
             <v-text-field
               v-model="parentBox.telephone"
               :rules="numRules"
@@ -231,16 +229,15 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="2" class="text-right">
-            <v-btn @click="addParentBox" icon color="primary" class="btn-add">
+          <v-col cols="2" md="1" class="text-right pa-2">
+            <v-btn @click="addParentBox" icon color="primary">
               <v-icon>ri-add-line</v-icon>
             </v-btn>
             <v-btn
               @click="removeParentBox(index)"
               v-if="form.parentList.length > 1"
               icon
-              color="primary"
-              class="btn-add"
+              color="error"
             >
               <v-icon>ri-subtract-line</v-icon>
             </v-btn>
@@ -314,7 +311,7 @@
                     hide-details="auto"
                   ></v-select>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" sm="8" md="4">
                   <v-text-field
                     v-model="childRideComment"
                     label="비고"
@@ -324,9 +321,7 @@
                   >
                   </v-text-field>
                 </v-col>
-              </v-row>
-              <v-row class="justify-center">
-                <v-col cols="12" md="6">
+                <v-col cols="12" sm="4" md="2">
                   <v-btn
                     @click="pushChildRideList()"
                     type="button"
