@@ -87,7 +87,7 @@
                 color="primary"
               >
                 회원가입 하기
-              </v-btn>
+              </v-btn>ㅞ
             </v-form>
           </v-card>
         </v-col>

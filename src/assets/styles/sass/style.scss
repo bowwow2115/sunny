@@ -72,3 +72,33 @@ input[type=checkbox] {
 .label-with-btn {
   min-height: 56px;
 }
+
+@media (min-width: 600px) and (max-width: 960px) {
+  ._mobile-table table {
+    display: flex;
+  }
+  ._mobile-table table thead {
+    display: block;
+    min-width: 8rem;
+  }
+  ._mobile-table table tr {
+    display: block;
+  }
+  ._mobile-table table th {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  ._mobile-table table tbody {
+    display: flex;
+  }
+  ._mobile-table table tbody tr {
+    min-width: calc(calc(100% - 8rem)/2);
+  }
+  ._mobile-table table td {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: thin solid rgba(0, 0, 0, 0.12);
+  }
+}
