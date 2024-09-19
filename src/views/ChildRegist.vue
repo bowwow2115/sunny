@@ -8,8 +8,8 @@
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
       <v-card-text class="pt-6">
         <v-row>
-          <v-col cols="4">
-            <!-- <input
+          <!-- <v-col cols="4">
+            <input
                 type="checkbox"
                 v-model="form.status"
                 class="custom-chkbox"
@@ -17,7 +17,9 @@
               /><label for="statusChk"
                 ><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면
                 눌러주세요</label
-              > -->
+              >
+          </v-col> -->
+          <v-col>
             <v-combobox
               v-if="form.status == '기타' ? (form.status = '') : true"
               v-model="form.status"

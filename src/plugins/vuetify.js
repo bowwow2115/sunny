@@ -19,14 +19,15 @@ const opts = {
     // default: 'light',
     themes: {
       light: {
-        primary: '#90ce00',
-        secondary: colors.cyan.lighten3,
-        tertiary: colors.yellow.darken1,
-        accent: colors.cyan.darken4, //강조
-        error: colors.deepOrange.accent2, //오류
-        info: colors.blueGrey.lighten2, //정보
-        success: '#77D618', //성공
-        warning: colors.amber.darken3, //경고
+        //primary: '#90ce00', //연두
+        primary: '#f9a319', //연주황
+        secondary: '#fdc300', //노랑
+        tertiary: '#5475f2', //파랑
+        accent: '#ff5a00', //주황 (강조)
+        error: '#f3003f', //핑크 (에러)
+        info: '#7f716a', //브라운 (정보)
+        success: '#03c75a', //초록 (성공)
+        warning: '#c70034', //진핑크 (경고)
       },
       dark: {
         primary: '#2196F3',
