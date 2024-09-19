@@ -172,7 +172,7 @@
             prepend-inner-icon="ri-search-line"
             label="검색어를 입력하세요."
           ></v-text-field>
-          <v-select
+          <!-- <v-select
             v-model="sortBy"
             flat
             solo-inverted
@@ -204,7 +204,7 @@
             @click="sortDesc = false"
           >
             <v-icon>ri-arrow-down-fill</v-icon>
-          </v-btn>
+          </v-btn> -->
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
@@ -280,7 +280,7 @@ export default {
       filter: {},
       sortDesc: false,
       page: 1,
-      itemsPerPage: 4,
+      itemsPerPage: 15,
       sortBy: 'name',
       //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
       headers: [

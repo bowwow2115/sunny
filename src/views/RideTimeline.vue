@@ -74,7 +74,7 @@
                 <v-chip
                   v-for="(childRide, j) in meetingLocation.childRideList"
                   :key="j"
-                  x-small
+                  small
                 >
                   {{
                     `${childRide.child.name}(${childRide.child.className})  ${
