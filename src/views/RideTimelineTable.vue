@@ -14,6 +14,9 @@
             (ride.comment ? ` 비고사항: ${ride.comment}` : '')
           }}</strong> -->
         </v-select>
+        <v-btn height="28" onClick="window.print()"
+          ><v-icon>mdi-printer</v-icon></v-btn
+        >
       </v-card-title>
       <v-simple-table dense>
         <template v-slot:default>
@@ -21,6 +24,7 @@
             <tr>
               <th class="text-left">장소</th>
               <th class="text-left">시간</th>
+              <th class="text-left">비고</th>
               <th class="text-left">원아</th>
               <th class="text-left">보호자1</th>
               <th class="text-left">보호자2</th>
@@ -36,6 +40,7 @@
             <tr>
               <td>{{ meetingLocation.name }}</td>
               <td>{{ meetingLocation.time }}</td>
+              <td>{{ meetingLocation.comment }}</td>
               <!-- <td></td>
               <td></td>
               <td></td> -->
@@ -44,6 +49,7 @@
               v-for="(childRide, k) in meetingLocation.childRideList"
               :key="k"
             >
+              <td></td>
               <td></td>
               <td></td>
               <td>
@@ -66,7 +72,7 @@
                 }}
               </td>
               <td>
-                <v-checkbox></v-checkbox>
+                <v-simple-checkbox></v-simple-checkbox>
               </td>
             </tr>
           </tbody>
@@ -119,4 +125,42 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* 인쇄 시 A4 크기로 설정 */
+@media print {
+  @page {
+    size: A4; /* A4 크기 설정 */
+    margin: 20mm; /* 용지 여백 설정 (20mm 권장) */
+  }
+
+  /* 페이지에 맞게 레이아웃 설정 */
+  html,
+  body {
+    width: 210mm; /* A4 너비 */
+    height: 297mm; /* A4 높이 */
+  }
+
+  /* 인쇄 영역에 대한 레이아웃 설정 */
+  .container {
+    zoom: 0.8 !important; /* 80% 크기로 축소 */
+    font-size: 12px !important; /* 인쇄할 때 전체 폰트 크기 축소 */
+    width: 100%;
+    height: 100%;
+    padding: 10mm; /* 여백 설정 */
+    box-sizing: border-box;
+  }
+
+  h1 {
+    font-size: 1.5rem; /* 인쇄 시 큰 제목 크기 축소 */
+  }
+
+  p {
+    font-size: 0.8rem; /* 본문 폰트도 축소 */
+  }
+}
+</style>

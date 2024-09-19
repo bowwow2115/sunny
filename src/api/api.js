@@ -384,3 +384,9 @@ export function getBirthMonthChlid() {
 export function refreshToken(param) {
   return post2(`${constants.CONTEXT_PATH}/jwt/refresh`, param)
 }
+
+export function checkChild(param) {
+  return get(
+    `${constants.CONTEXT_PATH}/child/checkChild?name=${param.name}&className=${param.className}`
+  )
+}

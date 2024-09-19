@@ -328,7 +328,7 @@ export default {
                 })
                 element.parents = parentNameList
                 element.address = `${element.address.address} ${element.address.detailAddress}`
-                element.status = element.status ? '재원' : '졸업 or 퇴원'
+                // element.status = element.status ? '재원' : '졸업 or 퇴원'
               })
               this.childrenList = response.data
             }

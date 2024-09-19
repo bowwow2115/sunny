@@ -63,7 +63,9 @@
                 >mdi-pencil</v-icon
               >
             </v-card-title>
-            <v-card-subtitle>{{ meetingLocation.name }}</v-card-subtitle>
+            <v-card-subtitle>{{
+              `${meetingLocation.name}(${meetingLocation.comment})`
+            }}</v-card-subtitle>
             <v-card-text
               @click="openParentsDialog(meetingLocation.childRideList)"
               style="background-color: #fafafa; cursor: pointer"
@@ -80,9 +82,6 @@
                     }`
                   }}
                 </v-chip>
-              </div>
-              <div class="text-caption">
-                {{ meetingLocation.comment || '' }}
               </div>
             </v-card-text>
             <!-- <v-col cols="2">
