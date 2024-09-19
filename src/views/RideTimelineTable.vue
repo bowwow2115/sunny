@@ -147,7 +147,7 @@ body {
 
   /* 인쇄 영역에 대한 레이아웃 설정 */
   .container {
-    zoom: 0.8 !important; /* 80% 크기로 축소 */
+    zoom: 0.75 !important; /* 80% 크기로 축소 */
     font-size: 12px !important; /* 인쇄할 때 전체 폰트 크기 축소 */
     width: 100%;
     height: 100%;

@@ -89,17 +89,12 @@
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-container>
-        <v-row v-for="i in 3" :key="i">
-          <v-col></v-col>
-        </v-row>
+      <v-container fluid>
+        <v-spacer></v-spacer>
         <v-row no-gutters>
-          <v-col cols="8"></v-col>
-          <v-col cols="4">
-            <v-btn color="red darken1" dark @click="deleteMeetingLocation()">
-              {{ `${this.form.name} 삭제` }}
-            </v-btn>
-          </v-col>
+          <v-btn color="red darken1" dark @click="deleteMeetingLocation()">
+            {{ `${this.form.name} 삭제` }}
+          </v-btn>
         </v-row>
       </v-container>
     </v-card>
