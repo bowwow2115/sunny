@@ -28,6 +28,7 @@ const opts = {
         info: '#7f716a', //브라운 (정보)
         success: '#03c75a', //초록 (성공)
         warning: '#c70034', //진핑크 (경고)
+        gray: '#8e8c8b', //그레이
       },
       dark: {
         primary: '#2196F3',

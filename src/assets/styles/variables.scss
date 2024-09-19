@@ -40,6 +40,19 @@
   font-style: normal;
 	src: url('@/assets/fonts/NanumSquareNeoTTF-eHv.woff') format('woff');
 }
+/* ***** 폰트 - 학교안심 둥근미소 ****** */
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 400;
+  font-style: normal;
+	src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-R.woff') format('woff');
+}
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 700;
+  font-style: normal;
+	src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-B.woff') format('woff');
+}
 
 /* ***** override ****** */
 $body-font-family: NanumSquareNeo, -apple-system, BlinkMacSystemFont, system-ui,
