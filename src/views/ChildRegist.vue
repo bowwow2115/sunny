@@ -8,20 +8,29 @@
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
       <v-card-text class="pt-6">
         <v-row>
-          <v-col>
-            <input
-              type="checkbox"
+          <v-col cols="4">
+            <!-- <input
+                type="checkbox"
+                v-model="form.status"
+                class="custom-chkbox"
+                id="statusChk"
+              /><label for="statusChk"
+                ><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면
+                눌러주세요</label
+              > -->
+            <v-combobox
+              v-if="form.status == '기타' ? (form.status = '') : true"
               v-model="form.status"
-              class="custom-chkbox"
-              id="statusChk"
-            /><label for="statusChk"
-              ><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면
-              눌러주세요</label
-            >
+              :items="['재원', '졸업', '퇴소', '기타']"
+              label="재원여부"
+              hide-details="auto"
+              outlined
+              :menu-props="{ offsetY: true }"
+            ></v-combobox>
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="6">
+          <v-col cols="8" md="4">
             <v-text-field
               v-model="form.name"
               label="원아이름"
@@ -31,6 +40,31 @@
               outlined
             ></v-text-field>
           </v-col>
+          <v-col cols="8" md="4">
+            <v-select
+              v-model="form.className"
+              :items="classNameList"
+              :rules="classNameRules"
+              label="반명"
+              hide-details="auto"
+              outlined
+              :menu-props="{ offsetY: true }"
+            ></v-select>
+          </v-col>
+          <v-col cols="4" md="2">
+            <v-btn
+              type="button"
+              class="text-body-1 font-weight-bold label-with-btn"
+              color="primary"
+              outlined
+              block
+              @click="checkChild"
+            >
+              중복 검색
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" sm="6">
             <v-menu
               ref="menu"
@@ -106,17 +140,6 @@
                 @change="$refs.menu.save((birthdayWrap = false))"
               ></v-date-picker>
             </v-menu>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-select
-              v-model="form.className"
-              :items="classNameList"
-              :rules="classNameRules"
-              label="반명"
-              hide-details="auto"
-              outlined
-              :menu-props="{ offsetY: true }"
-            ></v-select>
           </v-col>
         </v-row>
         <v-row>
@@ -423,7 +446,7 @@
 </template>
 
 <script>
-import { addChild, getClassList, getRideList } from '@/api/api'
+import { addChild, getClassList, getRideList, checkChild } from '@/api/api'
 export default {
   name: 'ChildRegist',
   components: {
@@ -449,7 +472,7 @@ export default {
         admissionDate: `${moment().format('YYYY-MM-DD')}`,
         className: '',
         address: { detailAddress: '', zipCode: '', address: '' },
-        status: true,
+        status: '재원',
         parentList: [
           {
             relation: '',
@@ -699,6 +722,35 @@ export default {
       }
 
       return null // 잘못된 형식의 전화번호일 경우 null 반환
+    },
+    checkChild() {
+      if (this.form.className == '' || this.form.name == '') {
+        this.$showMessage({
+          type: 'warning',
+          message: `원아와 반이름 모두 입력해주세요.`,
+        })
+        return
+      }
+      let param = {}
+      param.className = this.form.className
+      param.name = this.form.name
+      checkChild(param)
+        .then((response) => {
+          if (response.data != null) {
+            this.$showMessage({
+              type: 'warning',
+              message: `${this.form.className}에 ${this.form.name} 원아가 이미 존재합니다.`,
+            })
+          } else {
+            this.$showMessage({
+              type: 'success',
+              message: '해당원아가 존재하지 않습니다.',
+            })
+          }
+        })
+        .catch((e) => {
+          this.$showError(e)
+        })
     },
   },
 }

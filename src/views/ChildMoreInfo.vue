@@ -324,7 +324,7 @@ export default {
         address: null,
         birthday: '',
         parentList: [],
-        status: false,
+        status: '',
         amChildRideList: [],
         pmChildRideList: [],
         name: '',
