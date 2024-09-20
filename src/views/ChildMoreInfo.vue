@@ -20,6 +20,74 @@
           <v-icon>ri-close-fill</v-icon>
         </v-btn>
       </v-toolbar>
+      <!-- 원아정보 -->
+      <v-list>
+        <v-list-group
+          :value="true"
+          prepend-icon="mdi-human-child"
+          :no-action="true"
+        >
+          <template v-slot:activator>
+            <v-list-item-subtitle>원아 정보</v-list-item-subtitle>
+          </template>
+          <div>
+            <v-list-item-group>
+              <div class="d-flex justify-space-between align-center mx-4">
+                <div>
+                  <v-list-item class="pa-0">
+                    <v-list-item-icon>
+                      <v-icon>mdi-account</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >{{ form.name }}
+                        <span class="grey--text">{{
+                          form.status
+                        }}</span></v-list-item-title
+                      >
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item class="pa-0">
+                    <v-list-item-icon>
+                      <v-icon color="green">mdi-cake</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ `생일` }}</v-list-item-title>
+                      <span class="grey--text">({{ form.birthday }})</span>
+                    </v-list-item-content>
+                  </v-list-item>
+                </div>
+                <div>
+                  <v-btn
+                    icon
+                    block
+                    @click="openParentsDialog(true, item)"
+                    class="mb-4"
+                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
+                  >
+                  <!-- <v-list-item-icon @click="openParentsDialog(true, item)">
+                      <v-icon color="green accent-4">mdi-pencil</v-icon>
+                    </v-list-item-icon> -->
+                  <v-btn icon block @click="deleteParents(item)"
+                    ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
+                  >
+                  <!-- <v-list-item-icon @click="deleteParents(item)">
+                      <v-icon color="red darken3">mdi-minus</v-icon>
+                    </v-list-item-icon> -->
+                </div>
+              </div>
+            </v-list-item-group>
+          </div>
+          <v-list-item style="padding: 0px">
+            <v-spacer></v-spacer>
+            <v-btn @click="openParentsDialog(false)"
+              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+            >
+            <v-spacer></v-spacer>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+      <v-divider></v-divider>
       <!-- 보호자 리스트 -->
       <v-list>
         <v-list-group
@@ -129,7 +197,7 @@
                   <v-icon>mdi-bus</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{
+                  <v-list-item-title width="100%">{{
                     childRide.meetingLocation.sunnyRide.name +
                     (childRide.meetingLocation.sunnyRide.time != null
                       ? `(${childRide.meetingLocation.sunnyRide.time})`
@@ -155,7 +223,7 @@
                   <v-icon>mdi-map-marker-radius</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{
+                  <v-list-item-title style="width: 300px !important">{{
                     `${childRide.meetingLocation.name}(${childRide.meetingLocation.time})`
                   }}</v-list-item-title>
                   <v-list-item-subtitle>{{
