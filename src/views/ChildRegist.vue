@@ -8,22 +8,12 @@
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
       <v-card-text class="pt-6">
         <v-row>
-          <!-- <v-col cols="4">
-            <input
-                type="checkbox"
-                v-model="form.status"
-                class="custom-chkbox"
-                id="statusChk"
-              /><label for="statusChk"
-                ><v-icon class="ri-checkbox-circle-fill"></v-icon>재원 중이라면
-                눌러주세요</label
-              >
-          </v-col> -->
           <v-col>
             <v-combobox
               v-if="form.status == '기타' ? (form.status = '') : true"
               v-model="form.status"
               :items="['재원', '졸업', '퇴소', '기타']"
+              :rules="statusRules"
               label="재원여부"
               hide-details="auto"
               outlined
@@ -503,10 +493,17 @@ export default {
       numRules: [
         (v) => !!v || '필수 항목입니다.',
         (v) => /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
+        (v) => /^.{8,11}$/.test(v) || '8~11자 이내로 입력해주세요.',
       ],
       nameRules: [
         (v) => !!v || '필수 항목입니다.',
         (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.', // 한글자모음 정규식 // 한글정규식 /^[가-힣]*$/
+        (v) => /^.{0,16}$/.test(v) || '16자 이내로 입력해주세요.',
+      ],
+      statusRules: [
+        (v) => !!v || '필수 항목입니다.',
+        (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.', // 한글자모음 정규식 // 한글정규식 /^[가-힣]*$/
+        (v) => /^.{0,8}$/.test(v) || '8자 이내로 입력해주세요.',
       ],
       datePicRules: [(v) => !!v || '날짜를 선택해 주세요.'],
       classNameRules: [(v) => !!v || '반을 선택해 주세요.'],
