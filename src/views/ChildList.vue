@@ -212,7 +212,11 @@
           <td class="text-no-wrap px-3">{{ item.name }}</td>
           <td class="text-no-wrap px-3">{{ item.admissionDate }}</td>
           <td class="text-no-wrap px-3">{{ item.className }}</td>
-          <td class="px-3">{{ item.address }}</td>
+          <td class="px-3">
+            {{
+              (item.address.address || '') + (item.address.detailAddress || '')
+            }}
+          </td>
           <td class="text-no-wrap px-3">{{ item.birthday }}</td>
           <td class="text-no-wrap px-3">{{ item.status }}</td>
           <td class="px-3">{{ item.parents }}</td>
@@ -287,7 +291,7 @@ export default {
         { text: '이름', value: 'name' },
         { text: '입학일', value: 'admissionDate' },
         { text: '반명', value: 'className' },
-        { text: '주소', value: 'address' },
+        { text: '주소', value: 'address.address' },
         { text: '생일', value: 'birthday' },
         { text: '재원여부', value: 'status' },
         { text: '보호자', value: 'parents' },
@@ -297,7 +301,7 @@ export default {
         { key: 'name', name: '이름' },
         { key: 'admissionDate', name: '입학일' },
         { key: 'className', name: '반명' },
-        { key: 'address', name: '주소' },
+        { key: 'address.address', name: '주소' },
         { key: 'birthday', name: '생일' },
         { key: 'status', name: '재원여부' },
         { key: 'parents', name: '보호자' },
@@ -327,7 +331,7 @@ export default {
                   parentNameList += parent.name + ' '
                 })
                 element.parents = parentNameList
-                element.address = `${element.address.address} ${element.address.detailAddress}`
+                // element.address = `${element.address.address} ${element.address.detailAddress}`
                 // element.status = element.status ? '재원' : '졸업 or 퇴원'
               })
               this.childrenList = response.data
@@ -359,6 +363,7 @@ export default {
         pmChildRideList: pmChildRideList,
         name: info.name,
       })
+      // 삭제 성공 시
       if (result) {
         this.$showMessage({
           type: 'success',
@@ -368,6 +373,8 @@ export default {
         if (index !== 1) {
           this.$delete(this.childrenList, index)
         }
+      } else {
+        this.getAllChildren()
       }
     },
     nextPage() {

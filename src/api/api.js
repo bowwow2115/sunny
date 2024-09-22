@@ -390,3 +390,7 @@ export function checkChild(param) {
     `${constants.CONTEXT_PATH}/child/checkChild?name=${param.name}&className=${param.className}`
   )
 }
+
+export function updateChild(param) {
+  return put(`${constants.CONTEXT_PATH}/child`, param)
+}
