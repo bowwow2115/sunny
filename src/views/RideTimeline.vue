@@ -12,14 +12,21 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
 
-      <v-img gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)">
-        <!-- src="https://cdn.vuetifyjs.com/images/cards/forest.jpg" -->
+      <v-img
+        :src="
+          selectedAmPm == '오전'
+            ? '/images/morning.webp'
+            : '/images/sunset.webp'
+        "
+        max-height="100px"
+        gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)"
+      >
         <v-container class="fill-height">
           <v-row>
-            <v-col>
-              <strong class="text-h1 font-weight-regular mr-6">{{
-                selectedAmPm
-              }}</strong>
+            <v-col
+              ><v-btn @click="openRideTable()">
+                <v-icon>mdi-printer-outline</v-icon></v-btn
+              >
             </v-col>
             <v-col class="d-flex" cols="7">
               <v-select
@@ -46,28 +53,81 @@
       </v-img>
     </v-card>
     <v-card-text class="py-0">
-      <v-timeline align-top dense>
+      <v-timeline align-top :dense="isMobile ? true : false">
         <v-timeline-item
           color="primary"
           small
           v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
           :key="index"
         >
-          <v-card :width="isMobile ? '100%' : '50%'">
+          <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
+          <v-card>
             <v-card-title>
-              {{ meetingLocation.time }}
-              <v-spacer></v-spacer>
-              <v-icon
-                color="green accent-4"
-                @click="openMeetingLocationMoreInfo(meetingLocation)"
-                >mdi-pencil</v-icon
-              >
+              <v-row>
+                <v-col
+                  :cols="isMobile ? '8' : '4'"
+                  style="background-color: #fafafa"
+                >
+                  {{ meetingLocation.time }}
+                </v-col>
+                <v-col
+                  :cols="isMobile ? '4' : '8'"
+                  color
+                  style="display: flex; justify-content: end"
+                  :style="!isMobile ? 'background-color: #f9fbe7;' : ''"
+                >
+                  <v-btn
+                    icon
+                    color="green accent-4"
+                    @click="openMeetingLocationMoreInfo(meetingLocation)"
+                  >
+                    <v-icon>ri-edit-2-fill</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-card-title>
-            <v-card-subtitle>{{
-              `${meetingLocation.name}(${meetingLocation.comment})`
-            }}</v-card-subtitle>
+            <v-card-subtitle>
+              <v-row>
+                <v-col
+                  :cols="isMobile ? '8' : '4'"
+                  style="background-color: #fafafa"
+                >
+                  <span>{{
+                    `${meetingLocation.name}(${meetingLocation.comment})`
+                  }}</span>
+                </v-col>
+                <v-col
+                  v-if="!isMobile"
+                  :cols="isMobile ? '4' : '8'"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    background-color: #f9fbe7;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <v-chip
+                    @click="openParentsDialog(meetingLocation.childRideList)"
+                    v-for="(childRide, j) in meetingLocation.childRideList"
+                    :key="j"
+                    color="#43A047"
+                    text-color="white"
+                    small
+                    style="margin: 2px; cursor: pointer"
+                  >
+                    {{
+                      `${childRide.child.name}(${childRide.child.className})  ${
+                        childRide.comment || ''
+                      }`
+                    }}
+                  </v-chip>
+                </v-col>
+              </v-row>
+
+              <!-- <v-spacer></v-spacer> -->
+            </v-card-subtitle>
             <v-card-text
-              @click="openParentsDialog(meetingLocation.childRideList)"
+              v-if="isMobile"
               style="background-color: #fafafa; cursor: pointer"
             >
               <div class="text-caption">
@@ -75,6 +135,8 @@
                   v-for="(childRide, j) in meetingLocation.childRideList"
                   :key="j"
                   small
+                  style="margin: 2px; cursor: pointer"
+                  @click="openParentsDialog(meetingLocation.childRideList)"
                 >
                   {{
                     `${childRide.child.name}(${childRide.child.className})  ${
@@ -84,13 +146,6 @@
                 </v-chip>
               </div>
             </v-card-text>
-            <!-- <v-col cols="2">
-              <v-icon
-                color="green accent-4"
-                @click="openRideChildDialog(true, item)"
-                >mdi-pencil</v-icon
-              >
-            </v-col> -->
           </v-card>
         </v-timeline-item>
       </v-timeline>

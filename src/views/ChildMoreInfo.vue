@@ -155,7 +155,7 @@
                   <v-btn
                     icon
                     block
-                    color="red darken3"
+                    color="red lighten-1"
                     @click="deleteParents(item)"
                     ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
                   >
@@ -243,7 +243,7 @@
                   <v-btn
                     icon
                     block
-                    color="red darken3"
+                    color="red lighten-1"
                     @click="deleteChildRide(childRide)"
                     ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
                   >
@@ -331,7 +331,7 @@
                   <v-btn
                     icon
                     block
-                    color="red darken3"
+                    color="red lighten-1"
                     @click="deleteChildRide(childRide)"
                     ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
                   >

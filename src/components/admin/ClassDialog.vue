@@ -35,7 +35,7 @@
                   <!-- <v-spacer></v-spacer> -->
                 </v-list-item-content>
                 <v-list-item-icon @click="deleteClass(sunnyClass)">
-                  <v-icon color="red darken3">mdi-minus</v-icon>
+                  <v-icon color="red lighten-1">mdi-minus</v-icon>
                 </v-list-item-icon>
               </v-list-item>
               <v-divider v-if="index != form.classList.length - 1"></v-divider>

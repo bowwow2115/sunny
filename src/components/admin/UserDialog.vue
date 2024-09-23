@@ -36,9 +36,6 @@
                     user.userName
                   }}</v-list-item-subtitle>
                 </v-list-item-content>
-                <!-- <v-list-item-icon @click="deleteuser(user)">
-                  <v-icon color="red darken3">mdi-minus</v-icon>
-                </v-list-item-icon> -->
               </v-list-item>
               <v-divider></v-divider>
             </v-list-item-group>
