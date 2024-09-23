@@ -74,13 +74,13 @@ export default {
           name: 'ChildRegist',
         },
         {
-          title: '원아조회',
+          title: '원아관리',
           icon: 'mdi-account-search',
           to: '/ChildList',
           name: 'ChildList',
         },
         {
-          title: '차량운행조회',
+          title: '차량운행관리',
           icon: 'mdi-car-search',
           to: '/RideTimeline',
           name: 'RideTimeline',

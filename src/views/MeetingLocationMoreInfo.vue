@@ -26,15 +26,21 @@
             <v-list-item-subtitle>승하차 장소 정보</v-list-item-subtitle>
           </template>
           <v-list-item-group>
-            <v-list-item style="padding-left: 15%; padding-right: 8%">
+            <v-list-item style="padding-left: 8%; padding-right: 8%">
               <v-list-item-content>
                 <v-list-item-title>{{ form.name }}</v-list-item-title>
                 <v-list-item-subtitle>{{ form.time }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-spacer></v-spacer>
-              <v-list-item-icon @click="openMeetingLoactionDialog(form)">
-                <v-icon color="green accent-4">mdi-pencil</v-icon>
-              </v-list-item-icon>
+              <v-list-item-action>
+                <v-btn
+                  icon
+                  block
+                  color="green accent-4"
+                  @click="openMeetingLoactionDialog(form)"
+                >
+                  <v-icon>ri-edit-2-fill</v-icon>
+                </v-btn>
+              </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
         </v-list-group>
@@ -53,7 +59,7 @@
               v-for="(childRide, index) in form.childRideList"
               :key="index"
             >
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item style="padding-left: 8%; padding-right: 8%">
                 <v-list-item-content>
                   <v-list-item-title>{{
                     childRide.child.name
@@ -61,11 +67,17 @@
                   <v-list-item-subtitle>{{
                     childRide.child.className
                   }}</v-list-item-subtitle>
-                  <v-spacer></v-spacer>
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteChildRide(childRide)">
-                  <v-icon color="red darken3">mdi-minus</v-icon>
-                </v-list-item-icon>
+                <v-list-item-action>
+                  <v-btn
+                    icon
+                    block
+                    color="red lighten-1"
+                    @click="deleteChildRide(childRide)"
+                  >
+                    <v-icon>ri-delete-bin-6-fill</v-icon>
+                  </v-btn>
+                </v-list-item-action>
               </v-list-item>
               <v-divider v-if="index != childRide.length - 1"></v-divider>
             </v-list-item-group>
