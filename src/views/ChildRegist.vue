@@ -8,7 +8,7 @@
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
       <v-card-text class="pt-6">
         <v-row>
-          <v-col>
+          <v-col cols="6" md="3">
             <v-combobox
               v-if="form.status == '기타' ? (form.status = '') : true"
               v-model="form.status"
@@ -20,9 +20,7 @@
               :menu-props="{ offsetY: true }"
             ></v-combobox>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="8" md="4">
+          <v-col cols="6" md="3">
             <v-text-field
               v-model="form.name"
               label="원아이름"
