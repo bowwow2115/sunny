@@ -1,34 +1,53 @@
 <template>
   <div class="_home">
-    <v-row>
+    <v-row class="align-stretch">
       <v-col cols="12" md="6">
-        <v-card class="pa-2 rounded-xl _log">
+        <v-card class="pa-2 rounded-xl _log d-flex">
           <v-card-title class="_logo align-end">
             <img src="/images/sunny-en.svg" alt="sunny" />
             <h1 class="_font-miso display-1 font-weight-bold">
               해맑은 어린이집
             </h1>
           </v-card-title>
-          <v-card-text class="d-flex justify-space-between align-center mt-6">
-            <h2 class="font-weight-bold">000 님, 환영합니다.</h2>
-            <v-card-actions class="pa-0">
-              <v-btn
-                type="button"
-                outlined
-                rounded
-                text
-                x-large
-                color="gray"
-                class="px-8"
-                >로그아웃</v-btn
-              >
-              <v-btn type="button" outlined rounded text x-large class="px-8"
-                >마이페이지</v-btn
-              >
-            </v-card-actions>
+          <v-card-text class="mt-5">
+            <div
+              class="_log-info d-flex flex-wrap justify-space-between align-center"
+            >
+              <h2 class="font-weight-bold">
+                <u class="font-weight-black">테스트님</u>, 안녕하세요.
+              </h2>
+              <v-card-actions class="flex-wrap">
+                <v-btn
+                  type="button"
+                  outlined
+                  rounded
+                  text
+                  color="gray"
+                  class="px-8"
+                  >로그아웃</v-btn
+                >
+                <v-btn type="button" outlined rounded text class="px-8"
+                  >마이페이지</v-btn
+                >
+              </v-card-actions>
+            </div>
+            <div class="_excel-regist pt-4">
+              <h3 class="mb-4">
+                <v-icon color="#1d6f42" class="mr-1">ri-file-excel-fill</v-icon
+                >엑셀 파일로 원아등록 바로 하기
+              </h3>
+              <div class="_btn-grp">
+                <v-btn type="button" text x-large class="_excel-download"
+                  >양식 다운로드</v-btn
+                >
+                <v-btn type="button" text x-large class="_excel-upload"
+                  >원아 엑셀 등록</v-btn
+                >
+              </div>
+            </div>
           </v-card-text>
         </v-card>
-        <v-btn
+        <!-- <v-btn
           type="button"
           block
           class="_quick-regist d-flex justify-space-between align-center py-6 px-6 rounded-xl"
@@ -39,24 +58,28 @@
             바로가기
           </p>
           <v-icon>ri-draft-fill</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-col>
       <v-col cols="12" md="6">
-        <v-card class="pa-2 pt-8 rounded-xl _birth" elevation="0">
+        <v-card class="pa-2 pt-8 rounded-xl _birth">
           <v-card-title class="_font-miso font-weight-bold display-1">
-            <b class="_today-b mb-4"><span>09.</span><span>13</span></b>
-            오늘의 생일
+            <b class="_today-b mb-4"><span>09</span><span>월</span></b>
+            의 생일
           </v-card-title>
-          <v-card-text>
+          <v-card-text class="mt-5">
             <ul>
               <li
                 v-for="(child, index) in birthMonthChildList"
                 :key="index"
-                class="font-weight-black mb-4"
+                class="font-weight-black"
               >
                 {{ `${child.name}` }}
+                <b>{{ `${child.birthday}` }}</b>
+                <v-btn icon color="#fff"
+                  ><v-icon>ri-add-circle-fill</v-icon></v-btn
+                >
                 <small class="font-weight-regular">{{
-                  `${child.className} &nbsp; ${child.birthday}`
+                  `${child.className}`
                 }}</small>
                 <!-- <v-btn icon color="white"
                   ><v-icon>ri-add-circle-fill</v-icon></v-btn
@@ -65,12 +88,19 @@
             </ul>
           </v-card-text>
         </v-card>
-        <v-card class="pa-2 rounded-xl _birth-come" elevation="0">
-          <v-card-title>생일이 다가오고 있어요!</v-card-title>
+        <v-card class="pa-2 rounded-xl _birth-come mt-6">
+          <v-card-title
+            ><span class="font-weight-bold">생일</span>이 다가오고
+            있어요!</v-card-title
+          >
           <v-card-text>
             <ul>
-              <li v-for="(child, index) in birthMonthChildList" :key="index">
-                <span class="_d-day"></span>
+              <li
+                v-for="(child, index) in birthMonthChildList"
+                :key="index"
+                class="px-3 py-1"
+              >
+                <small class="_d-day font-weight-black mr-1">D-11</small>
                 {{ `${child.name}` }}
                 <small>{{ `${child.className}, ${child.birthday}` }}</small>
               </li>
@@ -79,29 +109,6 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <v-row style="height: 50vh">
-      <v-col cols="6" xs="12">
-        <v-card style="height: 50vh">
-          <v-card-title>이달의 생일자</v-card-title>
-          <v-card-text
-            v-for="(child, index) in birthMonthChildList"
-            :key="index"
-            ><strong>{{
-              `${child.name}(${child.className}, ${child.birthday})`
-            }}</strong>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-    <!-- <v-row style="height: 50vh">
-      <v-col cols="6">
-        <v-card>
-          <v-card-title>원아 등록</v-card-title>
-        </v-card>
-      </v-col>
-      <v-col cols="6"></v-col>
-    </v-row> -->
   </div>
 </template>
 
@@ -141,7 +148,7 @@ export default {
   content: '';
   position: absolute;
   top: 0;
-  right: 0;
+  right: -1.5rem;
   width: 100%;
   height: 100%;
   background: url('../../public/images/cake.png') no-repeat bottom -4rem right -4rem;
