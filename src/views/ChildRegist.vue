@@ -4,7 +4,24 @@
   <v-form v-model="isValid" ref="form">
     <!-- ---------- 원아 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title font-weight-bold">원아정보</v-card-title>
+      <v-card-title class="_card-title font-weight-bold">
+        <span>원아정보</span>
+        <v-spacer></v-spacer>
+        <v-btn
+          type="button"
+          color="primary"
+          outlined
+          :href="'/file/sunny_regist_children.xlsx'"
+          >양식 다운로드</v-btn
+        >
+        <v-btn
+          type="button"
+          color="primary"
+          outlined
+          @click="openUploadChildDialog"
+          >원아 엑셀 등록</v-btn
+        >
+      </v-card-title>
       <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
       <v-card-text class="pt-6">
         <v-row>
@@ -437,6 +454,7 @@
 
 <script>
 import { addChild, getClassList, getRideList, checkChild } from '@/api/api'
+import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
 export default {
   name: 'ChildRegist',
   components: {
@@ -514,6 +532,9 @@ export default {
     init() {
       this.getClassList()
       this.getRideList()
+    },
+    async openUploadChildDialog() {
+      await this.$dialog(UploadChildDialog)
     },
     getDay(date) {
       const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
