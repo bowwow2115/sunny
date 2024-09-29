@@ -90,6 +90,12 @@ input[type=checkbox] {
 }
 
 /* ********** sunny home 메인 홈 ********** */
+._home .align-stretch ._log {
+  height: 100%;
+}
+._log {
+  flex-direction: column;
+}
 ._log ._logo {
   gap: 1rem;
 }
@@ -101,55 +107,130 @@ input[type=checkbox] {
   display: block;
 }
 ._log .v-card__text {
-  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   gap: 2rem;
 }
-._log .v-card__actions {
-  padding: 0;
+._log-info {
+  width: 100%;
+  gap: 1rem;
 }
-._quick-regist {
-  text-align: left;
-  background: linear-gradient(90deg, var(--v-accent-lighten2), var(--v-accent-base));
-  color: #fff !important;
+._log-info .v-card__actions {
+  margin-left: auto;
+  gap: 0.5rem;
 }
-._quick-regist small {
+._log-info .v-card__actions .v-btn:last-child {
+  margin: 0 !important;
+}
+._excel-regist {
   display: block;
-  opacity: 0.6;
+  width: 100%;
+  margin-top: auto;
+  border-top: 1px solid #e0e0e0;
 }
-._quick-regist .v-icon {
-  font-size: 3rem !important;
+._btn-grp {
+  display: flex;
+  flex-wrap: wrap;
 }
+._btn-grp .v-btn {
+  flex: 0 0 50%;
+}
+._excel-regist ._excel-download {
+  background-color: rgba($color: #1d6f42, $alpha: 0.07);
+  color: #1d6f42 !important;
+}
+._excel-regist ._excel-upload {
+  background-color: var(--v-info-lighten5);
+  color: var(--v-accent-lighten1) !important;
+}
+
+// ._quick-regist {
+//   text-align: left;
+//   background: linear-gradient(90deg, var(--v-accent-lighten2), var(--v-accent-base));
+//   color: #fff !important;
+// }
+// ._quick-regist small {
+//   display: block;
+//   opacity: 0.6;
+// }
+// ._quick-regist .v-icon {
+//   font-size: 3rem !important;
+// }
 ._birth {
   background: linear-gradient(120deg, #ffefb9, var(--v-secondary-lighten1), var(--v-primary-lighten1));
   position: relative;
   z-index: 0;
+  overflow: hidden;
 }
 ._birth .v-card__title {
   display: block;
+  color: var(--v-accent-lighten1);
+  letter-spacing: -0.1em;
 }
 ._birth ._today-b {
-  font-size: 2em;
-  display: block;
-  letter-spacing: -0.05em;
-}
-._birth ._today-b > span:first-child {
-  color: var(--v-accent-lighten1);
+  font-size: 1.8em;
+  color: var(--v-accent-base);
 }
 ._birth ._today-b > span:last-child {
-  color: var(--v-accent-base);
+  font-size: 0.95em;
 }
 ._birth ul li {
   font-size: 1.6rem;
-  line-height: 1.6;
+  line-height: 1.4;
   color: rgba(0, 0, 0, 0.87);
+  margin-bottom: 1rem;
+}
+._birth ul li:last-child {
+  margin-bottom: 0;
 }
 ._birth ul li > small {
-  display: block;
   font-size: 0.6em;
   line-height: 1;
   color: rgba(0, 0, 0, 0.45);
-  letter-spacing: -0.05em;
 }
+._birth ul li > b {
+  font-weight: 400;
+}
+._birth ul li > b::before {
+  content: '|';
+  font-size: 0.9em;
+  font-weight: 300;
+  margin-right: 0.5rem;
+  opacity: 0.2;
+}
+._birth-come .v-card__title > span {
+  color: var(--v-accent-lighten1);
+}
+._birth-come ul {
+  display: flex;
+}
+._birth-come ul li {
+  border-radius: 10rem;
+  margin-right: 0.5rem;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+}
+._birth-come ul li:last-child {
+  margin-right: 0;
+}
+._birth-come ._d-day {
+  color: var(--v-accent-base);
+  animation: dDay 2s 1s linear infinite;
+}
+@keyframes dDay {
+  0% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+._birth-come ul li small {
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 
 @media (min-width: 600px) and (max-width: 960px) {
   ._mobile-table table {
@@ -178,5 +259,11 @@ input[type=checkbox] {
     align-items: center;
     justify-content: flex-start;
     border-bottom: thin solid rgba(0, 0, 0, 0.12);
+  }
+}
+@media (max-width: 599px) {
+  ._btn-grp .v-btn {
+    flex: 0 0 100%;
+    width: 100%;
   }
 }
