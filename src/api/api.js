@@ -394,3 +394,7 @@ export function checkChild(param) {
 export function updateChild(param) {
   return put(`${constants.CONTEXT_PATH}/child`, param)
 }
+
+export function registChildAsExcel(param) {
+  return postForm(`${constants.CONTEXT_PATH}/excel/child`, param)
+}
