@@ -136,12 +136,12 @@ input[type=checkbox] {
 ._btn-grp .v-btn {
   flex: 0 0 50%;
 }
-._excel-regist ._excel-download {
-  background-color: rgba($color: #1d6f42, $alpha: 0.07);
+._excel-regist .v-btn {
+  background-color: rgba($color: #1d6f42, $alpha: 0.1);
   color: #1d6f42 !important;
 }
 ._excel-regist ._excel-upload {
-  background-color: var(--v-info-lighten5);
+  background-color: #ffeed5;
   color: var(--v-accent-lighten1) !important;
 }
 
@@ -191,6 +191,7 @@ input[type=checkbox] {
 }
 ._birth ul li > b {
   font-weight: 400;
+  display: inline-block;
 }
 ._birth ul li > b::before {
   content: '|';
@@ -204,12 +205,13 @@ input[type=checkbox] {
 }
 ._birth-come ul {
   display: flex;
+  flex-wrap: wrap;
 }
 ._birth-come ul li {
   border-radius: 10rem;
   margin-right: 0.5rem;
   font-weight: 600;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 ._birth-come ul li:last-child {
   margin-right: 0;
@@ -227,6 +229,7 @@ input[type=checkbox] {
   }
 }
 ._birth-come ul li small {
+  display: inline-block;
   font-weight: 400;
   color: rgba(0, 0, 0, 0.45);
 }
@@ -265,5 +268,8 @@ input[type=checkbox] {
   ._btn-grp .v-btn {
     flex: 0 0 100%;
     width: 100%;
+  }
+  ._birth::before {
+    max-width: 5rem;
   }
 }

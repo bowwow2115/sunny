@@ -18,7 +18,16 @@
           <v-list-item-title class="text-h6">Sunny</v-list-item-title>
           <v-list-item-subtitle>해맑은</v-list-item-subtitle>
         </v-list-item-content>
-        <v-btn @click="logout"> 로그아웃 </v-btn>
+        <v-btn
+          @click="logout"
+          type="button"
+          outlined
+          rounded
+          text
+          color="gray"
+          class="px-6"
+          >로그아웃</v-btn
+        >
       </v-list-item>
 
       <v-list dense nav>
@@ -63,25 +72,25 @@ export default {
       items: [
         {
           title: '홈',
-          icon: 'mdi-home',
+          icon: 'ri-home-5-fill',
           to: '/SunnyHome',
           name: 'SunnyHome',
         },
         {
           title: '원아등록',
-          icon: 'mdi-account-plus',
+          icon: 'ri-user-shared-2-fill',
           to: '/ChildRegist',
           name: 'ChildRegist',
         },
         {
           title: '원아관리',
-          icon: 'mdi-account-search',
+          icon: 'ri-user-search-fill',
           to: '/ChildList',
           name: 'ChildList',
         },
         {
           title: '차량운행관리',
-          icon: 'mdi-car-search',
+          icon: 'ri-bus-2-fill',
           to: '/RideTimeline',
           name: 'RideTimeline',
         },

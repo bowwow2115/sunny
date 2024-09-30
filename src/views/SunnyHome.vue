@@ -18,6 +18,7 @@
               </h2>
               <v-card-actions class="flex-wrap">
                 <v-btn
+                  @click="logout"
                   type="button"
                   outlined
                   rounded
@@ -83,12 +84,12 @@
                 :key="index"
                 class="font-weight-black"
               >
-                {{ `${child.name}` }}
-                <b>{{ `${child.birthday}` }}</b>
                 <v-btn icon color="#fff"
                   ><v-icon>ri-add-circle-fill</v-icon></v-btn
                 >
-                <small class="font-weight-regular">{{
+                {{ `${child.name}` }}
+                <b>{{ `${child.birthday}` }}</b>
+                <small class="font-weight-regular ml-2">{{
                   `${child.className}`
                 }}</small>
                 <!-- <v-btn icon color="white"
@@ -166,9 +167,9 @@ export default {
   right: -1.5rem;
   width: 100%;
   height: 100%;
-  background: url('../../public/images/cake.png') no-repeat bottom -4rem right -4rem;
+  background: url('../../public/images/cake.png') no-repeat bottom -3rem right -3rem;
   background-size: cover;
-  max-width: 25rem;
+  max-width: 20rem;
   z-index: -1;
 }
 </style>
