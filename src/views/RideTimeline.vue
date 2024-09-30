@@ -61,91 +61,38 @@
           :key="index"
         >
           <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
-          <v-card>
-            <v-card-title>
-              <v-row>
-                <v-col
-                  :cols="isMobile ? '8' : '4'"
-                  style="background-color: #fafafa"
-                >
-                  {{ meetingLocation.time }}
-                </v-col>
-                <v-col
-                  :cols="isMobile ? '4' : '8'"
-                  color
-                  style="display: flex; justify-content: end"
-                  :style="!isMobile ? 'background-color: #f9fbe7;' : ''"
-                >
-                  <v-btn
-                    icon
-                    color="green accent-4"
-                    @click="openMeetingLocationMoreInfo(meetingLocation)"
-                  >
-                    <v-icon>ri-edit-2-fill</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
+          <v-card
+            class="_timeline-card"
+            :style="isMobile ? 'flex-direction: row; text-align: left' : ''"
+          >
+            <v-card-title :style="isMobile ? 'align-items: flex-start;' : ''">
+              <h3>
+                {{ meetingLocation.time }}
+                <small class="ml-1">{{
+                  `${meetingLocation.name}(${meetingLocation.comment})`
+                }}</small>
+              </h3>
+              <v-btn
+                icon
+                color="green accent-4"
+                @click="openMeetingLocationMoreInfo(meetingLocation)"
+              >
+                <v-icon>ri-edit-2-fill</v-icon>
+              </v-btn>
             </v-card-title>
-            <v-card-subtitle>
-              <v-row>
-                <v-col
-                  :cols="isMobile ? '8' : '4'"
-                  style="background-color: #fafafa"
-                >
-                  <span>{{
-                    `${meetingLocation.name}(${meetingLocation.comment})`
-                  }}</span>
-                </v-col>
-                <v-col
-                  v-if="!isMobile"
-                  :cols="isMobile ? '4' : '8'"
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    background-color: #f9fbe7;
-                    flex-wrap: wrap;
-                  "
-                >
-                  <v-chip
-                    @click="openParentsDialog(meetingLocation.childRideList)"
-                    v-for="(childRide, j) in meetingLocation.childRideList"
-                    :key="j"
-                    color="#43A047"
-                    text-color="white"
-                    small
-                    style="margin: 2px; cursor: pointer"
-                  >
-                    {{
-                      `${childRide.child.name}(${childRide.child.className})  ${
-                        childRide.comment || ''
-                      }`
-                    }}
-                  </v-chip>
-                </v-col>
-              </v-row>
-
-              <!-- <v-spacer></v-spacer> -->
-            </v-card-subtitle>
-            <v-card-text
-              v-if="isMobile"
-              style="background-color: #fafafa; cursor: pointer"
-            >
-              <div class="text-caption">
-                <v-chip
-                  v-for="(childRide, j) in meetingLocation.childRideList"
-                  :key="j"
-                  small
-                  style="margin: 2px; cursor: pointer"
-                  @click="openParentsDialog(meetingLocation.childRideList)"
-                >
-                  {{
-                    `${childRide.child.name}(${childRide.child.className})  ${
-                      childRide.comment || ''
-                    }`
-                  }}
-                </v-chip>
-              </div>
-            </v-card-text>
+            <V-card-text class="pa-4">
+              <v-chip
+                v-for="(childRide, j) in meetingLocation.childRideList"
+                :key="j"
+                @click="openParentsDialog(meetingLocation.childRideList)"
+              >
+                <b class="mr-1">{{ `${childRide.child.name}` }}</b>
+                <span>{{ `(${childRide.child.className})` }}</span>
+                <span class="_comment ml-1">{{
+                  `${childRide.comment || ''}`
+                }}</span>
+              </v-chip>
+            </V-card-text>
           </v-card>
         </v-timeline-item>
       </v-timeline>
