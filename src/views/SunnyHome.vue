@@ -107,11 +107,19 @@
           <v-card-text>
             <ul>
               <li
-                v-for="(child, index) in birthMonthChildList"
+                v-for="(child, index) in beingBirthdayChildList"
                 :key="index"
                 class="px-3 py-1"
               >
-                <small class="_d-day font-weight-black mr-1">D-11</small>
+                <small
+                  class="_d-day font-weight-black mr-1"
+                  v-if="child.dDay == 0"
+                  ><v-icon>ri-cake-2-fill</v-icon></small
+                >
+                <small class="_d-day font-weight-black mr-1" v-else>{{
+                  child.dDay
+                }}</small>
+
                 {{ `${child.name}` }}
                 <small>{{ `${child.className}, ${child.birthday}` }}</small>
               </li>
@@ -132,6 +140,7 @@ export default {
   data() {
     return {
       birthMonthChildList: [],
+      beingBirthdayChildList: [],
     }
   },
   mounted() {
@@ -143,6 +152,13 @@ export default {
         .then((response) => {
           if (response.code === '0') {
             this.birthMonthChildList = response.data
+            this.birthMonthChildList.forEach((child) => {
+              const dDay = this.calculateMMDDDifference(child.birthday)
+              if (dDay >= 0) {
+                child.dDay = dDay
+                this.beingBirthdayChildList.push(child)
+              }
+            })
           }
         })
         .catch((e) => {
@@ -151,6 +167,42 @@ export default {
     },
     async openUploadChildDialog() {
       await this.$dialog(UploadChildDialog)
+    },
+    /**
+     * D-day를 계산하는 함수
+     * @param {string} targetDate - YYYY-MM-DD 형식의 목표 날짜
+     * @returns {number} 남은 일수 (D-day)
+     */
+    calculateMMDDDifference(targetDate) {
+      // 현재 날짜 가져오기
+      const now = new Date()
+
+      // 현재 연도의 월-일을 사용하여 targetDate의 연도를 현재 연도로 설정
+      const [targetYear, targetMonth, targetDay] = targetDate
+        .split('-')
+        .map(Number)
+      const target = new Date(now.getFullYear(), targetMonth - 1, targetDay)
+
+      // 현재 날짜와 목표 날짜의 차이 계산 (밀리초 단위)
+      const differenceInMilliseconds = target - now
+
+      // 밀리초를 일(day) 단위로 변환 (1일 = 24시간 * 60분 * 60초 * 1000밀리초)
+      const dayDifference = Math.ceil(
+        differenceInMilliseconds / (1000 * 60 * 60 * 24)
+      )
+
+      // 만약 목표 월-일이 현재 날짜보다 과거라면, 목표 날짜를 다음 연도로 설정하여 다시 계산
+      // if (dayDifference < 0) {
+      //   const nextYearTarget = new Date(
+      //     now.getFullYear() + 1,
+      //     targetMonth - 1,
+      //     targetDay
+      //   )
+      //   const nextYearDifference = nextYearTarget - now
+      //   return Math.ceil(nextYearDifference / (1000 * 60 * 60 * 24))
+      // }
+
+      return dayDifference
     },
   },
 }
