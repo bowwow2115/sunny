@@ -22,7 +22,7 @@
     margin: 0;
   }
 }
-.v-application a {
+.v-application a:not(._excel-download, ._excel-upload) {
   color: var(--v-info-darken2) !important;
   text-decoration: none;
 
@@ -53,6 +53,9 @@
 }
 body, .v-main {
   background: #f2f2f2;
+}
+._card-title {
+  font-weight: 600 !important;
 }
 ._card-title::before {
   content: '';
@@ -136,11 +139,11 @@ input[type=checkbox] {
 ._btn-grp .v-btn {
   flex: 0 0 50%;
 }
-._excel-regist .v-btn {
+._excel-download {
   background-color: rgba($color: #1d6f42, $alpha: 0.1);
   color: #1d6f42 !important;
 }
-._excel-regist ._excel-upload {
+._excel-upload {
   background-color: #ffeed5;
   color: var(--v-accent-lighten1) !important;
 }
@@ -206,12 +209,13 @@ input[type=checkbox] {
 ._birth-come ul {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 ._birth-come ul li {
   border-radius: 10rem;
-  margin-right: 0.5rem;
   font-weight: 600;
   border: 1px solid rgba(0, 0, 0, 0.12);
+  text-wrap: nowrap;
 }
 ._birth-come ul li:last-child {
   margin-right: 0;
@@ -265,6 +269,9 @@ input[type=checkbox] {
   }
 }
 @media (max-width: 599px) {
+  ._btn-grp {
+    flex-wrap: wrap !important;
+  }
   ._btn-grp .v-btn {
     flex: 0 0 100%;
     width: 100%;
