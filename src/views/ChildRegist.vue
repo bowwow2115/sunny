@@ -4,25 +4,28 @@
   <v-form v-model="isValid" ref="form">
     <!-- ---------- 원아 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title font-weight-bold">
-        <span>원아정보</span>
-        <v-spacer></v-spacer>
-        <v-btn
-          type="button"
-          color="primary"
-          outlined
-          :href="'/file/sunny_regist_children.xlsx'"
-          >양식 다운로드</v-btn
-        >
-        <v-btn
-          type="button"
-          color="primary"
-          outlined
-          @click="openUploadChildDialog"
-          >원아 엑셀 등록</v-btn
-        >
-      </v-card-title>
-      <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
+      <div class="d-flex justify-space-between align-center flex-wrap">
+        <div>
+          <v-card-title class="_card-title">원아정보</v-card-title>
+          <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
+        </div>
+        <div class="_btn-grp px-6">
+          <v-btn
+            type="button"
+            text
+            class="_excel-download"
+            :href="'/file/sunny_regist_children.xlsx'"
+            >양식 다운로드</v-btn
+          >
+          <v-btn
+            type="button"
+            text
+            class="_excel-upload"
+            @click="openUploadChildDialog"
+            >원아 엑셀 등록</v-btn
+          >
+        </div>
+      </div>
       <v-card-text class="pt-6">
         <v-row>
           <v-col cols="6" md="3">
@@ -212,9 +215,7 @@
 
     <!-- ---------- 학부모 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title font-weight-bold"
-        >학부모 정보</v-card-title
-      >
+      <v-card-title class="_card-title">학부모 정보</v-card-title>
       <v-card-subtitle
         >학부모 정보는 버튼을 이용하여 추가할 수 있습니다.</v-card-subtitle
       >
@@ -278,9 +279,7 @@
 
     <!-- ---------- 탑승차량 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title font-weight-bold"
-        >탑승차량 정보
-      </v-card-title>
+      <v-card-title class="_card-title">탑승차량 정보 </v-card-title>
       <v-card-subtitle
         >차량 사용 시 사용여부를 체크한 후 입력해주세요.
       </v-card-subtitle>
@@ -774,4 +773,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._btn-grp {
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+</style>
