@@ -37,10 +37,20 @@
                 >엑셀 파일로 원아등록 바로 하기
               </h3>
               <div class="_btn-grp">
-                <v-btn type="button" text x-large class="_excel-download"
+                <v-btn
+                  type="button"
+                  text
+                  x-large
+                  class="_excel-download"
+                  :href="'/file/sunny_regist_children.xlsx'"
                   >양식 다운로드</v-btn
                 >
-                <v-btn type="button" text x-large class="_excel-upload"
+                <v-btn
+                  type="button"
+                  text
+                  x-large
+                  class="_excel-upload"
+                  @click="openUploadChildDialog"
                   >원아 엑셀 등록</v-btn
                 >
               </div>
@@ -114,6 +124,8 @@
 
 <script>
 import { getBirthMonthChlid } from '@/api/api'
+import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
+
 export default {
   name: 'SunnyHome',
   data() {
@@ -135,6 +147,9 @@ export default {
         .catch((e) => {
           this.$showError(e)
         })
+    },
+    async openUploadChildDialog() {
+      await this.$dialog(UploadChildDialog)
     },
   },
 }
