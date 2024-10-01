@@ -1,32 +1,39 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-card-title color="primary" class="headline">{{
+  <v-dialog v-model="visible">
+    <v-card class="pa-3">
+      <v-card-title class="headline">{{
         isEdit ? '승하차 장소 정보 수정' : '승하차 장소 정보 추가'
       }}</v-card-title>
       <v-form v-model="isValid" ref="form" lazy-validation>
         <v-card-text>
-          <v-text-field
-            prepend-icon="mdi-map-marker-radius"
-            v-model="form.name"
-            label="승하차 장소의 이름을 입력해주세요."
-            :rules="nameRule"
-            clearable
-          ></v-text-field>
-          <v-text-field
-            prepend-icon="mdi-clock-time-eight"
-            v-model="form.timeInput"
-            label="시간을 입력해주세요.(예:1630)"
-            :rules="timeRule"
-            clearable
-          ></v-text-field>
+          <v-row>
+            <v-col cols="12" lg="6">
+              <v-text-field
+                prepend-inner-icon="ri-map-pin-fill"
+                v-model="form.name"
+                label="승하차 장소의 이름을 입력해주세요."
+                :rules="nameRule"
+                clearable
+                clear-icon="ri-close-circle-fill"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" lg="6">
+              <v-text-field
+                prepend-inner-icon="ri-map-pin-time-fill"
+                v-model="form.timeInput"
+                label="시간을 입력해주세요.(예:1630)"
+                :rules="timeRule"
+                clearable
+                clear-icon="ri-close-circle-fill"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="accent" text @click="confirm">{{
+        <v-card-actions class="justify-end">
+          <v-btn color="accent" text @click="confirm" x-large>{{
             isEdit ? '수정' : '추가'
           }}</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
+          <v-btn color="gray" text @click="cancel" x-large>닫기</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

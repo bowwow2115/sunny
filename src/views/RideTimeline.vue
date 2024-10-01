@@ -1,38 +1,23 @@
 <template>
   <v-card class="mx-auto" style="padding: 0">
-    <v-card dark flat>
-      <v-btn
-        @click="openAddMeetingLocationDialog(selectedRide)"
-        absolute
-        bottom
-        color="pink"
-        left
-        fab
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-
+    <v-card dark flat class="_timeline">
       <v-img
         :src="
           selectedAmPm == '오전'
             ? '/images/morning.webp'
             : '/images/sunset.webp'
         "
-        max-height="100px"
-        gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)"
+        gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
-        <v-container class="fill-height">
-          <v-row>
-            <v-col
-              ><v-btn @click="openRideTable()">
-                <v-icon>mdi-printer-outline</v-icon></v-btn
-              >
-            </v-col>
-            <v-col class="d-flex" cols="7">
+        <v-container class="fill-height pa-4">
+          <v-row class="justify-center">
+            <v-col cols="12" sm="3" md="4" lg="3">
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
               ></v-select>
+            </v-col>
+            <v-col cols="12" sm="9" md="8" lg="6">
               <v-select
                 v-model="selectedRide"
                 :items="selectedAmPm == '오전' ? amRideList : pmRideList"
@@ -41,14 +26,18 @@
               ></v-select>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="10"></v-col>
-            <v-col cols="2" style="display: flex; justify-content: center"
-              ><v-btn @click="openRideTable()">
-                <v-icon>mdi-printer-outline</v-icon></v-btn
-              >
-            </v-col>
-          </v-row>
+          <div class="_btn-grp flex-nowrap">
+            <v-btn @click="openRideTable()" class="font-weight-light">
+              <v-icon>ri-printer-line</v-icon></v-btn
+            >
+            <v-btn
+              @click="openAddMeetingLocationDialog(selectedRide)"
+              color="accent"
+              class="ml-1"
+            >
+              <v-icon>ri-add-line</v-icon>
+            </v-btn>
+          </div>
         </v-container>
       </v-img>
     </v-card>
@@ -68,13 +57,14 @@
             <v-card-title :style="isMobile ? 'align-items: flex-start;' : ''">
               <h3>
                 {{ meetingLocation.time }}
-                <small class="ml-1">{{
-                  `${meetingLocation.name}(${meetingLocation.comment})`
-                }}</small>
+                <p>
+                  {{ `${meetingLocation.name}` }}
+                  <small>{{ `(${meetingLocation.comment})` }}</small>
+                </p>
               </h3>
               <v-btn
                 icon
-                color="green accent-4"
+                color="success"
                 @click="openMeetingLocationMoreInfo(meetingLocation)"
               >
                 <v-icon>ri-edit-2-fill</v-icon>
