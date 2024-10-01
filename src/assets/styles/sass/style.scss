@@ -5,13 +5,12 @@
     font-family: $body-font-family !important; /* variables에서 재정의 하는 것만으로 안먹히는 곳이 있어서 확실히하기 */
   }
   font-family: $body-font-family !important;
-
   .v-input.primary--text {
-    color: var(--v-info-base) !important;
-    caret-color: var(--v-info-base) !important;
+    color: inherit !important;
+    caret-color: inherit !important;
   }
   .v-label.primary--text {
-    color: var(--v-info-base) !important;
+    color: inherit !important;
   }
   ._font-miso {
     font-family: 'HakgyoansimDunggeunmiso' !important;
@@ -20,6 +19,17 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
+  }
+}
+.v-text-field {
+  > .v-input__control > .v-input__slot:after {
+    display: none !important;
+  }
+  .v-input__icon--clear {
+    opacity: 0.5 !important;
+    .v-icon.primary--text {
+      color: inherit !important;
+    }
   }
 }
 .v-application a:not(._excel-download, ._excel-upload) {
@@ -239,6 +249,14 @@ input[type=checkbox] {
 }
 
 /* ********** sunny ride timeline 차량운행관리 ********** */
+._timeline {
+  ._btn-grp {
+    margin-left: auto;
+  }
+  .v-image {
+    height: 15vw;
+  }
+}
 .v-timeline-item:nth-child(even) {
   ._timeline-card {
     flex-direction: row-reverse;
@@ -256,11 +274,16 @@ input[type=checkbox] {
     flex-direction: column;
     align-items: flex-start;
 
-    h3 > small {
+    h3 > p {
       display: block;
       color: rgba(0, 0, 0, 0.87);
+      font-size: 0.95em;
       line-height: 1.4;
       margin: 0.5rem 0 1rem;
+
+      > small {
+        color: rgba(0, 0, 0, 0.5);
+      }
     }
   }
   .v-card__text {
@@ -272,6 +295,19 @@ input[type=checkbox] {
         color: var(--v-accent-base);
       }
     }
+  }
+}
+
+/* ********** popup dialog 팝업 ********** */
+.v-dialog {
+  max-width: 60%;
+  min-width: 400px;
+  .v-card__title + .v-card__text, .v-card__subtitle + .v-card__text {
+    border-top: none;
+  }
+  .v-card__title {
+    // border-bottom: 10px solid #f2f2f2;
+    font-weight: 600 !important;
   }
 }
 
@@ -305,6 +341,11 @@ input[type=checkbox] {
     justify-content: flex-start;
     border-bottom: thin solid rgba(0, 0, 0, 0.12);
   }
+  ._timeline {
+    .v-image {
+      height: 22vw;
+    }
+  }
   ._timeline-card {
     flex-direction: column;
     align-items: flex-start;
@@ -322,13 +363,24 @@ input[type=checkbox] {
 @media (max-width: 599px) {
   ._btn-grp {
     flex-wrap: wrap !important;
-  }
-  ._btn-grp .v-btn {
-    flex: 0 0 100%;
-    width: 100%;
+    .v-btn {
+      flex: 0 0 100%;
+      width: 100%;
+    }
   }
   ._birth::before {
     max-width: 5rem;
+  }
+  ._timeline {
+    ._btn-grp {
+      .v-btn {
+        flex: unset;
+        width: unset;
+      }
+    }
+    .v-image {
+      height: auto;
+    }
   }
   ._timeline-card {
     flex-direction: column !important;
