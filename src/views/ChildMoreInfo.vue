@@ -5,7 +5,7 @@
     :hide-overlay="isMobile"
     @click:outside="cancel()"
   >
-    <v-card>
+    <v-card class="pa-2">
       <v-card-title class="title">원아정보 더보기</v-card-title>
       <!-- 원아정보 -->
       <h2 class="_child-more-head ma-4 py-3 px-4">
@@ -152,73 +152,68 @@
       </v-list>
       <!-- 오전차량 리스트 -->
       <v-list class="pa-0">
-        <v-list-group :value="true" prepend-icon="mdi-bus-side">
+        <v-list-group :value="true" prepend-icon="ri-bus-2-fill">
           <template v-slot:activator>
-            <v-list-item-subtitle>오전차량 정보</v-list-item-subtitle>
+            <v-list-item-title>오전차량 정보</v-list-item-title>
           </template>
 
           <v-list-item-group
             v-if="
               form.amChildRideList != null && form.amChildRideList.length !== 0
             "
+            class="ml-14"
           >
             <div
               v-for="(childRide, index) in form.amChildRideList"
               :key="index"
             >
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-icon>
-                  <v-icon>mdi-bus</v-icon>
+                  <span class="_list-icon _list-icon-ko">오전</span>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title width="100%">{{
-                    childRide.meetingLocation.sunnyRide.name +
-                    (childRide.meetingLocation.sunnyRide.time != null
-                      ? `(${childRide.meetingLocation.sunnyRide.time})`
-                      : '')
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    childRide.meetingLocation.sunnyRide.time ||
-                    '' + ' ' + childRide.meetingLocation.sunnyRide.comment
-                  }}</v-list-item-subtitle>
+                  <v-list-item-title class="_list-title-with-sub"
+                    >{{
+                      childRide.meetingLocation.sunnyRide.name +
+                      (childRide.meetingLocation.sunnyRide.time != null
+                        ? `(${childRide.meetingLocation.sunnyRide.time})`
+                        : '')
+                    }}
+                    <span>{{
+                      childRide.meetingLocation.sunnyRide.time ||
+                      '' + ' ' + childRide.meetingLocation.sunnyRide.comment
+                    }}</span>
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="_list-title-with-sub subtitle-1">
+                    {{
+                      `${childRide.meetingLocation.name}(${childRide.meetingLocation.time})`
+                    }}
+                    <span>
+                      {{ childRide.comment || '' }}
+                    </span>
+                  </v-list-item-subtitle>
                 </v-list-item-content>
-                <v-list-item-action>
+                <v-list-item-action class="d-flex flex-row">
                   <v-btn
                     icon
-                    block
-                    @click="openChildRideDialog(true, childRide, true)"
-                    color="green accent-4"
-                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
-                  >
-                </v-list-item-action>
-              </v-list-item>
-
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
-                <v-list-item-icon>
-                  <v-icon>mdi-map-marker-radius</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title style="width: 300px !important">{{
-                    `${childRide.meetingLocation.name}(${childRide.meetingLocation.time})`
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    childRide.comment || ''
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn
-                    icon
-                    block
-                    color="red lighten-1"
+                    color="gray"
+                    class="font-weight-light"
                     @click="deleteChildRide(childRide)"
-                    ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
+                    ><v-icon>ri-close-circle-fill</v-icon></v-btn
+                  >
+                  <v-btn
+                    icon
+                    color="success"
+                    class="font-weight-light ml-2"
+                    @click="openChildRideDialog(true, childRide, true)"
+                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
                   >
                 </v-list-item-action>
               </v-list-item>
             </div>
           </v-list-item-group>
           <div v-else>
-            <v-list-item style="padding-left: 15%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-information-off</v-icon>
               </v-list-item-icon>
@@ -229,84 +224,82 @@
               </v-list-item-content>
             </v-list-item>
           </div>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openChildRideDialog(false, {}, true)"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item class="ml-14">
+            <v-btn @click="openChildRideDialog(false, {}, true)" block depressed
+              >오전차량 정보 추가<v-icon
+                color="success"
+                class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-divider></v-divider>
       <!-- 오후차량 리스트 -->
-      <v-list>
-        <v-list-group :value="true" prepend-icon="mdi-bus-side">
+      <v-list class="pa-0">
+        <v-list-group :value="true" prepend-icon="ri-bus-2-fill">
           <template v-slot:activator>
-            <v-list-item-subtitle>오후차량 정보</v-list-item-subtitle>
+            <v-list-item-title>오후차량 정보</v-list-item-title>
           </template>
           <v-list-item-group
             v-if="
               form.pmChildRideList != null && form.pmChildRideList.length !== 0
             "
+            class="ml-14"
           >
             <div
               v-for="(childRide, index) in form.pmChildRideList"
               :key="index"
             >
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-icon>
-                  <v-icon>mdi-bus</v-icon>
+                  <span class="_list-icon _list-icon-ko">오후</span>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{
-                    childRide.meetingLocation.sunnyRide.name +
-                    (childRide.meetingLocation.sunnyRide.time != null
-                      ? `(${childRide.meetingLocation.sunnyRide.time})`
-                      : '')
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    childRide.meetingLocation.sunnyRide.time ||
-                    '' + ' ' + childRide.meetingLocation.sunnyRide.comment
-                  }}</v-list-item-subtitle>
+                  <v-list-item-title class="_list-title-with-sub"
+                    >{{
+                      childRide.meetingLocation.sunnyRide.name +
+                      (childRide.meetingLocation.sunnyRide.time != null
+                        ? `(${childRide.meetingLocation.sunnyRide.time})`
+                        : '')
+                    }}
+                    <span>
+                      {{
+                        childRide.meetingLocation.sunnyRide.time ||
+                        '' + ' ' + childRide.meetingLocation.sunnyRide.comment
+                      }}
+                    </span>
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="_list-title-with-sub subtitle-1">
+                    {{
+                      `${childRide.meetingLocation.name}(${childRide.meetingLocation.time})`
+                    }}
+                    <span>
+                      {{ childRide.comment || '' }}
+                    </span>
+                  </v-list-item-subtitle>
                 </v-list-item-content>
-                <v-list-item-action>
+                <v-list-item-action class="d-flex flex-row">
                   <v-btn
                     icon
-                    block
-                    @click="openChildRideDialog(true, childRide, false)"
-                    color="green accent-4"
-                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
-                  >
-                </v-list-item-action>
-              </v-list-item>
-
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
-                <v-list-item-icon>
-                  <v-icon>mdi-map-marker-radius</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{
-                    `${childRide.meetingLocation.name}(${childRide.meetingLocation.time})`
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    childRide.comment || ''
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn
-                    icon
-                    block
-                    color="red lighten-1"
+                    color="gray"
+                    class="font-weight-light"
                     @click="deleteChildRide(childRide)"
-                    ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
+                    ><v-icon>ri-close-circle-fill</v-icon></v-btn
+                  >
+                  <v-btn
+                    icon
+                    color="success"
+                    class="font-weight-light ml-2"
+                    @click="openChildRideDialog(true, childRide, false)"
+                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
                   >
                 </v-list-item-action>
               </v-list-item>
             </div>
           </v-list-item-group>
           <div v-else>
-            <v-list-item style="padding-left: 15%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-information-off</v-icon>
               </v-list-item-icon>
@@ -317,12 +310,17 @@
               </v-list-item-content>
             </v-list-item>
           </div>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openChildRideDialog(false, {}, false)"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item class="ml-14">
+            <v-btn
+              @click="openChildRideDialog(false, {}, false)"
+              block
+              depressed
+              >오후차량 정보 추가<v-icon
+                color="success"
+                class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
