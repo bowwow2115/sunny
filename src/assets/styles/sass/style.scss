@@ -32,7 +32,7 @@
     display: none !important;
   }
   .v-input__icon--clear {
-    opacity: 0.5 !important;
+    opacity: 0.4 !important;
     .v-icon.primary--text {
       color: inherit !important;
     }
@@ -344,28 +344,12 @@ input[type=checkbox] {
       height: 45px;
       border-radius: 100%;
       background: var(--v-gray-lighten1);
-    }
-    ._list-icon-ko {
-      font-size: 14px;
-      background: var(--v-primary-base);
       color: #fff;
       font-weight: 600;
+      font-size: 14px;
     }
-    ._list-half {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    ._list-half .v-list-item {
-      flex: 0 0 50%;
-      width: 50%;
-    }
-    ._list-half .v-list-item._list-half-not {
-      flex: 0 0 100%;
-      width: 100%;
-    }
-    ._list-half .v-list-item .v-list-item__title {
-      white-space: normal;
-      word-break: auto-phrase;
+    ._list-icon-ko {
+      background: var(--v-primary-base);
     }
     ._list-title-with-sub {
       > span {
@@ -378,6 +362,22 @@ input[type=checkbox] {
           font-size: 1.2em !important;
         }
       }
+    }
+  }
+  ._list-half {
+    display: flex;
+    flex-wrap: wrap;
+    .v-list-item {
+      flex: 0 0 50%;
+      width: 50%;
+      .v-list-item__title {
+        white-space: normal;
+        word-break: auto-phrase;
+      }
+    }
+    .v-list-item._list-half-not {
+      flex: 0 0 100%;
+      width: 100%;
     }
   }
 }
@@ -430,6 +430,27 @@ input[type=checkbox] {
       }
     }
   }
+  .v-dialog {
+    min-width: 50%;
+    max-width: 70%;
+    .v-list {
+      .v-list-item-group {
+        margin: 0 !important;
+      }
+      .ml-14 {
+        margin: 0 !important;
+      }
+      .v-list-item {
+        padding: 0 16px !important;
+      }
+    }
+    ._list-half {
+      .v-list-item {
+        flex: 0 0 100%;
+        width: 100%;
+      }
+    }
+  }
 }
 @media (max-width: 599px) {
   ._btn-grp {
@@ -469,6 +490,18 @@ input[type=checkbox] {
       }
       .v-list-item {
         padding: 0 16px !important;
+      }
+      ._list-title-with-sub {
+        > span {
+          display: block;
+          margin: 0.5em 0;
+        }
+      }
+    }
+    ._list-half {
+      .v-list-item {
+        flex: 0 0 100%;
+        width: 100%;
       }
     }
     .v-card__actions:has(.v-text-field) {
