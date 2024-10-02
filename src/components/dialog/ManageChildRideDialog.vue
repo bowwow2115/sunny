@@ -1,44 +1,55 @@
 <template>
   <v-dialog v-model="visible">
-    <v-card class="pa-3">
-      <v-card-title class="headline">{{
+    <v-card class="pa-2">
+      <v-card-title class="title">{{
         (am ? '오전' : '오후') + (isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>
       <v-form v-model="isValid" ref="form" lazy-validation>
-        <v-card-text>
-          <v-select
-            prepend-icon="mdi-bus"
-            v-model="selectedSunnyRide"
-            :items="am ? amRideNameList : pmRideNameList"
-            item-text="name"
-            return-object
-            :rules="rideRule"
-            :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
-            @input="resetMeetingLocation()"
-          ></v-select>
-          <v-select
-            prepend-icon="mdi-map-marker-radius"
-            v-model="form.meetingLocation.id"
-            :label="'승하차 장소를 선택해주세요.'"
-            :rules="meetingLocationRule"
-            item-text="name"
-            item-value="id"
-            :items="selectedSunnyRide.meetingLocationList"
-          ></v-select>
-          <v-text-field
-            prepend-icon="mdi-comment"
-            v-model="form.comment"
-            label="비고"
-            clearable
-          ></v-text-field>
+        <v-card-text class="mt-4">
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="selectedSunnyRide"
+                :items="am ? amRideNameList : pmRideNameList"
+                item-text="name"
+                return-object
+                :rules="rideRule"
+                :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
+                @input="resetMeetingLocation()"
+                outlined
+                hide-details="auto"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="form.meetingLocation.id"
+                :label="'승하차 장소를 선택해주세요.'"
+                :rules="meetingLocationRule"
+                item-text="name"
+                item-value="id"
+                :items="selectedSunnyRide.meetingLocationList"
+                outlined
+                hide-details="auto"
+              ></v-select>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                prepend-inner-icon="ri-message-2-fill"
+                v-model="form.comment"
+                label="비고"
+                outlined
+                clearable
+                clear-icon="ri-close-circle-fill"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-form>
-      <v-card-actions>
-        <v-btn color="accent" text @click="confirm">{{
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+        <v-btn color="accent" text large @click="confirm">{{
           isEdit ? '수정' : '추가'
         }}</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

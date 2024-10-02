@@ -1,37 +1,47 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-card-title color="primary" class="headline">{{
+  <v-dialog v-model="visible">
+    <v-card class="pa-2">
+      <v-card-title class="title">{{
         isEdit ? '보호자 정보 수정' : '보호자 정보 추가'
       }}</v-card-title>
-      <v-card-text>
-        <v-text-field
-          prepend-icon="mdi-account"
-          v-model="form.name"
-          label="보호자의 이름을 입력해주세요."
-          clearable
-        ></v-text-field>
-        <v-select
-          prepend-icon="mdi-account-multiple"
-          v-model="form.relation"
-          :items="parentTypeList"
-          label="보호자와의 관계를 입력해주세요."
-          clearable
-        ></v-select>
-        <v-text-field
-          prepend-icon="mdi-phone"
-          color="green"
-          v-model="form.telephone"
-          label="보호자의 전화번호를 입력해주세요."
-          clearable
-        ></v-text-field>
+      <v-card-text class="mt-4">
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="form.name"
+              label="보호자의 이름을 입력해주세요."
+              outlined
+              clearable
+              clear-icon="ri-close-circle-fill"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="form.relation"
+              :items="parentTypeList"
+              label="보호자와의 관계를 입력해주세요."
+              outlined
+              clearable
+              clear-icon="ri-close-circle-fill"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              prepend-inner-icon="ri-phone-fill"
+              v-model="form.telephone"
+              label="보호자의 전화번호를 입력해주세요."
+              outlined
+              clearable
+              clear-icon="ri-close-circle-fill"
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </v-card-text>
-      <v-card-actions>
-        <v-btn color="accent" text @click="confirm">{{
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+        <v-btn color="accent" text large @click="confirm">{{
           isEdit ? '수정' : '추가'
         }}</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -64,7 +64,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-btn block depressed @click="openChildDialog()"
               >정보 수정<v-icon color="success" class="ml-2 font-weight-light"
                 >ri-edit-2-fill</v-icon
@@ -139,7 +139,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-btn @click="openParentsDialog(false)" block depressed
               >보호자 정보 추가<v-icon
                 color="success"
@@ -224,7 +224,7 @@
               </v-list-item-content>
             </v-list-item>
           </div>
-          <v-list-item class="ml-14">
+          <v-list-item class="ml-14 py-2">
             <v-btn @click="openChildRideDialog(false, {}, true)" block depressed
               >오전차량 정보 추가<v-icon
                 color="success"
@@ -310,7 +310,7 @@
               </v-list-item-content>
             </v-list-item>
           </div>
-          <v-list-item class="ml-14">
+          <v-list-item class="ml-14 py-2">
             <v-btn
               @click="openChildRideDialog(false, {}, false)"
               block
@@ -324,14 +324,12 @@
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-container fluid>
-        <v-spacer></v-spacer>
-        <v-row no-gutters>
-          <v-btn color="red darken1" dark @click="deleteChild()">
-            {{ `${this.form.name} 삭제` }}
-          </v-btn>
-        </v-row>
-      </v-container>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+        <v-btn color="error" text large @click="deleteChild()">
+          {{ `${this.form.name} 삭제` }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
