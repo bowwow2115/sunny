@@ -1,34 +1,32 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title> 승하차등록 </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="searchTerm"
-          clearable
-          flat
-          solo-inverted
-          hide-details
-          prepend-inner-icon="mdi-magnify"
-          @input="searchList"
-          label="이름 및 반을 입력하세요"
-        ></v-text-field>
-      </v-toolbar>
+  <v-dialog v-model="visible">
+    <v-card class="pa-2">
+      <v-card-title class="title">승하차등록</v-card-title>
       <v-list>
-        <v-list-item-group v-model="selectedChild" active-class="info" multiple>
+        <v-list-item-group v-model="selectedChild" multiple>
           <template>
             <v-card-actions>
-              <v-btn color="accent" text @click="confirm">추가</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
+              <v-text-field
+                v-model="searchTerm"
+                clearable
+                flat
+                solo-inverted
+                hide-details
+                prepend-inner-icon="ri-search-line"
+                @input="searchList"
+                label="이름 또는 반을 입력하세요."
+              ></v-text-field>
+              <div class="_btn-grp flex-nowrap">
+                <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+                <v-btn color="accent" text large @click="confirm">추가</v-btn>
+              </div>
             </v-card-actions>
             <div v-for="(child, index) in filteredList" :key="index">
               <v-list-item :value="child.id">
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-title>{{ child.name }}</v-list-item-title>
-                    <v-list-item-subtitle class="text--primary">{{
+                    <v-list-item-subtitle color="gray">{{
                       child.className
                     }}</v-list-item-subtitle>
                   </v-list-item-content>

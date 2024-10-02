@@ -3,90 +3,56 @@
     v-model="show"
     :fullscreen="isMobile"
     :hide-overlay="isMobile"
-    width="500px"
     @click:outside="cancel()"
   >
-    <v-card class="rounded-0">
-      <v-toolbar
-        dark
-        elevation="0"
-        color="primary"
-        class="darken-2 full-width-toolbar"
-      >
-        <v-toolbar-title class="font-weight-bold"
-          >원아정보 더보기</v-toolbar-title
-        >
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="cancel">
-          <v-icon>ri-close-fill</v-icon>
-        </v-btn>
-      </v-toolbar>
+    <v-card>
+      <v-card-title class="title">원아정보 더보기</v-card-title>
       <!-- 원아정보 -->
-      <v-list>
+      <h2 class="_child-more-head ma-4 py-3 px-4">
+        {{ form.name }}<small class="ml-2">{{ `${form.status}` }}</small>
+      </h2>
+      <v-list class="pa-0">
         <v-list-group
           :value="true"
-          prepend-icon="mdi-human-child"
+          prepend-icon="ri-user-5-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>원아 정보</v-list-item-subtitle>
+            <v-list-item-title>원아 정보</v-list-item-title>
           </template>
-          <v-list-item-group>
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>{{ form.name }} </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ `${form.status}` }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn
-                  icon
-                  block
-                  @click="openChildDialog()"
-                  color="green accent-4"
-                  ><v-icon>ri-edit-2-fill</v-icon></v-btn
-                >
-              </v-list-item-action>
-            </v-list-item>
+          <v-list-item-group class="ml-14 _list-half">
             <!-- 반 -->
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
-                <v-icon>mdi-google-classroom</v-icon>
+                <span class="_list-icon _list-icon-ko">반</span>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ form.className }} </v-list-item-title>
-                <v-list-item-subtitle> 반 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- 입학일 -->
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
-                <v-icon>mdi-calendar-check</v-icon>
+                <span class="_list-icon _list-icon-ko">입학</span>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ form.admissionDate }} </v-list-item-title>
-                <v-list-item-subtitle> 입학일 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <!-- 생일 -->
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
-                <v-icon>mdi-cake</v-icon>
+                <span class="_list-icon _list-icon-ko">생일</span>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ form.birthday }} </v-list-item-title>
-                <v-list-item-subtitle> 생일 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
             <!-- 주소 -->
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
+            <v-list-item>
               <v-list-item-icon>
-                <v-icon>mdi-map-marker</v-icon>
+                <span class="_list-icon _list-icon-ko">주소</span>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title
@@ -95,76 +61,75 @@
                     (form.address.detailAddress || '')
                   }}
                 </v-list-item-title>
-                <v-list-item-subtitle> 주소 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
+          <v-list-item>
+            <v-btn block depressed @click="openChildDialog()"
+              >정보 수정<v-icon color="success" class="ml-2 font-weight-light"
+                >ri-edit-2-fill</v-icon
+              ></v-btn
+            >
+          </v-list-item>
         </v-list-group>
       </v-list>
-      <v-divider></v-divider>
       <!-- 보호자 정보 -->
-      <v-list>
+      <v-list class="pa-0">
         <v-list-group
           :value="true"
-          prepend-icon="mdi-human-male-female-child"
+          prepend-icon="ri-parent-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>보호자 정보</v-list-item-subtitle>
+            <v-list-item-title>보호자 정보</v-list-item-title>
           </template>
           <div v-if="form.parentList.length != 0">
             <v-list-item-group
               v-for="(item, index) in form.parentList"
               :key="index"
+              class="ml-14"
             >
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-icon>
-                  <v-icon>mdi-account</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ item.name }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>{{
+                  <span class="_list-icon _list-icon-ko">{{
                     item.relation
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn
-                    icon
-                    block
-                    @click="openParentsDialog(true, item)"
-                    color="green accent-4"
-                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
-                  >
-                </v-list-item-action>
-              </v-list-item>
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
-                <v-list-item-icon>
-                  <v-icon
-                    color="green"
-                    v-clipboard:copy="item.telephone"
-                    v-clipboard:success="phoneCall"
-                    >mdi-phone</v-icon
-                  >
+                  }}</span>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.telephone }}</v-list-item-title>
+                  <v-list-item-title class="_list-title-with-sub">
+                    {{ item.name }}
+                    <span>
+                      <v-icon
+                        color="gray"
+                        v-clipboard:copy="item.telephone"
+                        v-clipboard:success="phoneCall"
+                        >ri-phone-fill</v-icon
+                      >
+                      {{ item.telephone }}
+                    </span>
+                  </v-list-item-title>
                 </v-list-item-content>
-                <v-list-item-action>
+                <v-list-item-action class="d-flex flex-row">
                   <v-btn
                     icon
-                    block
-                    color="red lighten-1"
+                    color="gray"
+                    class="font-weight-light"
                     @click="deleteParents(item)"
-                    ><v-icon>ri-delete-bin-6-fill</v-icon></v-btn
+                    ><v-icon>ri-close-circle-fill</v-icon></v-btn
+                  >
+                  <v-btn
+                    icon
+                    @click="openParentsDialog(true, item)"
+                    color="success"
+                    class="font-weight-light ml-2"
+                    ><v-icon>ri-edit-2-fill</v-icon></v-btn
                   >
                 </v-list-item-action>
               </v-list-item>
               <v-divider v-if="index != form.parentList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+          <v-list-item v-else>
             <v-list-item-icon>
               <v-icon>mdi-information-off</v-icon>
             </v-list-item-icon>
@@ -174,18 +139,19 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openParentsDialog(false)"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item>
+            <v-btn @click="openParentsDialog(false)" block depressed
+              >보호자 정보 추가<v-icon
+                color="success"
+                class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-divider></v-divider>
       <!-- 오전차량 리스트 -->
-      <v-list>
+      <v-list class="pa-0">
         <v-list-group :value="true" prepend-icon="mdi-bus-side">
           <template v-slot:activator>
             <v-list-item-subtitle>오전차량 정보</v-list-item-subtitle>

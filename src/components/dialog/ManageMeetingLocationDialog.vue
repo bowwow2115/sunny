@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="visible">
-    <v-card class="pa-3">
-      <v-card-title class="headline">{{
+    <v-card class="pa-2">
+      <v-card-title class="title">{{
         isEdit ? '승하차 장소 정보 수정' : '승하차 장소 정보 추가'
       }}</v-card-title>
       <v-form v-model="isValid" ref="form" lazy-validation>
@@ -13,6 +13,7 @@
                 v-model="form.name"
                 label="승하차 장소의 이름을 입력해주세요."
                 :rules="nameRule"
+                outlined
                 clearable
                 clear-icon="ri-close-circle-fill"
               ></v-text-field>
@@ -23,6 +24,7 @@
                 v-model="form.timeInput"
                 label="시간을 입력해주세요.(예:1630)"
                 :rules="timeRule"
+                outlined
                 clearable
                 clear-icon="ri-close-circle-fill"
               ></v-text-field>
@@ -30,10 +32,10 @@
           </v-row>
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn color="accent" text @click="confirm" x-large>{{
+          <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+          <v-btn color="accent" text large @click="confirm">{{
             isEdit ? '수정' : '추가'
           }}</v-btn>
-          <v-btn color="gray" text @click="cancel" x-large>닫기</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
