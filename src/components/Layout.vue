@@ -121,7 +121,7 @@ export default {
       if (this.isAdmin) {
         let menu = {}
         menu.title = '관리자'
-        menu.icon = 'mdi-account-box'
+        menu.icon = 'ri-settings-3-fill'
         menu.to = '/AdminMenu'
         menu.name = 'AdminMenu'
         this.items.push(menu)

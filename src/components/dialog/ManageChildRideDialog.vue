@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
+  <v-dialog v-model="visible">
+    <v-card class="pa-3">
       <v-card-title class="headline">{{
         (am ? '오전' : '오후') + (isEdit ? '차량 정보 수정' : '차량 정보 추가')
       }}</v-card-title>

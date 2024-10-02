@@ -4,10 +4,12 @@
     :fullscreen="isMobile"
     :hide-overlay="isMobile"
     :scrollable="false"
-    width="500px"
   >
-    <v-card>
-      <v-toolbar color="primary" dark>
+    <v-card class="pa-2">
+      <v-card-title class="title">
+        {{ `${this.form.name} 정보 수정` }}
+      </v-card-title>
+      <!-- <v-toolbar color="primary" dark>
         <v-toolbar-title>
           {{ `${this.form.name} 정보 수정` }}
         </v-toolbar-title>
@@ -15,51 +17,48 @@
         <v-btn icon dark @click="cancel">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-      </v-toolbar>
-      <v-list>
+      </v-toolbar> -->
+      <v-list class="pa-0">
         <v-list-group
           :value="true"
-          prepend-icon="mdi-map-marker-radius"
+          prepend-icon="ri-map-pin-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>승하차 장소 정보</v-list-item-subtitle>
+            <v-list-item-title>승하차 장소</v-list-item-title>
           </template>
-          <v-list-item-group>
-            <v-list-item style="padding-left: 8%; padding-right: 8%">
-              <v-list-item-content>
-                <v-list-item-title>{{ form.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ form.time }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn
-                  icon
-                  block
-                  color="green accent-4"
-                  @click="openMeetingLoactionDialog(form)"
-                >
-                  <v-icon>ri-edit-2-fill</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list-item-group>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ form.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ form.time }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-btn block depressed @click="openMeetingLoactionDialog(form)">
+              정보 수정
+              <v-icon color="success" class="ml-2 font-weight-light"
+                >ri-edit-2-fill</v-icon
+              >
+            </v-btn>
+          </v-list-item>
         </v-list-group>
       </v-list>
-      <v-list>
+      <v-list class="pa-0">
         <v-list-group
           :value="true"
-          prepend-icon="mdi-account"
+          prepend-icon="ri-user-5-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>등록된 원아</v-list-item-subtitle>
+            <v-list-item-title>등록된 원아</v-list-item-title>
           </template>
           <div v-if="form.childRideList.length != 0">
             <v-list-item-group
               v-for="(childRide, index) in form.childRideList"
               :key="index"
+              class="ml-14"
             >
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>{{
                     childRide.child.name
@@ -72,17 +71,17 @@
                   <v-btn
                     icon
                     block
-                    color="red lighten-1"
+                    color="gray"
                     @click="deleteChildRide(childRide)"
                   >
-                    <v-icon>ri-delete-bin-6-fill</v-icon>
+                    <v-icon>ri-close-circle-fill</v-icon>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
               <v-divider v-if="index != childRide.length - 1"></v-divider>
             </v-list-item-group>
           </div>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+          <v-list-item v-else>
             <v-list-item-icon>
               <v-icon>mdi-information-off</v-icon>
             </v-list-item-icon>
@@ -92,23 +91,21 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openAddChildRideDialog()"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item>
+            <v-btn @click="openAddChildRideDialog()" block depressed
+              >원아 추가<v-icon color="success" class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-container fluid>
-        <v-spacer></v-spacer>
-        <v-row no-gutters>
-          <v-btn color="red darken1" dark @click="deleteMeetingLocation()">
-            {{ `${this.form.name} 삭제` }}
-          </v-btn>
-        </v-row>
-      </v-container>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+        <v-btn color="error" text large @click="deleteMeetingLocation()">
+          {{ `${this.form.name} 삭제` }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

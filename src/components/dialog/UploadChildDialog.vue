@@ -1,21 +1,21 @@
 <template>
-  <v-dialog v-model="visible" @input="onDialogInput" max-width="400px">
-    <v-card>
-      <v-card-title class="headline">원아 엑셀 등록</v-card-title>
-      <v-card-text>
+  <v-dialog v-model="visible" @input="onDialogInput">
+    <v-card class="pa-2">
+      <v-card-title class="title">원아 엑셀 등록</v-card-title>
+      <v-card-text class="mt-2">
         <v-form v-model="isValid" ref="form">
           <v-file-input
             accept=".xlsx"
             label="파일을 등록해주세요."
+            outlined
             v-model="form.file"
             :rules="fileRules"
           ></v-file-input>
         </v-form>
       </v-card-text>
-      <v-card-actions>
-        <v-btn color="green lighten-2" text @click="confirm">등록</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
+      <v-card-actions class="justify-end">
+        <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+        <v-btn color="success" text large @click="confirm">등록</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
