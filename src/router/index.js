@@ -92,6 +92,11 @@ const router = new Router({
         },
       ],
     },
+    // 매칭되지 않는 모든 경로를 처리하는 catch-all 라우트
+    {
+      path: '*', // 모든 경로에 대해 매칭되지 않는 경우
+      redirect: { path: constants.DEFAULT_HOME },
+    },
     // {
     //   path: '/notAuthorized',
     //   name: 'NotAuthorized',

@@ -279,7 +279,7 @@ export default {
   data() {
     return {
       childrenList: [],
-      // itemsPerPageArray: [4, 8, 12],
+      itemsPerPageArray: [15, 20, 25],
       search: '',
       filter: {},
       sortDesc: false,
