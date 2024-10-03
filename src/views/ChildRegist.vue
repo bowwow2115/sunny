@@ -14,7 +14,7 @@
             type="button"
             text
             class="_excel-download"
-            :href="'/file/sunny_regist_children.xlsx'"
+            :href="`sunny/app/file/sunny_regist_children.xlsx`"
             >양식 다운로드</v-btn
           >
           <v-btn

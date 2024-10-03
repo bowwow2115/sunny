@@ -4,7 +4,7 @@
       <v-col cols="12" md="6">
         <v-card class="pa-2 rounded-xl _log d-flex">
           <v-card-title class="_logo align-end">
-            <img src="/images/sunny-en.svg" alt="sunny" />
+            <img src="@/assets/images/sunny-en.svg" alt="sunny" />
             <h1 class="_font-miso display-1 font-weight-bold">
               해맑은 어린이집
             </h1>
@@ -43,7 +43,7 @@
                   text
                   x-large
                   class="_excel-download"
-                  :href="'/file/sunny_regist_children.xlsx'"
+                  :href="`sunny/app/file/sunny_regist_children.xlsx`"
                   >양식 다운로드</v-btn
                 >
                 <v-btn
@@ -74,11 +74,14 @@
       <v-col cols="12" md="6">
         <v-card class="pa-2 pt-8 rounded-xl _birth">
           <v-card-title class="_font-miso font-weight-bold display-1">
-            <b class="_today-b mb-4"><span>09</span><span>월</span></b>
+            <b class="_today-b mb-4"
+              ><span>{{ currentMonth }}</span
+              ><span>월</span></b
+            >
             의 생일
           </v-card-title>
           <v-card-text class="mt-5">
-            <ul>
+            <ul v-if="birthMonthChildList.length > 0">
               <li
                 v-for="(child, index) in birthMonthChildList"
                 :key="index"
@@ -97,6 +100,9 @@
                 > -->
               </li>
             </ul>
+            <ul v-else>
+              등록된 생일자가 없습니다.
+            </ul>
           </v-card-text>
         </v-card>
         <v-card class="pa-2 rounded-xl _birth-come mt-6">
@@ -105,7 +111,7 @@
             있어요!</v-card-title
           >
           <v-card-text>
-            <ul>
+            <ul v-if="birthMonthChildList.length > 0">
               <li
                 v-for="(child, index) in beingBirthdayChildList"
                 :key="index"
@@ -124,8 +130,25 @@
                 <small>{{ `${child.className}, ${child.birthday}` }}</small>
               </li>
             </ul>
+            <ul v-else>
+              {{
+                `${currentMonth}월의 생일자가 없습니다.`
+              }}
+            </ul>
           </v-card-text>
         </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="6" v-if="isAdmin">
+        <v-card class="pa-2 rounded-xl _log d-flex">
+          <v-card-title> 관리자 기능 </v-card-title>
+          <v-card-text>
+            <v-btn @click="openManageClassDialog()">반 관리</v-btn>
+            <v-btn @click="openManageUserDialog()">사용자 관리</v-btn>
+            <v-btn @click="openManageRideDialog()">차량 관리</v-btn>
+          </v-card-text></v-card
+        >
       </v-col>
     </v-row>
   </div>
@@ -134,19 +157,40 @@
 <script>
 import { getBirthMonthChlid } from '@/api/api'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
+import ManageClassDialog from '@/components/admin/ClassDialog.vue'
+import ManageUserDialog from '@/components/admin/UserDialog.vue'
+import ManageRideDialog from '@/components/admin/RideDialog.vue'
+import { mapGetters } from 'vuex'
+import auth from '@/api/auth'
 
 export default {
   name: 'SunnyHome',
+  computed: {
+    ...mapGetters(['isAdmin']),
+  },
   data() {
     return {
       birthMonthChildList: [],
       beingBirthdayChildList: [],
+      currentMonth: '',
     }
   },
   mounted() {
     this.getBirthMonthChlid()
+    this.getCurrentMonth()
+
+    console.log(this.isAdmin)
   },
   methods: {
+    async openManageClassDialog() {
+      await this.$dialog(ManageClassDialog, null)
+    },
+    async openManageUserDialog() {
+      await this.$dialog(ManageUserDialog, null)
+    },
+    async openManageRideDialog() {
+      await this.$dialog(ManageRideDialog, null)
+    },
     getBirthMonthChlid() {
       getBirthMonthChlid()
         .then((response) => {
@@ -167,6 +211,10 @@ export default {
     },
     async openUploadChildDialog() {
       await this.$dialog(UploadChildDialog)
+    },
+    getCurrentMonth() {
+      const today = new Date()
+      this.currentMonth = today.getMonth() + 1 // 0부터 시작하므로 1을 더함
     },
     /**
      * D-day를 계산하는 함수
@@ -203,6 +251,9 @@ export default {
       // }
 
       return dayDifference
+    },
+    logout() {
+      auth.logout()
     },
   },
 }
