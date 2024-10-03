@@ -1,53 +1,60 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    :fullscreen="isMobile"
-    :hide-overlay="isMobile"
-    width="500px"
-  >
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title>
-          {{ '차량 설정' }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="cancel">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
+  <v-dialog v-model="visible" :fullscreen="isMobile" :hide-overlay="isMobile">
+    <v-card class="pa-2">
+      <v-card-title>
+        {{ '차량 설정' }}
+      </v-card-title>
       <v-list>
-        <v-list-group :value="true" prepend-icon="mdi-bus" :no-action="true">
+        <v-list-group
+          :value="true"
+          prepend-icon="ri-bus-2-fill"
+          :no-action="true"
+        >
           <template v-slot:activator>
-            <v-list-item-subtitle>차량</v-list-item-subtitle>
+            <v-list-item-title>차량</v-list-item-title>
           </template>
           <div v-if="form.rideList.length != 0">
             <v-list-item-group
               v-for="(ride, index) in form.rideList"
               :key="index"
+              class="ml-14"
             >
-              <v-list-item style="padding-left: 8%; padding-right: 8%">
-                <v-list-item-icon @click="openRideAddDialog(true, ride)">
-                  <v-icon color="green accent-4">mdi-pencil</v-icon>
+              <v-list-item>
+                <v-list-item-icon class="my-4 mx-3">
+                  <span
+                    :class="{
+                      '_list-icon-am': ride.am,
+                      '_list-icon-pm': !ride.am,
+                    }"
+                    class="_list-icon"
+                    >{{ ride.am ? '오전' : '오후' }}</span
+                  >
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{
-                    (ride.am ? '(오전)' : '(오후)') +
-                    ride.name +
-                    (ride.time ? `(${ride.time})` : '')
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    ride.comment
-                  }}</v-list-item-subtitle>
-                  <!-- <v-spacer></v-spacer> -->
+                  <v-list-item-title class="_list-title-with-sub">
+                    {{ ride.name + (ride.time ? `(${ride.time})` : '') }}
+                    <span>
+                      {{ ride.comment }}
+                    </span>
+                  </v-list-item-title>
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteRide(ride)">
-                  <v-icon color="red lighten-1">mdi-minus</v-icon>
-                </v-list-item-icon>
+                <v-list-item-actions>
+                  <v-btn icon color="gray" @click="deleteRide(ride)">
+                    <v-icon>ri-close-circle-fill</v-icon>
+                  </v-btn>
+                  <v-btn
+                    icon
+                    color="success"
+                    @click="openRideAddDialog(true, ride)"
+                    class="ml-2"
+                    ><v-icon>ri-edit-2-fill</v-icon>
+                  </v-btn>
+                </v-list-item-actions>
               </v-list-item>
               <v-divider v-if="index != form.rideList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+          <v-list-item v-else>
             <v-list-item-icon>
               <v-icon>mdi-information-off</v-icon>
             </v-list-item-icon>
@@ -57,15 +64,18 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openRideAddDialog(false)"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item class="py-2">
+            <v-btn @click="openRideAddDialog(false)" block depressed
+              >차량 추가<v-icon color="success" class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

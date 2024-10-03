@@ -29,11 +29,12 @@
           </template>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>{{ form.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ form.time }}</v-list-item-subtitle>
+              <v-list-item-title class="_list-title-with-sub"
+                >{{ form.name }} <span>{{ form.time }}</span></v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-btn block depressed @click="openMeetingLoactionDialog(form)">
               정보 수정
               <v-icon color="success" class="ml-2 font-weight-light"
@@ -60,20 +61,13 @@
             >
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>{{
-                    childRide.child.name
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    childRide.child.className
-                  }}</v-list-item-subtitle>
+                  <v-list-item-title class="_list-title-with-sub"
+                    >{{ childRide.child.name }}
+                    <span>{{ childRide.child.className }}</span>
+                  </v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  <v-btn
-                    icon
-                    block
-                    color="gray"
-                    @click="deleteChildRide(childRide)"
-                  >
+                  <v-btn icon color="gray" @click="deleteChildRide(childRide)">
                     <v-icon>ri-close-circle-fill</v-icon>
                   </v-btn>
                 </v-list-item-action>
@@ -91,7 +85,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-btn @click="openAddChildRideDialog()" block depressed
               >원아 추가<v-icon color="success" class="ml-2 font-weight-light"
                 >ri-add-fill</v-icon

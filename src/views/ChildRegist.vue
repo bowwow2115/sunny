@@ -346,6 +346,7 @@
                     label="비고"
                     outlined
                     clearable
+                    clear-icon="ri-close-circle-fill"
                     hide-details="auto"
                   >
                   </v-text-field>
