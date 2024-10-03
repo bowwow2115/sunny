@@ -1,44 +1,45 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-card-title color="primary" class="headline">{{
+  <v-dialog v-model="visible">
+    <v-card class="pa-2 _pop-small-card">
+      <v-card-title class="title">{{
         isEdit ? '승하차 장소 정보 수정' : '승하차 장소 정보 추가'
       }}</v-card-title>
       <v-form v-model="isValid" ref="form" lazy-validation>
-        <v-card-text>
+        <v-card-text class="mt-4">
           <v-text-field
-            prepend-icon="mdi-map-marker-radius"
             v-model="form.name"
             label="차량의 이름을 입력해주세요."
             :rules="nameRule"
+            outlined
             clearable
+            clear-icon="ri-close-circle-fill"
           ></v-text-field>
-
           <v-radio-group row v-model="form.isAm">
             <v-radio label="오전" :value="true"></v-radio>
             <v-radio label="오후" :value="false"></v-radio>
           </v-radio-group>
-
           <v-text-field
-            prepend-icon="mdi-clock-time-eight"
             v-model="form.timeInput"
             label="차량시간을 입력해주세요.(예:1630)"
             :rules="timeRule"
+            outlined
             clearable
+            clear-icon="ri-close-circle-fill"
           ></v-text-field>
           <v-text-field
-            prepend-icon="mdi-map-marker-radius"
+            prepend-inner-icon="ri-message-2-fill"
             v-model="form.comment"
             label="비고사항을 입력해주세요."
+            outlined
             clearable
+            clear-icon="ri-close-circle-fill"
           ></v-text-field>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="accent" text @click="confirm">{{
+        <v-card-actions class="flex-wrap justify-end py-4 px-6">
+          <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+          <v-btn color="accent" text large @click="confirm">{{
             isEdit ? '수정' : '추가'
           }}</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

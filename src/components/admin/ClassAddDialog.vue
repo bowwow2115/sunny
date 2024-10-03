@@ -1,19 +1,19 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-card-title color="primary" class="headline">반 추가</v-card-title>
-      <v-card-text>
+  <v-dialog v-model="visible">
+    <v-card class="pa-2 _pop-small-card">
+      <v-card-title class="title">반 추가</v-card-title>
+      <v-card-text class="mt-4">
         <v-text-field
-          prepend-icon="mdi-account"
           v-model="form.name"
           label="반 이름을 입력해주세요."
+          outlined
           clearable
+          clear-icon="ri-close-circle-fill"
         ></v-text-field>
       </v-card-text>
-      <v-card-actions>
-        <v-btn color="accent" text @click="confirm">추가</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="red lighten-2" text @click="cancel">닫기</v-btn>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text large @click="cancel">닫기</v-btn>
+        <v-btn color="accent" text large @click="confirm">추가</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

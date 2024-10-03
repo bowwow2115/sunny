@@ -169,7 +169,7 @@
             >
               <v-list-item>
                 <v-list-item-icon>
-                  <span class="_list-icon _list-icon-ko">오전</span>
+                  <span class="_list-icon _list-icon-am">오전</span>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title class="_list-title-with-sub"
@@ -253,7 +253,7 @@
             >
               <v-list-item>
                 <v-list-item-icon>
-                  <span class="_list-icon _list-icon-ko">오후</span>
+                  <span class="_list-icon _list-icon-pm">오후</span>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title class="_list-title-with-sub"

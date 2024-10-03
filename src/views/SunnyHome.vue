@@ -57,19 +57,19 @@
               </div>
             </div>
           </v-card-text>
+          <!-- 관리자 로그인 메뉴 -->
+          <div class="_admin-menu">
+            <v-btn type="button" text x-large plain
+              ><v-icon>ri-book-read-fill</v-icon>반 관리</v-btn
+            >
+            <v-btn type="button" text x-large plain
+              ><v-icon>ri-user-fill</v-icon>사용자 관리</v-btn
+            >
+            <v-btn type="button" text x-large plain
+              ><v-icon>ri-bus-2-fill</v-icon>차량 관리</v-btn
+            >
+          </div>
         </v-card>
-        <!-- <v-btn
-          type="button"
-          block
-          class="_quick-regist d-flex justify-space-between align-center py-6 px-6 rounded-xl"
-          height="auto"
-        >
-          <p class="mb-0 text-h6 font-weight-black">
-            <small class="font-weight-bold">새로 입학했나요?</small>원아등록
-            바로가기
-          </p>
-          <v-icon>ri-draft-fill</v-icon>
-        </v-btn> -->
       </v-col>
       <v-col cols="12" md="6">
         <v-card class="pa-2 pt-8 rounded-xl _birth">
@@ -116,9 +116,9 @@
                   v-if="child.dDay == 0"
                   ><v-icon>ri-cake-2-fill</v-icon></small
                 >
-                <small class="_d-day font-weight-black mr-1" v-else>{{
-                  child.dDay
-                }}</small>
+                <small class="_d-day font-weight-black mr-1" v-else
+                  >D-{{ child.dDay }}</small
+                >
 
                 {{ `${child.name}` }}
                 <small>{{ `${child.className}, ${child.birthday}` }}</small>

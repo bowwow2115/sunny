@@ -1,46 +1,35 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    :fullscreen="isMobile"
-    :hide-overlay="isMobile"
-    width="500px"
-  >
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title>
-          {{ '사용자 관리' }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="cancel">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
+  <v-dialog v-model="visible" :fullscreen="isMobile" :hide-overlay="isMobile">
+    <v-card class="pa-2 _pop-small-card">
+      <v-card-title>
+        {{ '사용자 관리' }}
+      </v-card-title>
       <v-list>
         <v-list-group
           :value="true"
-          prepend-icon="mdi-account-box-multiple"
+          prepend-icon="ri-user-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>사용자</v-list-item-subtitle>
+            <v-list-item-title>사용자</v-list-item-title>
           </template>
           <div v-if="form.userList.length != 0">
             <v-list-item-group
               v-for="(user, index) in form.userList"
               :key="index"
+              class="ml-14"
             >
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>{{ `${user.userId}` }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    user.userName
-                  }}</v-list-item-subtitle>
+                  <v-list-item-title class="_list-title-with-sub">
+                    {{ `${user.userId}` }}
+                    <span>{{ user.userName }}</span>
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-divider></v-divider>
             </v-list-item-group>
           </div>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+          <v-list-item v-else>
             <v-list-item-icon>
               <v-icon>mdi-information-off</v-icon>
             </v-list-item-icon>
@@ -59,6 +48,9 @@
           </v-list-item> -->
         </v-list-group>
       </v-list>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

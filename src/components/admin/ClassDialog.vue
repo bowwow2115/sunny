@@ -1,47 +1,38 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    :fullscreen="isMobile"
-    :hide-overlay="isMobile"
-    width="500px"
-  >
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title>
-          {{ '반 설정' }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="cancel">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
+  <v-dialog v-model="visible" :fullscreen="isMobile" :hide-overlay="isMobile">
+    <v-card class="pa-2 _pop-small-card">
+      <v-card-title class="title">
+        {{ '반 설정' }}
+      </v-card-title>
       <v-list>
         <v-list-group
           :value="true"
-          prepend-icon="mdi-account-box-multiple"
+          prepend-icon="ri-book-read-fill"
           :no-action="true"
         >
           <template v-slot:activator>
-            <v-list-item-subtitle>반</v-list-item-subtitle>
+            <v-list-item-title>반</v-list-item-title>
           </template>
           <div v-if="form.classList.length != 0">
             <v-list-item-group
               v-for="(sunnyClass, index) in form.classList"
               :key="index"
+              class="ml-14"
             >
-              <v-list-item style="padding-left: 15%; padding-right: 8%">
+              <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>{{ sunnyClass.name }}</v-list-item-title>
-                  <!-- <v-spacer></v-spacer> -->
                 </v-list-item-content>
-                <v-list-item-icon @click="deleteClass(sunnyClass)">
-                  <v-icon color="red lighten-1">mdi-minus</v-icon>
-                </v-list-item-icon>
+                <v-list-item-actions>
+                  <v-btn icon color="gray" @click="deleteClass(sunnyClass)">
+                    <v-icon>ri-close-circle-fill</v-icon>
+                  </v-btn>
+                </v-list-item-actions>
               </v-list-item>
               <v-divider v-if="index != form.classList.length - 1"></v-divider>
             </v-list-item-group>
           </div>
-          <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+          <v-list-item v-else>
             <v-list-item-icon>
               <v-icon>mdi-information-off</v-icon>
             </v-list-item-icon>
@@ -51,15 +42,18 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openClassAddDialog()"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+          <v-list-item class="py-2">
+            <v-btn @click="openClassAddDialog()" block depressed
+              >반 추가<v-icon color="success" class="ml-2 font-weight-light"
+                >ri-add-fill</v-icon
+              ></v-btn
             >
-            <v-spacer></v-spacer>
           </v-list-item>
         </v-list-group>
       </v-list>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
