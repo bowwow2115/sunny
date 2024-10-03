@@ -32,6 +32,9 @@ function loggedIn() {
           console.log('loggedIn Check : ', response)
           //parseToken(response.data, true);
           if (response.data.code == '0') {
+            if (response.data.data[0].authority == 'ROLE_ADMIN') {
+              store.commit('SET_ADMIN', true)
+            }
             resolve(response.data)
           } else if (response.data.code == 'EXPIRED-TOKEN') {
             const refreshToken = Utils.getCookie('refreshToken')

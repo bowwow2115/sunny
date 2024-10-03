@@ -2,11 +2,44 @@
   <v-card class="mx-auto" style="padding: 0">
     <v-card dark flat class="_timeline">
       <v-img
-        :src="
-          selectedAmPm == '오전'
-            ? '/images/morning.webp'
-            : '/images/sunset.webp'
-        "
+        v-if="selectedAmPm == '오전'"
+        src="@/assets/images/morning.webp"
+        gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
+      >
+        <v-container class="fill-height pa-4">
+          <v-row class="justify-center">
+            <v-col cols="12" sm="3" md="4" lg="3">
+              <v-select
+                v-model="selectedAmPm"
+                :items="['오전', '오후']"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="9" md="8" lg="6">
+              <v-select
+                v-model="selectedRide"
+                :items="selectedAmPm == '오전' ? amRideList : pmRideList"
+                item-text="name"
+                return-object
+              ></v-select>
+            </v-col>
+          </v-row>
+          <div class="_btn-grp flex-nowrap">
+            <v-btn @click="openRideTable()" class="font-weight-light">
+              <v-icon>ri-printer-line</v-icon></v-btn
+            >
+            <v-btn
+              @click="openAddMeetingLocationDialog(selectedRide)"
+              color="accent"
+              class="ml-1"
+            >
+              <v-icon>ri-add-line</v-icon>
+            </v-btn>
+          </div>
+        </v-container>
+      </v-img>
+      <v-img
+        v-if="selectedAmPm == '오후'"
+        src="@/assets/images/sunset.webp"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
         <v-container class="fill-height pa-4">
