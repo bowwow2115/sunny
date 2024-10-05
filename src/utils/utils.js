@@ -7,11 +7,15 @@ const Utils = {
   },
   // COOKIES
   setCookie(cName, cValue, seconds = 3600, path = '/') {
+    // 현재 시간을 기준으로 쿠키 만료일 설정
     let expire = new Date()
-    expire.setTime(expire.getTime() + seconds * 1000)
-    let cookies = cName + '=' + escape(cValue) + '; path=' + path
-    if (typeof cDay != 'undefined')
-      cookies += ';expires=' + expire.toGMTString() + ';'
+    expire.setTime(expire.getTime() + seconds * 1000) // 밀리초 단위로 계산
+    // 쿠키 문자열 생성
+    let cookies =
+      cName + '=' + encodeURIComponent(cValue) + '; path=' + path + ';'
+    cookies += 'expires=' + expire.toUTCString() + ';' // 만료일 설정
+
+    // 쿠키 설정
     document.cookie = cookies
   },
   deleteCookie(cookieName, path = '') {
