@@ -7,8 +7,13 @@ function parseToken(result, reset = false) {
   if (result.data) {
     let ticketId = result.data.accessToken
     if (ticketId) {
-      Utils.setCookie('auth', ticketId, 3600, '/')
-      Utils.setCookie('refreshToken', result.data.refreshToken)
+      Utils.setCookie('auth', ticketId, 3600 * 24, '/')
+      Utils.setCookie(
+        'refreshToken',
+        result.data.refreshToken,
+        3600 * 24 * 30,
+        '/'
+      )
 
       // const user = result.data
 

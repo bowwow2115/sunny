@@ -30,11 +30,11 @@
               <v-col class="text-left">
                 <input
                   type="checkbox"
-                  v-model="form.saveLogin"
+                  v-model="saveLogin"
                   class="custom-chkbox"
                   id="saveLoginChk"
                 /><label for="saveLoginChk" style="width: fit-content"
-                  ><v-icon class="ri-checkbox-circle-fill"></v-icon>로그인
+                  ><v-icon class="ri-checkbox-circle-fill"></v-icon>아이디
                   저장</label
                 >
               </v-col>
@@ -76,18 +76,25 @@
 <script>
 //import { required } from 'vuelidate/lib/validators';
 import auth from '@/api/auth'
+import Utils from '@/utils/utils'
 
 export default {
   name: 'SignIn',
   components: {},
+  mounted() {
+    if (Utils.getCookie('userId')) {
+      this.form.userId = Utils.getCookie('userId')
+      this.saveLogin = true
+    }
+  },
   data() {
     return {
       valid: true,
       form: {
         userId: '',
         password: '',
-        saveLogin: false,
       },
+      saveLogin: false,
       userIdRules: [
         (v) => !!v || '아이디는 필수 항목입니다.',
         (v) =>
@@ -112,6 +119,16 @@ export default {
           auth
             .login(this.form)
             .then(() => {
+              if (this.saveLogin) {
+                Utils.setCookie(
+                  'userId',
+                  this.form.userId,
+                  3600 * 24 * 365,
+                  '/'
+                )
+              } else {
+                Utils.deleteCookie('userId')
+              }
               this.$router.push({ path: constants.DEFAULT_HOME })
             })
             .catch((error) => {

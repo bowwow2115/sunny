@@ -75,11 +75,15 @@
       </v-img>
     </v-card>
     <v-card-text class="py-0">
-      <v-timeline align-top :dense="isMobile ? true : false">
+      <v-timeline
+        align-top
+        :dense="isMobile ? true : false"
+        v-if="selectedRide?.meetingLocationList.length > 0"
+      >
         <v-timeline-item
           color="primary"
           small
-          v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
+          v-for="(meetingLocation, index) in selectedRide?.meetingLocationList"
           :key="index"
         >
           <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
@@ -119,6 +123,10 @@
           </v-card>
         </v-timeline-item>
       </v-timeline>
+      <v-card-title v-else style="justify-content: center; min-height: 800px">
+        <v-icon>mdi-information-off</v-icon> 승하차 장소의 정보가
+        없습니다</v-card-title
+      >
     </v-card-text>
   </v-card>
 </template>
@@ -191,6 +199,18 @@ export default {
       if (result) this.getRideList()
     },
     async openAddMeetingLocationDialog(selectedRide) {
+      if (
+        selectedRide == null ||
+        selectedRide.id == undefined ||
+        selectedRide.id == null ||
+        selectedRide.id == ''
+      ) {
+        this.$showMessage({
+          type: 'warning',
+          message: '차량을 먼저 선택해주세요.',
+        })
+        return
+      }
       let item = {}
       item.isEdit = false
       item.sunnyRide = selectedRide
