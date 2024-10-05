@@ -26,17 +26,23 @@ import { registChildAsExcel } from '@/api/api.js'
 export default {
   data() {
     return {
+      isValid: false,
       visible: false,
       form: {
         file: null,
       },
+      resolve: null,
+      reject: null,
       fileRules: [(v) => !!v || '필수 항목입니다.'],
     }
   },
   methods: {
     open(code, message) {
-      console.log(code, message)
       this.visible = true
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve
+        this.reject = reject
+      })
     },
     cancel() {
       this.visible = false
@@ -47,8 +53,6 @@ export default {
       }
     },
     confirm() {
-      console.log(this.form.file)
-
       if (this.$refs.form.validate()) {
         const formData = new FormData()
         formData.append('file', this.form.file)

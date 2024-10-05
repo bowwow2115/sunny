@@ -126,7 +126,7 @@
             있어요!</v-card-title
           >
           <v-card-text>
-            <ul v-if="birthMonthChildList.length > 0">
+            <ul v-if="beingBirthdayChildList.length > 0">
               <li
                 v-for="(child, index) in beingBirthdayChildList"
                 :key="index"
@@ -147,7 +147,7 @@
             </ul>
             <ul v-else>
               {{
-                `${currentMonth}월의 생일자가 없습니다.`
+                `다가오는 ${currentMonth}월의 생일자가 없습니다.`
               }}
             </ul>
           </v-card-text>
@@ -198,9 +198,7 @@ export default {
       getBirthMonthChlid()
         .then((response) => {
           if (response.code === '0') {
-            this.birthMonthChildList = response.data.filter((child) => {
-              return child.status == '재원'
-            })
+            this.birthMonthChildList = response.data
             this.birthMonthChildList.forEach((child) => {
               const dDay = this.calculateMMDDDifference(child.birthday)
               if (dDay >= 0) {

@@ -107,7 +107,7 @@
 <script>
 import {
   deleteChildRide,
-  getAllChildren,
+  getAttendingChildren,
   deleteMeetingLocation,
 } from '@/api/api'
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
@@ -212,7 +212,7 @@ export default {
       let item = {}
       item.meetingLocationName = this.form.name
       item.meetingLocationId = this.form.id
-      item.childList = await this.getAllChildren()
+      item.childList = await this.getAttendingChildren()
       const result = await this.$dialog(SearchChildDialog, item)
 
       if (result != null) {
@@ -229,10 +229,10 @@ export default {
         }
       }
     },
-    async getAllChildren() {
+    async getAttendingChildren() {
       let childList = []
       await this.$withLoading(
-        getAllChildren()
+        getAttendingChildren()
           .then((response) => {
             if (response.code == '0') {
               childList = response.data.filter((child) => {

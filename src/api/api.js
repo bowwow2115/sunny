@@ -398,3 +398,7 @@ export function updateChild(param) {
 export function registChildAsExcel(param) {
   return postForm(`${constants.CONTEXT_PATH}/excel/child`, param)
 }
+
+export function getAttendingChildren() {
+  return get(`${constants.CONTEXT_PATH}/child/all/attending`)
+}
