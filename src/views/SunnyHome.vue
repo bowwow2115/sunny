@@ -43,7 +43,7 @@
                   text
                   x-large
                   class="_excel-download"
-                  :href="`sunny/app/file/sunny_regist_children.xlsx`"
+                  href="/sunny/app/file/sunny_regist_children.xlsx"
                   >양식 다운로드</v-btn
                 >
                 <v-btn
@@ -58,14 +58,29 @@
             </div>
           </v-card-text>
           <!-- 관리자 로그인 메뉴 -->
-          <div class="_admin-menu">
-            <v-btn type="button" text x-large plain
+          <div class="_admin-menu" v-if="isAdmin">
+            <v-btn
+              type="button"
+              text
+              x-large
+              plain
+              @click="openManageClassDialog()"
               ><v-icon>ri-book-read-fill</v-icon>반 관리</v-btn
             >
-            <v-btn type="button" text x-large plain
+            <v-btn
+              type="button"
+              text
+              x-large
+              plain
+              @click="openManageUserDialog()"
               ><v-icon>ri-user-fill</v-icon>사용자 관리</v-btn
             >
-            <v-btn type="button" text x-large plain
+            <v-btn
+              type="button"
+              text
+              x-large
+              plain
+              @click="openManageRideDialog()"
               ><v-icon>ri-bus-2-fill</v-icon>차량 관리</v-btn
             >
           </div>
@@ -139,18 +154,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" md="6" v-if="isAdmin">
-        <v-card class="pa-2 rounded-xl _log d-flex">
-          <v-card-title> 관리자 기능 </v-card-title>
-          <v-card-text>
-            <v-btn @click="openManageClassDialog()">반 관리</v-btn>
-            <v-btn @click="openManageUserDialog()">사용자 관리</v-btn>
-            <v-btn @click="openManageRideDialog()">차량 관리</v-btn>
-          </v-card-text></v-card
-        >
-      </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -195,12 +198,8 @@ export default {
       getBirthMonthChlid()
         .then((response) => {
           if (response.code === '0') {
-            this.birthMonthChildList = response.data.sort((a, b) => {
-              const dayA = new Date(a.birthday).getDate()
-              const dayB = new Date(b.birthday).getDate()
-
-              // 일자 기준으로 오름차순 정렬
-              return dayA - dayB
+            this.birthMonthChildList = response.data.filter((child) => {
+              return child.status == '재원'
             })
             this.birthMonthChildList.forEach((child) => {
               const dDay = this.calculateMMDDDifference(child.birthday)
@@ -208,6 +207,14 @@ export default {
                 child.dDay = dDay
                 this.beingBirthdayChildList.push(child)
               }
+            })
+
+            this.birthMonthChildList.sort((a, b) => {
+              const dayA = new Date(a.birthday).getDate()
+              const dayB = new Date(b.birthday).getDate()
+
+              // 일자 기준으로 오름차순 정렬
+              return dayA - dayB
             })
           }
         })
