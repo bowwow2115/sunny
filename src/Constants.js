@@ -1,5 +1,5 @@
 const constants = {
-  DEFAULT_HOME: '/ChildList',
+  DEFAULT_HOME: '/SunnyHome',
   TOKEN: 'auth',
   CONTEXT_PATH: '/sunny',
 }

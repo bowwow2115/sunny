@@ -109,11 +109,8 @@ function login(form) {
           parseToken(r)
           if (r.data.roles[0].authority == 'ROLE_ADMIN')
             store.commit('SET_ADMIN', true)
-          if (
-            r.data.data[1].userId != null ||
-            r.data.data[1].userId != undefined
-          ) {
-            store.commit('SET_USERID', r.data.data[1].userId)
+          if (r.data.userId != null || r.data.userId != undefined) {
+            store.commit('SET_USERID', r.data.userId)
           }
           resolve(r.data)
         }
