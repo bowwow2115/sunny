@@ -61,7 +61,6 @@
 
 <script>
 import auth from '@/api/auth'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'Layout',
@@ -103,29 +102,11 @@ export default {
       const item = this.items.find((item) => item.name === currentRouteName)
       return item ? item.title : '메뉴'
     },
-    ...mapGetters(['isAdmin']),
   },
-  mounted() {
-    this.showAdmin()
-  },
+  mounted() {},
   methods: {
     logout() {
       auth.logout()
-    },
-    goToAdminMenu() {
-      if (this.$route.path !== '/AdminMenu') {
-        this.$router.push('/AdminMenu')
-      }
-    },
-    showAdmin() {
-      if (this.isAdmin) {
-        let menu = {}
-        menu.title = '관리자'
-        menu.icon = 'ri-settings-3-fill'
-        menu.to = '/AdminMenu'
-        menu.name = 'AdminMenu'
-        this.items.push(menu)
-      }
     },
   },
 }

@@ -195,7 +195,13 @@ export default {
       getBirthMonthChlid()
         .then((response) => {
           if (response.code === '0') {
-            this.birthMonthChildList = response.data
+            this.birthMonthChildList = response.data.sort((a, b) => {
+              const dayA = new Date(a.birthday).getDate()
+              const dayB = new Date(b.birthday).getDate()
+
+              // 일자 기준으로 오름차순 정렬
+              return dayA - dayB
+            })
             this.birthMonthChildList.forEach((child) => {
               const dDay = this.calculateMMDDDifference(child.birthday)
               if (dDay >= 0) {
