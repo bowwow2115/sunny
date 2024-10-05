@@ -8,6 +8,7 @@
             <v-form v-model="valid" @submit.prevent="login">
               <v-text-field
                 v-model="form.userId"
+                @keyup.enter="login"
                 :rules="userIdRules"
                 label="아이디 입력"
                 prepend-inner-icon="ri-user-5-fill"
@@ -17,6 +18,7 @@
               ></v-text-field>
               <v-text-field
                 v-model="form.password"
+                @keyup.enter="login"
                 :rules="userPwRules"
                 type="password"
                 label="비밀번호 입력"
