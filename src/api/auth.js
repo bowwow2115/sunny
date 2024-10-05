@@ -40,6 +40,12 @@ function loggedIn() {
             if (response.data.data[0].authority == 'ROLE_ADMIN') {
               store.commit('SET_ADMIN', true)
             }
+            if (
+              response.data.data[1].userId != null ||
+              response.data.data[1].userId != undefined
+            ) {
+              store.commit('SET_USERID', response.data.data[1].userId)
+            }
             resolve(response.data)
           } else if (response.data.code == 'EXPIRED-TOKEN') {
             const refreshToken = Utils.getCookie('refreshToken')
@@ -103,6 +109,12 @@ function login(form) {
           parseToken(r)
           if (r.data.roles[0].authority == 'ROLE_ADMIN')
             store.commit('SET_ADMIN', true)
+          if (
+            r.data.data[1].userId != null ||
+            r.data.data[1].userId != undefined
+          ) {
+            store.commit('SET_USERID', r.data.data[1].userId)
+          }
           resolve(r.data)
         }
       })
@@ -123,6 +135,7 @@ function logout(user) {
   Utils.deleteCookie('lang')
 
   store.commit('SET_ADMIN', false)
+  store.commit('SET_USERID', '')
 
   location.href = Utils.checkEnv(process.env.NODE_ENV)
   window.location.reload()

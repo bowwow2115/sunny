@@ -14,7 +14,7 @@
               class="_log-info d-flex flex-wrap justify-space-between align-center"
             >
               <h2 class="font-weight-bold">
-                <u class="font-weight-black">테스트님</u>, 안녕하세요.
+                <u class="font-weight-black">{{ userId }}님</u>, 안녕하세요.
               </h2>
               <v-card-actions class="flex-wrap">
                 <v-btn
@@ -169,7 +169,7 @@ import auth from '@/api/auth'
 export default {
   name: 'SunnyHome',
   computed: {
-    ...mapGetters(['isAdmin']),
+    ...mapGetters(['isAdmin', 'userId']),
   },
   data() {
     return {
@@ -199,20 +199,19 @@ export default {
         .then((response) => {
           if (response.code === '0') {
             this.birthMonthChildList = response.data
-            this.birthMonthChildList.forEach((child) => {
-              const dDay = this.calculateMMDDDifference(child.birthday)
-              if (dDay >= 0) {
-                child.dDay = dDay
-                this.beingBirthdayChildList.push(child)
-              }
-            })
-
             this.birthMonthChildList.sort((a, b) => {
               const dayA = new Date(a.birthday).getDate()
               const dayB = new Date(b.birthday).getDate()
 
               // 일자 기준으로 오름차순 정렬
               return dayA - dayB
+            })
+            this.birthMonthChildList.forEach((child) => {
+              const dDay = this.calculateMMDDDifference(child.birthday)
+              if (dDay >= 0) {
+                child.dDay = dDay
+                this.beingBirthdayChildList.push(child)
+              }
             })
           }
         })
