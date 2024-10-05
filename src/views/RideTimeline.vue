@@ -123,7 +123,7 @@
           </v-card>
         </v-timeline-item>
       </v-timeline>
-      <v-card-title v-else style="justify-content: center; min-height: 800px">
+      <v-card-title v-else style="justify-content: center; min-height: 600px">
         <v-icon>mdi-information-off</v-icon> 승하차 장소의 정보가
         없습니다</v-card-title
       >
