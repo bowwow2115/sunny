@@ -10,6 +10,7 @@ Vue.use(Vuex)
 const state = {
   isLoading: false,
   isAdmin: false,
+  userId: '',
 }
 
 const store = new Vuex.Store({
