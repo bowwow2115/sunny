@@ -14,7 +14,7 @@
             clearable
             clear-icon="ri-close-circle-fill"
           ></v-text-field>
-          <v-radio-group row v-model="form.isAm">
+          <v-radio-group row v-model="form.am">
             <v-radio label="오전" :value="true"></v-radio>
             <v-radio label="오후" :value="false"></v-radio>
           </v-radio-group>
@@ -62,7 +62,7 @@ export default {
         time: '',
         timeInput: '',
         comment: '',
-        isAm: true,
+        am: true,
       },
       isEdit: false,
       nameRule: [(v) => !!v || '필수 항목입니다.'],
@@ -85,7 +85,7 @@ export default {
         this.form.id = item.id
         this.form.name = item.name
         this.form.comment = item.comment
-        this.form.isAm = item.am
+        this.form.am = item.am
       }
       return new Promise((resolve, reject) => {
         this.resolve = resolve
