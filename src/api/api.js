@@ -402,3 +402,7 @@ export function registChildAsExcel(param) {
 export function getAttendingChildren() {
   return get(`${constants.CONTEXT_PATH}/child/all/attending`)
 }
+
+export function deleteRide(id) {
+  return deleteCall(`${constants.CONTEXT_PATH}/ride?id=${id}`)
+}
