@@ -1,6 +1,6 @@
 <template>
   <div class="_home">
-    <v-row class="align-stretch">
+    <v-row>
       <v-col cols="12" md="6">
         <v-card class="pa-2 rounded-xl _log d-flex">
           <v-card-title class="_logo align-end">
@@ -85,6 +85,38 @@
             >
           </div>
         </v-card>
+        <v-card class="pa-2 rounded-xl _birth-come mt-6">
+          <v-card-title
+            ><span class="font-weight-bold">생일</span>이 다가오고
+            있어요!</v-card-title
+          >
+          <v-card-text>
+            <ul v-if="beingBirthdayChildList.length > 0">
+              <li
+                v-for="(child, index) in beingBirthdayChildList"
+                :key="index"
+                class="px-3 py-1"
+              >
+                <small
+                  class="_d-day font-weight-black mr-1"
+                  v-if="child.dDay == 0"
+                  ><v-icon>ri-cake-2-fill</v-icon></small
+                >
+                <small class="_d-day font-weight-black mr-1" v-else
+                  >D-{{ child.dDay }}</small
+                >
+
+                {{ `${child.name}` }}
+                <small>{{ `${child.className}, ${child.birthday}` }}</small>
+              </li>
+            </ul>
+            <ul v-else>
+              {{
+                `다가오는 ${currentMonth}월의 생일자가 없습니다.`
+              }}
+            </ul>
+          </v-card-text>
+        </v-card>
       </v-col>
       <v-col cols="12" md="6">
         <v-card class="pa-2 pt-8 rounded-xl _birth">
@@ -117,38 +149,6 @@
             </ul>
             <ul v-else>
               등록된 생일자가 없습니다.
-            </ul>
-          </v-card-text>
-        </v-card>
-        <v-card class="pa-2 rounded-xl _birth-come mt-6">
-          <v-card-title
-            ><span class="font-weight-bold">생일</span>이 다가오고
-            있어요!</v-card-title
-          >
-          <v-card-text>
-            <ul v-if="beingBirthdayChildList.length > 0">
-              <li
-                v-for="(child, index) in beingBirthdayChildList"
-                :key="index"
-                class="px-3 py-1"
-              >
-                <small
-                  class="_d-day font-weight-black mr-1"
-                  v-if="child.dDay == 0"
-                  ><v-icon>ri-cake-2-fill</v-icon></small
-                >
-                <small class="_d-day font-weight-black mr-1" v-else
-                  >D-{{ child.dDay }}</small
-                >
-
-                {{ `${child.name}` }}
-                <small>{{ `${child.className}, ${child.birthday}` }}</small>
-              </li>
-            </ul>
-            <ul v-else>
-              {{
-                `다가오는 ${currentMonth}월의 생일자가 없습니다.`
-              }}
             </ul>
           </v-card-text>
         </v-card>

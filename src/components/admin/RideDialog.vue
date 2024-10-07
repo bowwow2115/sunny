@@ -162,7 +162,7 @@ export default {
       getRideList()
         .then((response) => {
           if (response.code == '0') {
-            this.form.rideList = response.data
+            this.form.rideList = response.data.sort((a, b) => b.am - a.am)
           }
         })
         .catch((e) => {

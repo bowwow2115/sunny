@@ -29,6 +29,15 @@
                 clear-icon="ri-close-circle-fill"
               ></v-text-field>
             </v-col>
+            <v-col cols="12" lg="6">
+              <v-text-field
+                v-model="form.comment"
+                label="비고사항을 입력해주세요."
+                outlined
+                clearable
+                clear-icon="ri-close-circle-fill"
+              ></v-text-field>
+            </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions class="justify-end">
@@ -58,6 +67,7 @@ export default {
         time: '',
         timeInput: '',
         sunnyRide: { id: '' },
+        comment: '',
       },
       isEdit: false,
       nameRule: [(v) => !!v || '필수 항목입니다.'],
