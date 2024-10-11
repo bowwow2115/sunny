@@ -406,3 +406,7 @@ export function getAttendingChildren() {
 export function deleteRide(id) {
   return deleteCall(`${constants.CONTEXT_PATH}/ride?id=${id}`)
 }
+
+export function addUser(param) {
+  return post2(`${constants.CONTEXT_PATH}/user`, param)
+}

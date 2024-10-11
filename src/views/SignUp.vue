@@ -9,7 +9,7 @@
               <!-- 아이디 -->
               <div class="d-flex">
                 <v-text-field
-                  v-model="form.joinId"
+                  v-model="form.userId"
                   label="아이디 입력"
                   prepend-inner-icon="ri-user-5-fill"
                   required
@@ -32,9 +32,19 @@
               </p>
               <!-- 비밀번호 -->
               <v-text-field
-                v-model="form.joinPw"
+                v-model="form.password"
                 type="password"
                 label="비밀번호 입력"
+                prepend-inner-icon="ri-lock-password-fill"
+                required
+                outlined
+                clearable
+                hide-details="auto"
+              ></v-text-field>
+              <v-text-field
+                v-model="form.passwordCheck"
+                type="password"
+                label="비밀번호 확인"
                 prepend-inner-icon="ri-lock-password-fill"
                 required
                 outlined
@@ -47,7 +57,7 @@
               </p>
               <!-- 이름 -->
               <v-text-field
-                v-model="form.userName"
+                v-model="form.name"
                 label="이름"
                 prepend-inner-icon="ri-user-smile-fill"
                 required
@@ -56,7 +66,7 @@
               ></v-text-field>
               <!-- 전화번호 -->
               <v-text-field
-                v-model="form.userPhoneNum"
+                v-model="form.telephone"
                 :rules="phoneRules"
                 label="전화번호"
                 prepend-inner-icon="ri-smartphone-line"
@@ -71,7 +81,7 @@
               </p>
               <!-- 이메일 : 선택사항으로 required 제외 -->
               <v-text-field
-                v-model="form.userEmail"
+                v-model="form.email"
                 type="email"
                 label="이메일주소(본인확인용 선택사항)"
                 prepend-inner-icon="ri-mail-fill"
@@ -86,8 +96,8 @@
                 x-large
                 color="primary"
               >
-                회원가입 하기
-              </v-btn>ㅞ
+                회원가입 하기 </v-btn
+              >ㅞ
             </v-form>
           </v-card>
         </v-col>
@@ -97,6 +107,7 @@
 </template>
 
 <script>
+import { addUser } from '@/api/api.js'
 export default {
   name: 'SignUp',
   components: {},
@@ -104,16 +115,11 @@ export default {
     return {
       valid: true,
       form: {
-        joinId: '',
-        joinPw: '',
-        userName: '',
-        userPhoneNum: '',
-        userEmail: '',
-        joinId: '',
-        joinPw: '',
-        userName: '',
-        userPhoneNum: '',
-        userEmail: '',
+        userId: '',
+        password: '',
+        name: '',
+        telephone: '',
+        email: '',
       },
 
       errorRules: [(v) => !!v || '필수 항목입니다'],
@@ -125,6 +131,15 @@ export default {
     }
   },
   methods: {
+    addUser() {
+      this.$withLoading(
+        addUser(this.form)
+          .then((response) => {})
+          .catch((e) => {
+            this.$showError(e)
+          })
+      )
+    },
     //   duplicateId() {
     //     //아이디 중복확인
     //     const joinId = this.form.joinId
