@@ -78,12 +78,12 @@
       <v-timeline
         align-top
         :dense="isMobile ? true : false"
-        v-if="selectedRide?.meetingLocationList.length > 0"
+        v-if="hasMeetingLocations"
       >
         <v-timeline-item
           color="primary"
           small
-          v-for="(meetingLocation, index) in selectedRide?.meetingLocationList"
+          v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
           :key="index"
         >
           <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
@@ -150,6 +150,15 @@ export default {
       selectedAmPm: '오전',
       isMobile: false,
     }
+  },
+  computed: {
+    hasMeetingLocations() {
+      return (
+        this.selectedRide &&
+        this.selectedRide.meetingLocationList &&
+        this.selectedRide.meetingLocationList.length > 0
+      )
+    },
   },
   mounted() {
     this.getRideList(true)
