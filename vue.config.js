@@ -15,8 +15,8 @@ module.exports = defineConfig({
     port: 8080,
     proxy: {
       '/sunny': {
-        target: 'http://54.180.245.14:8084',
-        // target: 'http://localhost:8084',
+        target: 'http://54.180.245.14:8080',
+        // target: 'http://localhost:8080',
         changeOrigin: true,
         pathRewrite: {
           '^/sunny': '/sunny',
