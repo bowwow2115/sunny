@@ -160,6 +160,7 @@
       :headers="headers"
       :group-by="groupBy"
       :dense="true"
+      show-select
       item-key="id"
       no-data-text="등록된 원아가 존재하지 않습니다."
       class="elevation-1 mt-0 _mobile-table"
@@ -227,6 +228,13 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
+          <td>
+            <v-simple-checkbox
+              color="green"
+              :value="isSelected"
+              @input="select($event)"
+            ></v-simple-checkbox>
+          </td>
           <td class="text-no-wrap px-3">{{ item.name }}</td>
           <td class="text-no-wrap px-3">{{ item.admissionDate }}</td>
           <td class="text-no-wrap px-3">{{ item.className }}</td>
@@ -243,6 +251,11 @@
               <v-icon>ri-more-2-line</v-icon>
             </v-btn>
           </td>
+        </tr>
+      </template>
+      <template v-slot:body.append="{ headers }">
+        <tr>
+          <td :colspan="headers.length">{{ item }}</td>
         </tr>
       </template>
       <template v-slot:bottom>
@@ -304,7 +317,7 @@ export default {
       page: 1,
       itemsPerPage: -1,
       sortBy: 'name',
-      groupBy: '',
+      groupBy: null,
       //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
       headers: [
         { text: '이름', value: 'name' },
