@@ -762,7 +762,7 @@ export default {
           } else {
             this.$showMessage({
               type: 'success',
-              message: '해당원아가 존재하지 않습니다.',
+              message: '해당원아는 등록 가능합니다.',
             })
           }
         })

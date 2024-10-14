@@ -158,7 +158,10 @@
       :sort-by="sortBy"
       :sort-desc="sortDesc"
       :headers="headers"
+      :group-by="groupBy"
+      :dense="true"
       item-key="id"
+      no-data-text="등록된 원아가 존재하지 않습니다."
       class="elevation-1 mt-0 _mobile-table"
     >
       <template v-slot:top>
@@ -172,6 +175,21 @@
             prepend-inner-icon="ri-search-line"
             label="검색어를 입력하세요."
           ></v-text-field>
+          <v-select
+            v-model="groupBy"
+            flat
+            solo-inverted
+            hide-details
+            prepend-inner-icon="ri-sort-desc"
+            :items="[
+              { name: '반명', value: 'className' },
+              { name: '재원여부', value: 'status' },
+            ]"
+            item-text="name"
+            item-value="value"
+            label="집합 정렬할 기준을 선택해주세요."
+          >
+          </v-select>
           <!-- <v-select
             v-model="sortBy"
             flat
@@ -284,8 +302,9 @@ export default {
       filter: {},
       sortDesc: false,
       page: 1,
-      itemsPerPage: 15,
+      itemsPerPage: -1,
       sortBy: 'name',
+      groupBy: '',
       //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
       headers: [
         { text: '이름', value: 'name' },
