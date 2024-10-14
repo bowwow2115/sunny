@@ -57,17 +57,13 @@
               </td>
               <td>
                 {{
-                  childRide.child.parentList.length >= 2
-                    ? childRide.child.parentList[0].name +
-                      `(${childRide.child.parentList[0].telephone}, ${childRide.child.parentList[0].relation})`
-                    : ''
+                  `${childRide.child.parentList[0].telephone} (${childRide.child.parentList[0].relation})`
                 }}
               </td>
               <td>
                 {{
                   childRide.child.parentList.length >= 2
-                    ? childRide.child.parentList[1].name +
-                      `(${childRide.child.parentList[1].telephone}, ${childRide.child.parentList[1].relation})`
+                    ? `(${childRide.child.parentList[1].telephone}, ${childRide.child.parentList[1].relation})`
                     : ''
                 }}
               </td>
@@ -76,6 +72,9 @@
               </td>
             </tr>
           </tbody>
+          <tr>
+            <td>{{ `총 인원: ${selectedRide.count}` }}</td>
+          </tr>
         </template>
       </v-simple-table>
     </v-card>
@@ -106,14 +105,23 @@ export default {
           .then((response) => {
             if (response.code == '0') {
               this.rideList = response.data
-              response.data.forEach((item) => {
-                if (item.am) this.amRideList.push(item)
-                else this.pmRideList.push(item)
+              this.rideList.forEach((item) => {
+                let count = 0
+                item.meetingLocationList.forEach((meetingLocation) => {
+                  count += meetingLocation.childRideList.length
+                })
+                item.count = count
+                if (item.am) {
+                  item.name = '오전 ' + item.name
+                  this.amRideList.push(item)
+                } else {
+                  item.name = '오후 ' + item.name
+                  this.pmRideList.push(item)
+                }
               })
               this.selectedRide = this.rideList.find(
                 (ride) => ride.id == this.$route.query.id
               )
-              console.log(this.selectedRide)
             }
           })
           .catch((e) => {
