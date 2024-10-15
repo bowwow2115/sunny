@@ -191,71 +191,37 @@
             label="집합 정렬할 기준을 선택해주세요."
           >
           </v-select>
-          <!-- <v-select
-            v-model="sortBy"
-            flat
-            solo-inverted
-            hide-details
-            :items="keys"
-            item-text="name"
-            item-value="key"
-            prepend-inner-icon="ri-sort-desc"
-            label="정렬"
-            class="ml-2"
-          >
-          </v-select>
-          <v-btn
-            v-if="!sortDesc"
-            fab
-            depressed
-            small
-            color="primary"
-            @click="sortDesc = true"
-          >
-            <v-icon>ri-arrow-up-fill</v-icon>
-          </v-btn>
-          <v-btn
-            v-else
-            fab
-            depressed
-            small
-            color="primary"
-            @click="sortDesc = false"
-          >
-            <v-icon>ri-arrow-down-fill</v-icon>
-          </v-btn> -->
         </v-toolbar>
       </template>
-      <template v-slot:item="{ item }">
-        <tr>
-          <td>
-            <v-simple-checkbox
-              color="green"
-              :value="isSelected"
-              @input="select($event)"
-            ></v-simple-checkbox>
-          </td>
-          <td class="text-no-wrap px-3">{{ item.name }}</td>
-          <td class="text-no-wrap px-3">{{ item.admissionDate }}</td>
-          <td class="text-no-wrap px-3">{{ item.className }}</td>
-          <td class="px-3">
-            {{
-              (item.address.address || '') + (item.address.detailAddress || '')
-            }}
-          </td>
-          <td class="text-no-wrap px-3">{{ item.birthday }}</td>
-          <td class="text-no-wrap px-3">{{ item.status }}</td>
-          <td class="px-3">{{ item.parents }}</td>
-          <td>
-            <v-btn icon @click="openInfoDialog(item)">
-              <v-icon>ri-more-2-line</v-icon>
-            </v-btn>
-          </td>
-        </tr>
+      <!-- 클릭 시 노출 된 로우 전체클릭되게 -->
+      <template v-slot:header.data-table-select="{ on, props }">
+        <v-simple-checkbox
+          color="purple"
+          v-bind="props"
+          v-on="on"
+        ></v-simple-checkbox>
       </template>
-      <template v-slot:body.append="{ headers }">
+
+      <template v-slot:item.data-table-select="{ item }">
+        <v-checkbox
+          color="accent"
+          v-model="selectedRow"
+          :value="item.id"
+          hide-details
+        ></v-checkbox>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-btn icon @click="openInfoDialog(item)">
+          <v-icon>ri-more-2-line</v-icon>
+        </v-btn>
+      </template>
+
+      <template v-slot:body.append="{ headers, items }">
         <tr>
-          <td :colspan="headers.length">{{ item }}</td>
+          <td :colspan="headers.length">
+            {{ `총 ${items.length}건의 원아가 검색되었습니다.` }}
+          </td>
         </tr>
       </template>
       <template v-slot:bottom>
@@ -318,12 +284,13 @@ export default {
       itemsPerPage: -1,
       sortBy: 'name',
       groupBy: null,
+      selectedRow: [],
       //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
       headers: [
         { text: '이름', value: 'name' },
         { text: '입학일', value: 'admissionDate' },
         { text: '반명', value: 'className' },
-        { text: '주소', value: 'address.address' },
+        { text: '주소', value: 'address' },
         { text: '생일', value: 'birthday' },
         { text: '재원여부', value: 'status' },
         { text: '보호자', value: 'parents' },
@@ -333,7 +300,7 @@ export default {
         { key: 'name', name: '이름' },
         { key: 'admissionDate', name: '입학일' },
         { key: 'className', name: '반명' },
-        { key: 'address.address', name: '주소' },
+        { key: 'address', name: '주소' },
         { key: 'birthday', name: '생일' },
         { key: 'status', name: '재원여부' },
         { key: 'parents', name: '보호자' },
@@ -352,6 +319,12 @@ export default {
     // }, 안쓰게 됨? (확인해줘)
   },
   methods: {
+    showSelectedRow() {
+      console.log(this.selectedRow)
+    },
+    selectRows(items) {
+      console.log(items)
+    },
     getAllChildren() {
       this.$withLoading(
         getAllChildren()
@@ -363,7 +336,8 @@ export default {
                   parentNameList += parent.name + ' '
                 })
                 element.parents = parentNameList
-                // element.address = `${element.address.address} ${element.address.detailAddress}`
+                element.actions = null
+                element.address = `${element.address.address} ${element.address.detailAddress}`
                 // element.status = element.status ? '재원' : '졸업 or 퇴원'
               })
               this.childrenList = response.data
