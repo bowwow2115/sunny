@@ -164,6 +164,7 @@
       item-key="id"
       no-data-text="등록된 원아가 존재하지 않습니다."
       class="elevation-1 mt-0 _mobile-table"
+      hide-default-footer
     >
       <template v-slot:top>
         <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
@@ -224,14 +225,18 @@
           </td>
         </tr>
       </template>
-      <template v-slot:bottom>
-        <v-row class="justify-space-between">
+      <template v-slot:footer>
+        <v-row style="padding: 5px">
           <v-col>
-            <v-menu offset-y>
+            <v-btn type="button" class="font-weight-bold" color="accent"
+              >반 변경</v-btn
+            >
+          </v-col>
+          <v-col class="d-flex align-center justify-end">
+            <v-menu style="margin-right: 10px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn text outlined v-bind="attrs" v-on="on">
-                  목록 더보기
-                  {{ itemsPerPage }}
+                  {{ itemsPerPage == -1 ? '모두' : itemsPerPage + '명씩 보기' }}
                   <v-icon>ri-arrow-down-s-fill</v-icon>
                 </v-btn>
               </template>
@@ -241,12 +246,12 @@
                   :key="index"
                   @click="updateItemsPerPage(number)"
                 >
-                  <v-list-item-title>{{ number }}</v-list-item-title>
+                  <v-list-item-title>{{
+                    number == -1 ? '모두' : number
+                  }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
-          </v-col>
-          <v-col class="d-flex align-center justify-end">
             <div>
               <v-btn fab small depressed @click="formerPage">
                 <v-icon>ri-arrow-left-s-line</v-icon>
@@ -276,7 +281,7 @@ export default {
   data() {
     return {
       childrenList: [],
-      itemsPerPageArray: [15, 20, 25],
+      itemsPerPageArray: [20, 30, 40, 50, -1],
       search: '',
       filter: {},
       sortDesc: false,
@@ -290,7 +295,7 @@ export default {
         { text: '이름', value: 'name' },
         { text: '입학일', value: 'admissionDate' },
         { text: '반명', value: 'className' },
-        { text: '주소', value: 'address' },
+        { text: '주소', value: 'addressName' },
         { text: '생일', value: 'birthday' },
         { text: '재원여부', value: 'status' },
         { text: '보호자', value: 'parents' },
@@ -300,7 +305,7 @@ export default {
         { key: 'name', name: '이름' },
         { key: 'admissionDate', name: '입학일' },
         { key: 'className', name: '반명' },
-        { key: 'address', name: '주소' },
+        { key: 'addressName', name: '주소' },
         { key: 'birthday', name: '생일' },
         { key: 'status', name: '재원여부' },
         { key: 'parents', name: '보호자' },
@@ -309,21 +314,17 @@ export default {
   },
   computed: {
     numberOfPages() {
-      return Math.ceil(this.childrenList.length / this.itemsPerPage)
+      return Math.ceil(
+        this.childrenList.length /
+          (this.itemsPerPage == -1
+            ? this.childrenList.length
+            : this.itemsPerPage)
+      )
     },
-    // filteredKeys() {
-    //   return this.keys.filter((item) => item.key !== 'name')
-    // },
-    // sortByNameList() {
-    //   return this.keys.map((item) => item.name)
-    // }, 안쓰게 됨? (확인해줘)
   },
   methods: {
     showSelectedRow() {
       console.log(this.selectedRow)
-    },
-    selectRows(items) {
-      console.log(items)
     },
     getAllChildren() {
       this.$withLoading(
@@ -337,7 +338,7 @@ export default {
                 })
                 element.parents = parentNameList
                 element.actions = null
-                element.address = `${element.address.address} ${element.address.detailAddress}`
+                element.addressName = `${element.address.address} ${element.address.detailAddress}`
                 // element.status = element.status ? '재원' : '졸업 or 퇴원'
               })
               this.childrenList = response.data
@@ -392,22 +393,6 @@ export default {
     updateItemsPerPage(number) {
       this.itemsPerPage = number
     },
-    // keyToName(key) {
-    //   switch (key) {
-    //     case 'name':
-    //       return '이름'
-    //     case 'admissionDate':
-    //       return '입학일'
-    //     case 'className':
-    //       return '반명'
-    //     case 'address':
-    //       return '주소'
-    //     case 'birthday':
-    //       return '생일'
-    //     case 'status':
-    //       return '재원여부'
-    //   }
-    // }, 안쓰게 됨? (확인해줘)
   },
 }
 </script>

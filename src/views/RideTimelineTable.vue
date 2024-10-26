@@ -28,9 +28,12 @@
               <th class="text-left">원아</th>
               <th class="text-left">보호자1</th>
               <th class="text-left">보호자2</th>
-              <th class="text-left">
-                <v-icon>mdi-checkbox-marked</v-icon>
-              </th>
+              <th class="text-left">요일</th>
+              <!-- <th class="text-left" style="padding: 0">월</th>
+              <th class="text-left" style="padding: 0">화</th>
+              <th class="text-left" style="padding: 0">수</th>
+              <th class="text-left" style="padding: 0">목</th>
+              <th class="text-left" style="padding: 0">금</th> -->
             </tr>
           </thead>
           <tbody
@@ -67,13 +70,28 @@
                     : ''
                 }}
               </td>
-              <td>
+              <td><pre>월   화   수   목   금</pre></td>
+              <!-- <td style="padding: 0">
                 <v-simple-checkbox></v-simple-checkbox>
               </td>
+              <td style="padding: 0">
+                <v-simple-checkbox></v-simple-checkbox>
+              </td>
+              <td style="padding: 0">
+                <v-simple-checkbox></v-simple-checkbox>
+              </td>
+              <td style="padding: 0">
+                <v-simple-checkbox></v-simple-checkbox>
+              </td>
+              <td style="padding: 0">
+                <v-simple-checkbox></v-simple-checkbox>
+              </td> -->
             </tr>
           </tbody>
           <tr>
-            <td>{{ `총 인원: ${selectedRide.count}` }}</td>
+            <td>
+              <strong>{{ `총 인원: ${selectedRide.count}` }}</strong>
+            </td>
           </tr>
         </template>
       </v-simple-table>
@@ -105,9 +123,9 @@ export default {
           .then((response) => {
             if (response.code == '0') {
               this.rideList = response.data
-              this.rideList.forEach((item) => {
+              this.rideList?.forEach((item) => {
                 let count = 0
-                item.meetingLocationList.forEach((meetingLocation) => {
+                item.meetingLocationList?.forEach((meetingLocation) => {
                   count += meetingLocation.childRideList.length
                 })
                 item.count = count
