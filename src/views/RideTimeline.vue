@@ -75,11 +75,7 @@
       </v-img>
     </v-card>
     <v-card-text class="py-0">
-      <v-timeline
-        align-top
-        :dense="isMobile ? true : false"
-        v-if="hasMeetingLocations"
-      >
+      <v-timeline align-top dense v-if="hasMeetingLocations">
         <v-timeline-item
           color="primary"
           small

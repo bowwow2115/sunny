@@ -142,17 +142,16 @@
               </v-menu>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item></v-list-item>
           <!-- 주소 -->
           <v-list-item class="pl-0 _list-half-not">
             <v-list-item-icon class="my-4 mx-3">
               <span class="_list-icon">주소</span>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item>
+          <v-list-item class="pl-0">
             <v-list-item-content>
               <v-row>
-                <v-col cols="8">
+                <v-col cols="6">
                   <v-text-field
                     v-model="form.address.zipCode"
                     label="우편번호"
@@ -161,7 +160,7 @@
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="6">
                   <v-btn
                     type="button"
                     class="text-body-1 font-weight-bold label-with-btn"

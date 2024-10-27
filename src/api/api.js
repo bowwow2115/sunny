@@ -410,3 +410,10 @@ export function deleteRide(id) {
 export function addUser(param) {
   return post2(`${constants.CONTEXT_PATH}/user`, param)
 }
+
+export function updateChildrenClass(param, className) {
+  return put(
+    `${constants.CONTEXT_PATH}/child/all/class?className=${className}`,
+    param
+  )
+}
