@@ -151,6 +151,7 @@
   <div>
     <child-more-info ref="childMoreInfo"></child-more-info>
     <v-data-table
+      v-model="selectedRow"
       :items="childrenList"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
@@ -194,23 +195,6 @@
           </v-select>
         </v-toolbar>
       </template>
-      <!-- 클릭 시 노출 된 로우 전체클릭되게 -->
-      <template v-slot:header.data-table-select="{ on, props }">
-        <v-simple-checkbox
-          color="purple"
-          v-bind="props"
-          v-on="on"
-        ></v-simple-checkbox>
-      </template>
-
-      <template v-slot:item.data-table-select="{ item }">
-        <v-checkbox
-          color="accent"
-          v-model="selectedRow"
-          :value="item.id"
-          hide-details
-        ></v-checkbox>
-      </template>
 
       <template v-slot:item.actions="{ item }">
         <v-btn icon @click="openInfoDialog(item)">
@@ -228,7 +212,11 @@
       <template v-slot:footer>
         <v-row style="padding: 5px">
           <v-col>
-            <v-btn type="button" class="font-weight-bold" color="accent"
+            <v-btn
+              type="button"
+              class="font-weight-bold"
+              color="accent"
+              @click="openChangeClassDialog"
               >반 변경</v-btn
             >
           </v-col>
@@ -273,6 +261,7 @@
 <script>
 import { getAllChildren } from '@/api/api'
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
+import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
 export default {
   name: 'ChildrenList',
   mounted() {
@@ -309,6 +298,7 @@ export default {
         { key: 'birthday', name: '생일' },
         { key: 'status', name: '재원여부' },
         { key: 'parents', name: '보호자' },
+        { key: 'id', name: 'id' },
       ],
     }
   },
@@ -323,8 +313,23 @@ export default {
     },
   },
   methods: {
-    showSelectedRow() {
-      console.log(this.selectedRow)
+    async openChangeClassDialog() {
+      if (this.selectedRow.length == 0) {
+        this.$showMessage({
+          type: 'warning',
+          message: '선택된 원아가 없습니다.',
+        })
+        return
+      }
+
+      const result = await this.$dialog(ChangeClassDialog, this.selectedRow)
+      if (result) {
+        this.$showMessage({
+          type: 'success',
+          message: '성공적으로 변경했습니다.',
+        })
+        this.getAllChildren()
+      }
     },
     getAllChildren() {
       this.$withLoading(
