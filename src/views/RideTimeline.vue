@@ -4,17 +4,18 @@
       <v-img
         v-if="selectedAmPm == '오전'"
         src="@/assets/images/morning.webp"
+        max-height="125px"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
         <v-container class="fill-height pa-4">
           <v-row class="justify-center">
-            <v-col cols="12" sm="3" md="4" lg="3">
+            <v-col cols="3" xs="3" sm="3" md="4" lg="3">
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
               ></v-select>
             </v-col>
-            <v-col cols="12" sm="9" md="8" lg="6">
+            <v-col cols="9" xs="9" sm="9" md="8" lg="6">
               <v-select
                 v-model="selectedRide"
                 :items="selectedAmPm == '오전' ? amRideList : pmRideList"
@@ -40,17 +41,18 @@
       <v-img
         v-if="selectedAmPm == '오후'"
         src="@/assets/images/sunset.webp"
+        max-height="125px"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
         <v-container class="fill-height pa-4">
           <v-row class="justify-center">
-            <v-col cols="12" sm="3" md="4" lg="3">
+            <v-col cols="3" xs="3" sm="3" md="4" lg="3">
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
               ></v-select>
             </v-col>
-            <v-col cols="12" sm="9" md="8" lg="6">
+            <v-col cols="9" xs="9" sm="9" md="8" lg="6">
               <v-select
                 v-model="selectedRide"
                 :items="selectedAmPm == '오전' ? amRideList : pmRideList"
@@ -92,30 +94,41 @@
                 {{ meetingLocation.time }}
                 <p>
                   {{ `${meetingLocation.name}` }}
-                  <small>{{ `(${meetingLocation.comment})` }}</small>
+                  <small>{{
+                    meetingLocation.comment
+                      ? `(${meetingLocation.comment})`
+                      : ''
+                  }}</small>
                 </p>
               </h3>
-              <v-btn
-                icon
-                color="success"
-                @click="openMeetingLocationMoreInfo(meetingLocation)"
-              >
-                <v-icon>ri-edit-2-fill</v-icon>
-              </v-btn>
             </v-card-title>
-            <V-card-text class="pa-4">
-              <v-chip
-                v-for="(childRide, j) in meetingLocation.childRideList"
-                :key="j"
-                @click="openParentsDialog(meetingLocation.childRideList)"
-              >
-                <b class="mr-1">{{ `${childRide.child.name}` }}</b>
-                <span>{{ `(${childRide.child.className})` }}</span>
-                <span class="_comment ml-1">{{
-                  `${childRide.comment || ''}`
-                }}</span>
-              </v-chip>
-            </V-card-text>
+            <v-card-text class="pa-4" style="color: #f1f1f1">
+              <v-row>
+                <v-col cols="1">
+                  <v-btn
+                    icon
+                    color="success"
+                    @click="openMeetingLocationMoreInfo(meetingLocation)"
+                  >
+                    <v-icon>ri-edit-2-fill</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="11">
+                  <v-chip
+                    v-for="(childRide, j) in meetingLocation.childRideList"
+                    :key="j"
+                    @click="openParentsDialog(meetingLocation.childRideList)"
+                    color="amber lighten-1"
+                  >
+                    <b class="mr-1">{{ `${childRide.child.name}` }}</b>
+                    <span>{{ `(${childRide.child.className})` }}</span>
+                    <span class="_comment ml-1">{{
+                      `${childRide.comment || ''}`
+                    }}</span>
+                  </v-chip>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
         </v-timeline-item>
       </v-timeline>
