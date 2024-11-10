@@ -333,7 +333,8 @@ input[type='checkbox'] {
     border-top: none;
     .v-chip {
       margin: 0.2rem;
-      background: var(--v-info-lighten5) !important;
+      background: var(--v-accent-lighten4) !important;
+      font-size: 0.9em;
       ._comment {
         color: var(--v-accent-base);
       }
