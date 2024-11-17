@@ -1,56 +1,46 @@
 <template>
-  <v-dialog v-model="visible" max-width="400px">
-    <v-card>
-      <v-toolbar color="primary" dark>
-        <v-toolbar-title> 보호자 정보 </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon dark @click="cancel">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-list>
+  <v-dialog v-model="visible">
+    <v-card class="pa-2">
+      <v-card-title class="title">보호자 정보</v-card-title>
+      <v-list class="pa-0">
         <div v-if="form.childRideList.length != 0">
           <v-list-group
             :value="index == 0 ? true : false"
-            prepend-icon="mdi-human-male-female-child"
+            prepend-icon="ri-parent-fill"
             :no-action="true"
             v-for="(childRide, index) in form.childRideList"
             :key="index"
           >
             <template v-slot:activator>
-              <v-list-item-subtitle>{{
+              <v-list-item-title>{{
                 `${childRide.child.name}의 보호자 정보`
-              }}</v-list-item-subtitle>
+              }}</v-list-item-title>
             </template>
             <div v-if="childRide.child.parentList.length != 0">
               <v-list-item-group
                 v-for="(parents, j) in childRide.child.parentList"
                 :key="j"
+                class="ml-14"
               >
-                <v-list-item style="padding-left: 15%; padding-right: 8%">
+                <v-list-item>
                   <v-list-item-icon>
-                    <v-icon>mdi-account</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ parents.name }}</v-list-item-title>
-                    <v-list-item-subtitle>{{
+                    <span class="_list-icon _list-icon-ko">{{
                       parents.relation
-                    }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item style="padding-left: 15%; padding-right: 8%">
-                  <v-list-item-icon>
-                    <v-icon
-                      color="green"
-                      v-clipboard:copy="parents.telephone"
-                      v-clipboard:success="phoneCall"
-                      >mdi-phone</v-icon
-                    >
+                    }}</span>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{
-                      parents.telephone
-                    }}</v-list-item-title>
+                    <v-list-item-title class="_list-title-with-sub"
+                      >{{ parents.name }}
+                      <span>
+                        <v-icon
+                          color="gray"
+                          v-clipboard:copy="parents.telephone"
+                          v-clipboard:success="phoneCall"
+                          >ri-phone-fill</v-icon
+                        >
+                        {{ parents.telephone }}
+                      </span>
+                    </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
                 <v-divider
@@ -58,7 +48,7 @@
                 ></v-divider>
               </v-list-item-group>
             </div>
-            <v-list-item v-else style="padding-left: 15%; padding-right: 8%">
+            <v-list-item v-else>
               <v-list-item-icon>
                 <v-icon>mdi-information-off</v-icon>
               </v-list-item-icon>
@@ -81,6 +71,9 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-card-actions class="flex-wrap justify-end py-4 px-6">
+        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
