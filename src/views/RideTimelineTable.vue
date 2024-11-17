@@ -1,5 +1,5 @@
 <template>
-  <v-container style="background: white !important; background-color: white">
+  <div class="_print-paper">
     <v-card>
       <v-card-title>
         <v-select
@@ -14,89 +14,88 @@
             (ride.comment ? ` 비고사항: ${ride.comment}` : '')
           }}</strong> -->
         </v-select>
-        <v-btn height="28" onClick="window.print()"
-          ><v-icon>mdi-printer</v-icon></v-btn
+        <v-btn
+          onClick="window.print()"
+          color="black"
+          class="ml-4 font-weight-regular"
+          ><v-icon color="#fff">ri-printer-line</v-icon></v-btn
         >
       </v-card-title>
-      <v-simple-table dense>
+      <v-simple-table dense fixed-header class="_print-ride-table">
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">장소</th>
-              <th class="text-left">시간</th>
-              <th class="text-left">비고</th>
-              <th class="text-left">원아</th>
-              <th class="text-left">보호자1</th>
-              <th class="text-left">보호자2</th>
-              <th class="text-left">요일</th>
-              <!-- <th class="text-left" style="padding: 0">월</th>
-              <th class="text-left" style="padding: 0">화</th>
-              <th class="text-left" style="padding: 0">수</th>
-              <th class="text-left" style="padding: 0">목</th>
-              <th class="text-left" style="padding: 0">금</th> -->
+              <th>장소</th>
+              <th>시간</th>
+              <th>비고</th>
+              <th>원아</th>
+              <th>보호자1</th>
+              <th>보호자2</th>
+              <th>요일</th>
             </tr>
           </thead>
           <tbody
             v-for="(meetingLocation, j) in selectedRide.meetingLocationList"
             :key="j"
           >
-            <tr>
-              <td>{{ meetingLocation.name }}</td>
-              <td>{{ meetingLocation.time }}</td>
-              <td>{{ meetingLocation.comment }}</td>
-              <!-- <td></td>
-              <td></td>
-              <td></td> -->
-            </tr>
             <tr
               v-for="(childRide, k) in meetingLocation.childRideList"
               :key="k"
             >
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                {{ `${childRide.child.name}(${childRide.child.className})` }}
+              <!-- 첫 번째 childRide에만 부모 데이터 출력 -->
+              <template v-if="k === 0">
+                <td
+                  :rowspan="meetingLocation.childRideList.length"
+                  class="_rt-lo"
+                >
+                  <v-icon>ri-map-pin-fill</v-icon>
+                  {{ meetingLocation.name }}
+                </td>
+                <td
+                  :rowspan="meetingLocation.childRideList.length"
+                  class="_rt-da"
+                >
+                  {{ meetingLocation.time }}
+                </td>
+                <td
+                  :rowspan="meetingLocation.childRideList.length"
+                  class="_rt-co"
+                >
+                  {{ meetingLocation.comment }}
+                </td>
+              </template>
+              <td class="py-2">
+                {{ `${childRide.child.name} (${childRide.child.className})` }}
               </td>
-              <td>
+              <td class="py-2">
                 {{
                   `${childRide.child.parentList[0].telephone} (${childRide.child.parentList[0].relation})`
                 }}
               </td>
-              <td>
+              <td class="py-2">
                 {{
                   childRide.child.parentList.length >= 2
-                    ? `(${childRide.child.parentList[1].telephone}, ${childRide.child.parentList[1].relation})`
+                    ? `${childRide.child.parentList[1].telephone} (${childRide.child.parentList[1].relation})`
                     : ''
                 }}
               </td>
-              <td><pre>월   화   수   목   금</pre></td>
-              <!-- <td style="padding: 0">
-                <v-simple-checkbox></v-simple-checkbox>
+              <td class="py-2">
+                <div class="_rt-day">
+                  <span>월</span><span>화</span><span>수</span><span>목</span
+                  ><span>금</span>
+                </div>
               </td>
-              <td style="padding: 0">
-                <v-simple-checkbox></v-simple-checkbox>
-              </td>
-              <td style="padding: 0">
-                <v-simple-checkbox></v-simple-checkbox>
-              </td>
-              <td style="padding: 0">
-                <v-simple-checkbox></v-simple-checkbox>
-              </td>
-              <td style="padding: 0">
-                <v-simple-checkbox></v-simple-checkbox>
-              </td> -->
             </tr>
           </tbody>
           <tr>
-            <td>
+            <td colspan="7" class="_rt-total">
               <strong>{{ `총 인원: ${selectedRide.count}` }}</strong>
             </td>
           </tr>
         </template>
       </v-simple-table>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -156,37 +155,94 @@ body {
   margin: 0;
   padding: 0;
 }
+/* ********** print 인쇄 스타일 ********** */
+._print-paper {
+  display: block;
+  margin: 1rem 10%;
+}
+._print-ride-table {
+  tbody:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  tr {
+    transition: 0.2s;
+  }
+  tr:hover {
+    background-color: var(--v-secondary-lighten5) !important;
+  }
+  ._rt-lo,
+  ._rt-da,
+  ._rt-co {
+    border-bottom: none !important;
+  }
+  ._rt-lo {
+    font-weight: 600;
+    word-break: auto-phrase;
+  }
+  ._rt-day {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: thin solid rgba(0, 0, 0, 0.12);
+      font-size: 0.8em;
+      width: 25px;
+      height: 25px;
+      border-radius: 100%;
+    }
+  }
+  .v-icon.v-icon {
+    font-size: 1.2em;
+    opacity: 0.8;
+  }
+  ._rt-total {
+    background: none;
+    color: unset;
+    border-top: thin solid rgba(0, 0, 0, 0.87);
+    text-align: center;
+    padding: 10px;
+  }
+}
 
 /* 인쇄 시 A4 크기로 설정 */
 @media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   @page {
     size: A4; /* A4 크기 설정 */
-    margin: 20mm; /* 용지 여백 설정 (20mm 권장) */
+    margin: 5mm; /* 용지 여백 설정 (20mm 권장) */
   }
 
   /* 페이지에 맞게 레이아웃 설정 */
   html,
   body {
-    width: 210mm; /* A4 너비 */
-    height: 297mm; /* A4 높이 */
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
   }
-
-  /* 인쇄 영역에 대한 레이아웃 설정 */
-  .container {
-    zoom: 0.75 !important; /* 80% 크기로 축소 */
-    font-size: 12px !important; /* 인쇄할 때 전체 폰트 크기 축소 */
-    width: 100%;
-    height: 100%;
-    padding: 10mm; /* 여백 설정 */
+  ._print-paper {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto;
+    padding: 0;
     box-sizing: border-box;
   }
-
-  h1 {
-    font-size: 1.5rem; /* 인쇄 시 큰 제목 크기 축소 */
+  ._print-ride-table {
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    td {
+      font-size: 12px !important;
+    }
   }
-
-  p {
-    font-size: 0.8rem; /* 본문 폰트도 축소 */
+  .v-btn {
+    display: none !important;
   }
 }
 </style>

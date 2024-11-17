@@ -4,131 +4,124 @@
       <v-img
         v-if="selectedAmPm == '오전'"
         src="@/assets/images/morning.webp"
-        max-height="125px"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
-        <v-container class="fill-height pa-4">
-          <v-row class="justify-center">
-            <v-col cols="3" xs="3" sm="3" md="4" lg="3">
+        <v-container class="pa-6">
+          <div class="_timeline-top">
+            <div class="_timeline-select">
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
               ></v-select>
-            </v-col>
-            <v-col cols="9" xs="9" sm="9" md="8" lg="6">
               <v-select
                 v-model="selectedRide"
                 :items="selectedAmPm == '오전' ? amRideList : pmRideList"
                 item-text="name"
                 return-object
               ></v-select>
-            </v-col>
-          </v-row>
-          <div class="_btn-grp flex-nowrap">
-            <v-btn @click="openRideTable()" class="font-weight-light">
-              <v-icon>ri-printer-line</v-icon></v-btn
-            >
-            <v-btn
-              @click="openAddMeetingLocationDialog(selectedRide)"
-              color="accent"
-              class="ml-1"
-            >
-              <v-icon>ri-add-line</v-icon>
-            </v-btn>
+            </div>
+            <div class="_btn-grp flex-nowrap">
+              <v-btn
+                @click="openRideTable()"
+                color="black"
+                class="font-weight-regular"
+              >
+                <v-icon>ri-printer-line</v-icon></v-btn
+              >
+              <v-btn
+                @click="openAddMeetingLocationDialog(selectedRide)"
+                color="accent"
+                class="ml-1 font-weight-regular"
+              >
+                <v-icon>ri-add-line</v-icon>
+              </v-btn>
+            </div>
           </div>
         </v-container>
       </v-img>
       <v-img
         v-if="selectedAmPm == '오후'"
         src="@/assets/images/sunset.webp"
-        max-height="125px"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
-        <v-container class="fill-height pa-4">
-          <v-row class="justify-center">
-            <v-col cols="3" xs="3" sm="3" md="4" lg="3">
+        <v-container class="pa-6">
+          <div class="_timeline-top">
+            <div class="_timeline-select">
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
               ></v-select>
-            </v-col>
-            <v-col cols="9" xs="9" sm="9" md="8" lg="6">
               <v-select
                 v-model="selectedRide"
                 :items="selectedAmPm == '오전' ? amRideList : pmRideList"
                 item-text="name"
                 return-object
               ></v-select>
-            </v-col>
-          </v-row>
-          <div class="_btn-grp flex-nowrap">
-            <v-btn @click="openRideTable()" class="font-weight-light">
-              <v-icon>ri-printer-line</v-icon></v-btn
-            >
-            <v-btn
-              @click="openAddMeetingLocationDialog(selectedRide)"
-              color="accent"
-              class="ml-1"
-            >
-              <v-icon>ri-add-line</v-icon>
-            </v-btn>
+            </div>
+            <div class="_btn-grp flex-nowrap">
+              <v-btn @click="openRideTable()" class="font-weight-light">
+                <v-icon>ri-printer-line</v-icon></v-btn
+              >
+              <v-btn
+                @click="openAddMeetingLocationDialog(selectedRide)"
+                color="accent"
+                class="ml-1"
+              >
+                <v-icon>ri-add-line</v-icon>
+              </v-btn>
+            </div>
           </div>
         </v-container>
       </v-img>
     </v-card>
-    <v-card-text class="py-0">
-      <v-timeline align-top dense v-if="hasMeetingLocations">
+    <v-card-text>
+      <v-timeline
+        dense
+        v-if="selectedRide?.meetingLocationList.length > 0"
+        class="pt-0"
+      >
         <v-timeline-item
-          color="primary"
+          class="py-0"
+          :color="selectedAmPm == '오전' ? 'tertiary' : 'info'"
           small
-          v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
+          v-for="(meetingLocation, index) in selectedRide?.meetingLocationList"
           :key="index"
         >
           <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
           <v-card
-            class="_timeline-card"
-            :style="isMobile ? 'flex-direction: row; text-align: left' : ''"
+            :class="selectedAmPm == '오전' ? '_am-card' : '_pm-card'"
+            class="_timeline-card py-4"
+            flat
           >
-            <v-card-title :style="isMobile ? 'align-items: flex-start;' : ''">
+            <v-card-title class="py-0">
               <h3>
                 {{ meetingLocation.time }}
-                <p>
-                  {{ `${meetingLocation.name}` }}
-                  <small>{{
-                    meetingLocation.comment
-                      ? `(${meetingLocation.comment})`
-                      : ''
-                  }}</small>
-                </p>
               </h3>
+              <v-btn icon @click="openMeetingLocationMoreInfo(meetingLocation)">
+                <v-icon>ri-edit-2-fill</v-icon>
+              </v-btn>
+              <p>
+                {{ `${meetingLocation.name}` }}
+                <small>{{
+                  meetingLocation.comment == null
+                    ? ''
+                    : `(${meetingLocation.comment})`
+                }}</small>
+              </p>
             </v-card-title>
-            <v-card-text class="pa-4" style="color: #f1f1f1">
-              <v-row>
-                <v-col cols="1">
-                  <v-btn
-                    icon
-                    color="success"
-                    @click="openMeetingLocationMoreInfo(meetingLocation)"
-                  >
-                    <v-icon>ri-edit-2-fill</v-icon>
-                  </v-btn>
-                </v-col>
-                <v-col cols="11">
-                  <v-chip
-                    v-for="(childRide, j) in meetingLocation.childRideList"
-                    :key="j"
-                    @click="openParentsDialog(meetingLocation.childRideList)"
-                    color="amber lighten-1"
-                  >
-                    <b class="mr-1">{{ `${childRide.child.name}` }}</b>
-                    <span>{{ `(${childRide.child.className})` }}</span>
-                    <span class="_comment ml-1">{{
-                      `${childRide.comment || ''}`
-                    }}</span>
-                  </v-chip>
-                </v-col>
-              </v-row>
-            </v-card-text>
+            <V-card-text class="py-0">
+              <v-chip
+                v-for="(childRide, j) in meetingLocation.childRideList"
+                :key="j"
+                @click="openParentsDialog(meetingLocation.childRideList)"
+              >
+                <b class="mr-1">{{ `${childRide.child.name}` }}</b>
+                <span>{{ `(${childRide.child.className})` }}</span>
+                <span class="_comment ml-1">{{
+                  `${childRide.comment || ''}`
+                }}</span>
+              </v-chip>
+            </V-card-text>
           </v-card>
         </v-timeline-item>
       </v-timeline>
@@ -159,15 +152,6 @@ export default {
       selectedAmPm: '오전',
       isMobile: false,
     }
-  },
-  computed: {
-    hasMeetingLocations() {
-      return (
-        this.selectedRide &&
-        this.selectedRide.meetingLocationList &&
-        this.selectedRide.meetingLocationList.length > 0
-      )
-    },
   },
   mounted() {
     this.getRideList(true)
