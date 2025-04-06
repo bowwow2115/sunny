@@ -77,7 +77,7 @@
     <v-card-text>
       <v-timeline
         dense
-        v-if="selectedRide?.meetingLocationList.length > 0"
+        v-if="selectedRide?.meetingLocationList?.length > 0"
         class="pt-0"
       >
         <v-timeline-item
