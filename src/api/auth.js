@@ -4,21 +4,19 @@ import * as api from '@/api/api'
 import constants from '@/Constants'
 
 function parseToken(result, reset = false) {
-  if (result.data) {
-    let ticketId = result.data.accessToken
-    if (ticketId) {
-      Utils.setCookie('auth', ticketId, 3600 * 24, '/')
+  // result = { code: '0', data: { accessToken, refreshToken, ... } }
+  // 또는 result = { accessToken, refreshToken, ... }
+  const tokenData = result.data || result
+
+  if (tokenData && tokenData.accessToken) {
+    Utils.setCookie('auth', tokenData.accessToken, 3600 * 24, '/')
+    if (tokenData.refreshToken) {
       Utils.setCookie(
         'refreshToken',
-        result.data.refreshToken,
+        tokenData.refreshToken,
         3600 * 24 * 30,
         '/'
       )
-
-      // const user = result.data
-
-      // store.commit('setUser', user)
-      // store.commit('setTicket', ticketId)
     }
   }
 }
@@ -28,31 +26,30 @@ function loggedIn() {
     let url = ''
     const sid = Utils.getCookie(constants.TOKEN)
     if (sid != null && sid !== '')
-      url = `${constants.CONTEXT_PATH}/auth/validation?sid=${sid}`
+      url = `${constants.CONTEXT_PATH}/auth/validation`
     if (url !== '') {
       api
-        .ax()
-        .get(url)
+        .get(url, { sid })
         .then((response) => {
           console.log('loggedIn Check : ', response)
           //parseToken(response.data, true);
-          if (response.data.code == '0') {
-            if (response.data.data[0].authority == 'ROLE_ADMIN') {
+          if (response.code == '0') {
+            if (response.data[0].authority == 'ROLE_ADMIN') {
               store.commit('SET_ADMIN', true)
             }
             if (
-              response.data.data[1].userId != null ||
-              response.data.data[1].userId != undefined
+              response.data[1].userId != null ||
+              response.data[1].userId != undefined
             ) {
-              store.commit('SET_USERID', response.data.data[1].userId)
+              store.commit('SET_USERID', response.data[1].userId)
             }
-            resolve(response.data)
-          } else if (response.data.code == 'EXPIRED-TOKEN') {
+            resolve(response)
+          } else if (response.code == 'EXPIRED-TOKEN') {
             const refreshToken = Utils.getCookie('refreshToken')
             let param = {}
             param.refreshToken = refreshToken
             api.refreshToken(param).then((response) => {
-              if (response.data.code == '0') resolve(response.data)
+              if (response.code == '0') resolve(response)
               else {
                 Utils.deleteCookie('auth', '/')
                 Utils.deleteCookie('lang')
@@ -81,10 +78,9 @@ function renewJWT() {
     url = '/auth/json/jwt/renew'
     if (url !== '') {
       api
-        .ax()
         .get(url)
         .then((response) => {
-          parseToken(response.data, true)
+          parseToken(response, true)
           resolve()
         })
         .catch((error) => {
@@ -99,7 +95,7 @@ function renewJWT() {
 function login(form) {
   return new Promise((resolve, reject) => {
     api
-      .post2(`${constants.CONTEXT_PATH}/login`, form)
+      .post(`${constants.CONTEXT_PATH}/login`, form)
       .then((r) => {
         console.log('login call : ', r)
         if (r.code != '0') {
@@ -145,7 +141,7 @@ function resetPwdate(user) {
 
   return new Promise((resolve, reject) => {
     api
-      .post2(`${constants.CONTEXT_PATH}/resetPwdate`, data)
+      .post(`${constants.CONTEXT_PATH}/resetPwdate`, data)
       .then((r) => {
         resolve(r)
       })
@@ -177,7 +173,7 @@ function changePassword(passwordForm) {
 
   return new Promise((resolve, reject) => {
     api
-      .postUrl(`${constants.CONTEXT_PATH}/changePw`, jQuery.param(data), false)
+      .post(`${constants.CONTEXT_PATH}/changePw`, jQuery.param(data))
       .then((r) => {
         resolve(r)
       })
