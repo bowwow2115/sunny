@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { getBirthMonthChlid } from '@/api/api'
+import { getBirthMonthChild } from '@/api/api'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
 import ManageClassDialog from '@/components/admin/ClassDialog.vue'
 import ManageUserDialog from '@/components/admin/UserDialog.vue'
@@ -179,7 +179,7 @@ export default {
     }
   },
   mounted() {
-    this.getBirthMonthChlid()
+    this.getBirthMonthChild()
     this.getCurrentMonth()
 
     console.log(this.isAdmin)
@@ -194,8 +194,8 @@ export default {
     async openManageRideDialog() {
       await this.$dialog(ManageRideDialog, null)
     },
-    getBirthMonthChlid() {
-      getBirthMonthChlid()
+    getBirthMonthChild() {
+      getBirthMonthChild()
         .then((response) => {
           if (response.code === '0') {
             this.birthMonthChildList = response.data

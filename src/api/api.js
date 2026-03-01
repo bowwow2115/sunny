@@ -2,418 +2,233 @@ import axios from 'axios'
 import Utils from '@/utils/utils'
 import constants from '@/Constants'
 
-export function ax(contentType = null) {
-  let headers = {}
-  headers = { Authorization: `Bearer ${Utils.getToken()}` }
+// Axios 인스턴스 생성
+function createAxiosInstance(contentType = null) {
+  const headers = {
+    Authorization: `Bearer ${Utils.getToken()}`,
+    Pragma: 'no-cache',
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-TenantID': Utils.getTenant(),
+  }
   if (contentType) headers['Content-Type'] = contentType
-  headers.Pragma = 'no-cache'
-  headers['X-Requested-With'] = 'XMLHttpRequest'
-  headers['X-TenantID'] = Utils.getTenant()
-  return axios.create({
-    headers,
-    cache: false,
-  })
+
+  return axios.create({ headers, cache: false })
 }
 
-export function toLogin() {
+// 로그아웃 처리
+function handleLogout() {
   Utils.deleteCookie('auth', '/')
   Utils.deleteCookie('lang')
 }
 
-export function postUrl(url, content = '', withNoty = false) {
-  return post2(
-    url,
-    content,
-    'application/x-www-form-urlencoded; charset=UTF-8',
-    withNoty
-  )
+// 응답 검증 및 에러 처리
+function validateResponse(response, withNoty = false) {
+  if (response.data.code && response.data.code !== '0') {
+    if (response.data.code === 'EXPIRED-TOKEN') {
+      handleLogout()
+      return null
+    }
+    if (withNoty)
+      vue.$showError(
+        response.data.message || '요청 처리 중 오류가 발생했습니다.'
+      )
+    throw response.data
+  }
+  return response.data
 }
 
-export function post(url, content = '', overwrite = false, onupload) {
-  return new Promise((resolve, reject) => {
-    const request = new window.XMLHttpRequest()
-    request.open('POST', `${url}`, true)
-    request.setRequestHeader(
-      'Authorization',
-      `Bearer ${Utils.getCookie('auth')}`
-    )
-    request.setRequestHeader('Content-Type', 'application/json')
-    if (typeof onupload === 'function') {
-      request.upload.onprogress = onupload
-    }
-
-    if (overwrite) {
-      request.setRequestHeader('Action', 'override')
-    }
-
-    request.onload = () => {
-      if (request.status === 200) {
-        resolve(request.responseText)
-      } else if (request.status === 409) {
-        reject(request.status)
-      } else {
-        reject(request.responseText)
-      }
-    }
-
-    request.onerror = (error) => {
-      reject(error)
-    }
-    request.send(content)
-  })
+// HTTP 에러 처리
+function handleError(error, withNoty = false) {
+  console.error(error)
+  if (error.response?.status === 401) {
+    handleLogout()
+    return null
+  }
+  if (withNoty && error.response?.data?.message) {
+    vue.$showError(error.response.data.message)
+  }
+  throw error.response?.data || error
 }
 
-export function get(url, params = '', withNoty = false) {
-  return new Promise((resolve, reject) => {
-    ax()
-      .get(url, { params })
-      .then((response) => {
-        if (response.data.code && response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code == 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          if (withNoty) vue.$showError(`${response.data.message}`)
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response && error.response.status == 401) {
-          toLogin()
-          return
-        }
-        if (error.response && error.response.data) {
-          if (withNoty && error.response.data.message) {
-            vue.$showError(`${error.response.data.message}`)
-          }
-          reject(error.response.data)
-        }
-      })
-  })
+// GET 요청
+export function get(url, params = {}, withNoty = false) {
+  return createAxiosInstance()
+    .get(url, { params })
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
 }
 
-export function post2(
-  url,
-  content = '',
-  contentType = 'application/json',
-  withNoty = false
-) {
-  return new Promise((resolve, reject) => {
-    ax(contentType)
-      .post(url, content)
-      .then((response) => {
-        if (response.data.code && response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code === 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          if (withNoty) vue.$showError(`${response.data.message}`)
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response.status == 401) {
-          toLogin()
-          return
-        }
-        if (error.response.data) {
-          if (withNoty) vue.$showError(error.response.data)
-          reject(error.response.data)
-        }
-      })
-  })
+// POST 요청
+export function post(url, data = {}, withNoty = false) {
+  return createAxiosInstance('application/json')
+    .post(url, data)
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
 }
 
+// POST 요청 (FormData)
 export function postForm(url, data, withNoty = false) {
-  return new Promise((resolve, reject) => {
-    ax('multipart/form-data')
-      .post(url, data)
-      .then((response) => {
-        if (response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code === 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response.data) {
-          if (withNoty) vue.$showError(error.response.data)
-          else reject(error.response.data)
-        }
-      })
-  })
-}
-export function put(
-  url,
-  content = '',
-  contentType = 'application/json',
-  withNoty = false
-) {
-  return new Promise((resolve, reject) => {
-    ax(contentType)
-      .put(url, content)
-      .then((response) => {
-        if (response.data.code && response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code === 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          if (withNoty) vue.$showError(`${response.data.message}`)
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response.status == 401) {
-          toLogin()
-          return
-        }
-        if (error.response.data) {
-          if (withNoty) vue.$showError(error.response.data)
-          reject(error.response.data)
-        }
-      })
-  })
-}
-export function putForm(url, data, withNoty = false) {
-  return new Promise((resolve, reject) => {
-    ax('multipart/form-data')
-      .put(url, data)
-      .then((response) => {
-        if (response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code === 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response.data) {
-          if (withNoty) showErrMsgBox(null, error.response.data)
-          // vue.$showError(error.response.data);
-          else reject(error.response.data)
-        }
-      })
-  })
-}
-export function deleteCall(
-  url,
-  params = '',
-  contentType = '',
-  withNoty = false
-) {
-  return new Promise((resolve, reject) => {
-    ax(contentType)
-      .delete(url, { params })
-      .then((response) => {
-        if (response.data.code && response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code == 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          if (withNoty) vue.$showError(`${response.data.message}`)
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response && error.response.status == 401) {
-          toLogin()
-          return
-        }
-        if (error.response && error.response.data) {
-          if (withNoty && error.response.data.message) {
-            vue.$showError(`${error.response.data.message}`)
-          }
-          reject(error.response.data)
-        }
-      })
-  })
-}
-export function deleteBody(
-  url,
-  params = '',
-  contentType = 'application/json',
-  withNoty = false
-) {
-  return new Promise((resolve, reject) => {
-    ax(contentType)
-      .delete(url, { data: params })
-      .then((response) => {
-        if (response.data.code && response.data.code != '0') {
-          // -100 is expired session
-          if (response.data.code == 'EXPIRED-TOKEN') {
-            toLogin()
-            return
-          }
-          if (withNoty) vue.$showError(`${response.data.message}`)
-          reject(response.data)
-          return
-        }
-        resolve(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-        if (error.response && error.response.status == 401) {
-          toLogin()
-          return
-        }
-        if (error.response && error.response.data) {
-          if (withNoty && error.response.data.message) {
-            vue.$showError(`${error.response.data.message}`)
-          }
-          reject(error.response.data)
-        }
-      })
-  })
+  return createAxiosInstance('multipart/form-data')
+    .post(url, data)
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
 }
 
+// PUT 요청
+export function put(url, data = {}, withNoty = false) {
+  return createAxiosInstance('application/json')
+    .put(url, data)
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
+}
+
+// PUT 요청 (FormData)
+export function putForm(url, data, withNoty = false) {
+  return createAxiosInstance('multipart/form-data')
+    .put(url, data)
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
+}
+
+// DELETE 요청
+export function deleteRequest(url, params = {}, withNoty = false) {
+  return createAxiosInstance()
+    .delete(url, { params })
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
+}
+
+// DELETE 요청 (body 포함)
+export function deleteRequestWithBody(url, data = {}, withNoty = false) {
+  return createAxiosInstance()
+    .delete(url, { data })
+    .then((response) => validateResponse(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
+}
+// ========== Child API ==========
 export function getAllChildren() {
   return get(`${constants.CONTEXT_PATH}/child/all`)
 }
 
 export function getChildById(id) {
-  return get(`${constants.CONTEXT_PATH}/child?id=${id}`)
-}
-
-export function addChild(param) {
-  return post2(`${constants.CONTEXT_PATH}/child`, param)
-}
-
-export function getClassList() {
-  return get(`${constants.CONTEXT_PATH}/class`)
-}
-
-export function getRideList() {
-  return get(`${constants.CONTEXT_PATH}/ride/all`)
-}
-
-export function addParents(param) {
-  return post2(`${constants.CONTEXT_PATH}/parents`, param)
-}
-
-export function updateParents(param) {
-  return put(`${constants.CONTEXT_PATH}/parents`, param)
-}
-
-export function addChildRide(param) {
-  return post2(`${constants.CONTEXT_PATH}/childRide`, param)
-}
-
-export function addChildRideList(param) {
-  return post2(`${constants.CONTEXT_PATH}/childRide/list`, param)
-}
-
-export function addClass(param) {
-  return post2(`${constants.CONTEXT_PATH}/class`, param)
-}
-
-export function addRide(param) {
-  return post2(`${constants.CONTEXT_PATH}/ride`, param)
-}
-
-export function updateChildRide(param) {
-  return put(`${constants.CONTEXT_PATH}/childRide`, param)
-}
-
-export function updateRide(param) {
-  return put(`${constants.CONTEXT_PATH}/ride`, param)
-}
-
-export function deleteParents(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/parents?id=${id}`)
-}
-
-export function deleteChildRide(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/childRide?id=${id}`)
-}
-
-export function deleteClass(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/class?id=${id}`)
-}
-
-export function deleteMeetingLocation(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/meetingLocation?id=${id}`)
-}
-
-export function deleteChild(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/child?id=${id}`)
-}
-
-export function getUsers() {
-  return get(`${constants.CONTEXT_PATH}/user/all`)
-}
-
-export function updateMeetingLoaction(param) {
-  return put(`${constants.CONTEXT_PATH}/meetingLocation`, param)
-}
-
-export function addMeetingLocation(param) {
-  return post2(`${constants.CONTEXT_PATH}/meetingLocation`, param)
-}
-
-export function getBirthMonthChlid() {
-  return get(`${constants.CONTEXT_PATH}/child/birth`)
-}
-
-export function refreshToken(param) {
-  return post2(`${constants.CONTEXT_PATH}/jwt/refresh`, param)
-}
-
-export function checkChild(param) {
-  return get(
-    `${constants.CONTEXT_PATH}/child/checkChild?name=${param.name}&className=${param.className}`
-  )
-}
-
-export function updateChild(param) {
-  return put(`${constants.CONTEXT_PATH}/child`, param)
-}
-
-export function registChildAsExcel(param) {
-  return postForm(`${constants.CONTEXT_PATH}/excel/child`, param)
+  return get(`${constants.CONTEXT_PATH}/child`, { id })
 }
 
 export function getAttendingChildren() {
   return get(`${constants.CONTEXT_PATH}/child/all/attending`)
 }
 
-export function deleteRide(id) {
-  return deleteCall(`${constants.CONTEXT_PATH}/ride?id=${id}`)
+export function getBirthMonthChild() {
+  return get(`${constants.CONTEXT_PATH}/child/birth`)
 }
 
-export function addUser(param) {
-  return post2(`${constants.CONTEXT_PATH}/user`, param)
+export function checkChild(name, className) {
+  return get(`${constants.CONTEXT_PATH}/child/checkChild`, { name, className })
+}
+
+export function addChild(param) {
+  return post(`${constants.CONTEXT_PATH}/child`, param)
+}
+
+export function updateChild(param) {
+  return put(`${constants.CONTEXT_PATH}/child`, param)
+}
+
+export function deleteChild(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/child`, { id })
+}
+
+export function registChildAsExcel(param) {
+  return postForm(`${constants.CONTEXT_PATH}/excel/child`, param)
 }
 
 export function updateChildrenClass(param, className) {
-  return put(
-    `${constants.CONTEXT_PATH}/child/all/class?className=${className}`,
-    param
-  )
+  return put(`${constants.CONTEXT_PATH}/child/all/class`, param, false)
+}
+
+// ========== Class API ==========
+export function getClassList() {
+  return get(`${constants.CONTEXT_PATH}/class`)
+}
+
+export function addClass(param) {
+  return post(`${constants.CONTEXT_PATH}/class`, param)
+}
+
+export function deleteClass(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/class`, { id })
+}
+
+// ========== Ride API ==========
+export function getRideList() {
+  return get(`${constants.CONTEXT_PATH}/ride/all`)
+}
+
+export function addRide(param) {
+  return post(`${constants.CONTEXT_PATH}/ride`, param)
+}
+
+export function updateRide(param) {
+  return put(`${constants.CONTEXT_PATH}/ride`, param)
+}
+
+export function deleteRide(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/ride`, { id })
+}
+
+// ========== ChildRide API ==========
+export function addChildRide(param) {
+  return post(`${constants.CONTEXT_PATH}/childRide`, param)
+}
+
+export function addChildRideList(param) {
+  return post(`${constants.CONTEXT_PATH}/childRide/list`, param)
+}
+
+export function updateChildRide(param) {
+  return put(`${constants.CONTEXT_PATH}/childRide`, param)
+}
+
+export function deleteChildRide(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/childRide`, { id })
+}
+
+// ========== Parents API ==========
+export function addParents(param) {
+  return post(`${constants.CONTEXT_PATH}/parents`, param)
+}
+
+export function updateParents(param) {
+  return put(`${constants.CONTEXT_PATH}/parents`, param)
+}
+
+export function deleteParents(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/parents`, { id })
+}
+
+// ========== Meeting Location API ==========
+export function addMeetingLocation(param) {
+  return post(`${constants.CONTEXT_PATH}/meetingLocation`, param)
+}
+
+export function updateMeetingLocation(param) {
+  return put(`${constants.CONTEXT_PATH}/meetingLocation`, param)
+}
+
+export function deleteMeetingLocation(id) {
+  return deleteRequest(`${constants.CONTEXT_PATH}/meetingLocation`, { id })
+}
+
+// ========== User API ==========
+export function getUsers() {
+  return get(`${constants.CONTEXT_PATH}/user/all`)
+}
+
+export function addUser(param) {
+  return post(`${constants.CONTEXT_PATH}/user`, param)
+}
+
+// ========== Auth API ==========
+export function refreshToken(param) {
+  return post(`${constants.CONTEXT_PATH}/jwt/refresh`, param)
 }

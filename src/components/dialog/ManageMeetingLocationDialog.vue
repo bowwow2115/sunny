@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { updateMeetingLoaction, addMeetingLocation } from '@/api/api'
+import { updateMeetingLocation, addMeetingLocation } from '@/api/api'
 export default {
   mounted() {},
   data() {
