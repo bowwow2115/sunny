@@ -1,17 +1,19 @@
-import Vue from 'vue'
+// main.js
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import store from './store'
-import 'remixicon/fonts/remixicon.css' //remixicon 아이콘
+import 'remixicon/fonts/remixicon.css'
 
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard3'
+
 import constants from './Constants'
 import Utils from '@/utils/utils'
 import lodash from 'lodash'
 
+// 커스텀 플러그인들
 import LoadingPlugin from '@/plugins/loadingPlugin'
-
 import {
   DialogPlugin,
   ErrorDialogPlugin,
@@ -19,39 +21,74 @@ import {
   ConfirmPlugin,
 } from '@/plugins/dialogPlugin'
 
-window.$ = require('jquery')
-window.jQuery = require('jquery')
-window.store = store
+// ─────────────────────────────────────────────
+// 🌐 전역 변수 등록
+// ─────────────────────────────────────────────
+window.$ = window.jQuery = require('jquery')
 window.moment = require('moment')
-
 window.constants = constants
-Vue.prototype.$Constants = constants
-Vue.config.productionTip = false
-
-VueClipboard.config.autoSetContainer = true
-
-Vue.prototype.$lodash = lodash
-Vue.prototype.$Utils = Utils
-Vue.prototype.$set = Vue.set
+window.vuetify = vuetify
 window.Utils = Utils
-Vue.use(VueClipboard)
-Vue.use(DialogPlugin)
-Vue.use(ErrorDialogPlugin)
-Vue.use(MessageDialogPlugin)
-Vue.use(LoadingPlugin)
-Vue.use(ConfirmPlugin)
 
+// ─────────────────────────────────────────────
+// 🚫 프로덕션에서 console.log 비활성화
+// ─────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
   window._consolelog = console.log
-  console.log = function () {}
+  console.log = () => {}
 }
-window.console = console
 
-let vue = new Vue({
-  router,
-  vuetify,
-  store,
-  render: (h) => h(App),
-}).$mount('#app')
+// ─────────────────────────────────────────────
+// 🎯 Vue 3 앱 생성
+// ─────────────────────────────────────────────
+const app = createApp(App)
 
-window.vue = vue
+// ─────────────────────────────────────────────
+// ⚙️ 글로벌 프로퍼티 (Vue 2 Vue.prototype 대체)
+// ─────────────────────────────────────────────
+app.config.globalProperties.$constants = constants
+app.config.globalProperties.$lodash = lodash
+app.config.globalProperties.$utils = Utils
+
+// ✅ Vue 2 호환용 $set 레이어 (점진적 제거 권장)
+app.config.globalProperties.$set = (target, key, value) => {
+  if (Array.isArray(target) && typeof key === 'number') {
+    target[key] = value
+  } else if (target && typeof target === 'object') {
+    target[key] = value
+  }
+  return value
+}
+
+// ─────────────────────────────────────────────
+// 🔌 플러그인 등록 (순서 중요!)
+// ─────────────────────────────────────────────
+app.use(store) // Vuex 4+
+app.use(router) // Vue Router 4+
+app.use(vuetify) // Vuetify 3+
+app.use(VueClipboard) // vue-clipboard3
+
+// 커스텀 플러그인들
+app.use(LoadingPlugin)
+app.use(DialogPlugin)
+app.use(ErrorDialogPlugin)
+app.use(MessageDialogPlugin)
+app.use(ConfirmPlugin)
+
+// ─────────────────────────────────────────────
+// 🚀 마운트
+// ─────────────────────────────────────────────
+const vue = app.mount('#app')
+
+// ─────────────────────────────────────────────
+// 🔧 개발용 전역 노출 (옵션)
+// ─────────────────────────────────────────────
+if (process.env.NODE_ENV !== 'production') {
+  window.vue = vue
+  window.$app = app
+  window.$router = router
+  window.$store = store
+  window.$vuetify = vuetify
+}
+
+window.$app = app

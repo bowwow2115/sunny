@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import auth from '@/api/auth'
 import constants from '@/Constants.js'
 import store from '@/store/index.js'
@@ -15,141 +14,102 @@ const RideTimeline = () => import('@/views/RideTimeline')
 const SunnyHome = () => import('@/views/SunnyHome')
 const RideTimelineTable = () => import('@/views/RideTimelineTable')
 
-Vue.use(Router)
+const routes = [
+  {
+    path: '/',
+    redirect: { path: constants.DEFAULT_HOME },
+  },
+  {
+    path: '/SignIn',
+    name: 'SignIn',
+    component: SignIn,
+  },
+  {
+    path: '/SignUp',
+    name: 'SignUp',
+    component: SignUp,
+  },
+  {
+    path: '/FindId',
+    name: 'FindId',
+    component: FindId,
+  },
+  {
+    path: '/RideTimelineTable',
+    name: 'RideTimelineTable',
+    component: RideTimelineTable,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/',
+    component: Layout,
+    redirect: { path: constants.DEFAULT_HOME },
+    children: [
+      {
+        path: '/ChildRegist',
+        name: 'ChildRegist',
+        component: ChildRegist,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ChildList',
+        name: 'ChildList',
+        component: ChildList,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/RideTimeline',
+        name: 'RideTimeline',
+        component: RideTimeline,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/AdminMenu',
+        name: 'AdminMenu',
+        component: AdminMenu,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: '/SunnyHome',
+        name: 'SunnyHome',
+        component: SunnyHome,
+        meta: { requiresAuth: true },
+      },
+    ],
+  },
+  // Catch-all for unmatched routes - must be last
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { path: constants.DEFAULT_HOME },
+  },
+]
 
-const router = new Router({
-  // mode: 'history',   //WAS에 배포할 때는 주석처리
-  routes: [
-    {
-      path: '/',
-      redirect: { path: constants.DEFAULT_HOME },
-    },
-    {
-      path: '/SignIn',
-      name: 'SignIn',
-      component: SignIn,
-    },
-    {
-      path: '/SignUp',
-      name: 'SignUp',
-      component: SignUp,
-    },
-    {
-      path: '/FindId',
-      name: 'FindId',
-      component: FindId,
-    },
-    {
-      path: '/RideTimelineTable',
-      name: 'RideTimelineTable',
-      component: RideTimelineTable,
-      meta: { requiresAuth: true },
-    },
-    // {
-    //   path: 'admin/:id?/:secondId?',
-    //   name: 'AdminLayout',
-    //   component: AdminLayout,
-    //   meta: {
-    //     requiresAuth: true,
-    //     requiresAdmin: true,
-    //     name: ':nm?',
-    //   },
-    // },
-    {
-      path: '/',
-      component: Layout,
-      redirect: { path: constants.DEFAULT_HOME },
-      children: [
-        {
-          path: '/ChildRegist',
-          name: 'ChildRegist',
-          component: ChildRegist,
-          meta: { requiresAuth: true },
-        },
-        {
-          path: '/ChildList',
-          name: 'ChildList',
-          component: ChildList,
-          meta: { requiresAuth: true },
-        },
-        {
-          path: '/RideTimeline',
-          name: 'RideTimeline',
-          component: RideTimeline,
-          meta: { requiresAuth: true },
-        },
-        {
-          path: '/AdminMenu',
-          name: 'AdminMenu',
-          component: AdminMenu,
-          meta: { requiresAuth: true, requiresAdmin: true },
-        },
-        {
-          path: '/SunnyHome',
-          name: 'SunnyHome',
-          component: SunnyHome,
-          meta: { requiresAuth: true },
-        },
-      ],
-    },
-    // 매칭되지 않는 모든 경로를 처리하는 catch-all 라우트
-    {
-      path: '*', // 모든 경로에 대해 매칭되지 않는 경우
-      redirect: { path: constants.DEFAULT_HOME },
-    },
-    // {
-    //   path: '/notAuthorized',
-    //   name: 'NotAuthorized',
-    //   component: NotAuthorized
-    // },
-    // {
-    //   path: '/not-found',
-    //   name: 'NotFound',
-    //   component: NotFound
-    // },
-    // {
-    //   path: '*',
-    //   redirect: (to) => {
-    //     // 특정 URL을 제외하고 모든 경로를 /not-found로 리디렉션
-    //     if (to.path.startsWith('/specific-path')) {
-    //       return to.path; // 예외 경로는 리디렉션하지 않음
-    //     } else {
-    //       return '/not-found'; // 나머지 모든 경로는 /not-found로 리디렉션
-    //     }
-    //   }
-    // },
-  ],
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from) => {
   if (to.path === from.path) {
-    next(false) // 현재 경로와 동일한 경우 네비게이션을 취소
+    return false // 현재 경로와 동일한 경우 네비게이션을 취소
   }
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
   if (requiresAuth) {
-    ;(async () => {
-      let isValidate = await validate()
-      if (isValidate) {
-        next() // TODO:정식 배포 시 주석 후 밑에 주석해제
-        // if (!requiresAdmin) next()
-        // else {
-        //   if (store.getters.isAdmin) next()
-        //   else {
-        //     alert('관리자만 접근할 수 있습니다.')
-        //     return
-        //   }
-        // }
-      } else {
-        redirectLoginPage()
-      }
-    })()
+    let isValidate = await validate()
+    if (isValidate) {
+      return true // 인증되었으면 계속 진행
+    } else {
+      redirectLoginPage()
+      return false
+    }
   } else {
     if (!Utils.isNull(Utils.getToken())) {
       //로그인 시 인증필요없는 페이지 접속 x
       redirectHomePage()
+      return false
     }
-    next() // 인증이 필요 없는 페이지는 그대로 이동
+    return true // 인증이 필요 없는 페이지는 그대로 이동
   }
 })
 
