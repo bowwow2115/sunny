@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --fix --ext .js,.vue src",
     "format": "prettier --write \"src/**/*.{js,vue}\""
@@ -28,23 +29,16 @@
     "yml-loader": "^2.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@babel/eslint-parser": "^7.24.7",
-    "@babel/preset-env": "^7.29.2",
-    "@babel/preset-typescript": "^7.28.5",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "babel-eslint": "^10.1.0",
     "deepmerge": "^4.3.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^9.0.0",
-    "html-webpack-plugin": "^5.6.0",
     "prettier": "^2.3.2",
     "sass": "^1.32.13",
-    "sass-loader": "^10.5.2"
+    "vite": "^5.1.0"
   },
   "eslintConfig": {
     "root": true,

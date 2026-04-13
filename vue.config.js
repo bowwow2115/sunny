@@ -6,17 +6,16 @@ const workDir = 'C:/projects/intellij/sunny-back/src/main/resources/static'
 module.exports = defineConfig({
   productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
   publicPath: process.env.NODE_ENV === 'production' ? '/sunny/app/' : '/',
-  outputDir: workDir,
+  outputDir: houseDir,
   // publicPath: '/',
-  transpileDependencies: ['vuetify'],
   runtimeCompiler: true,
   configureWebpack: {},
   devServer: {
-    port: 8080,
+    port: 8090,
     proxy: {
       '/sunny': {
-        target: 'http://54.180.245.14:8080',
-        // target: 'http://localhost:8080',
+        // target: 'http://54.180.245.14:8080',
+        target: 'http://192.168.1.254:8080',
         changeOrigin: true,
         pathRewrite: {
           '^/sunny': '/sunny',
