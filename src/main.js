@@ -75,9 +75,37 @@ app.use(ErrorDialogPlugin)
 app.use(MessageDialogPlugin)
 app.use(ConfirmPlugin)
 
-// ─────────────────────────────────────────────
-// 🚀 마운트
-// ─────────────────────────────────────────────
+app.config.errorHandler = (err, instance, info) => {
+  console.error('🚨 Router View Error:', {
+    error: err?.message || err,
+    component: instance?.$options?.name || 'Unknown',
+    info,
+    route: router.currentRoute.value?.fullPath,
+    stack: err?.stack,
+  })
+
+  // ✅ 개발 모드: 사용자 알림
+  if (import.meta.env?.DEV) {
+    const msg = `페이지 로딩 오류: ${err?.message || '알 수 없는 오류'}`
+    if (app.config.globalProperties.$showError) {
+      app.config.globalProperties.$showError({ message: msg })
+    } else {
+      console.warn('💡 $showError not available, using alert')
+      alert(msg)
+    }
+  }
+}
+
+// ✅ 전역 경고 핸들러 (선택사항)
+app.config.warnHandler = (msg, instance, trace) => {
+  if (
+    msg.includes('Failed to resolve component') ||
+    msg.includes('router-view')
+  ) {
+    console.warn('⚠️ Router View Warning:', msg, trace)
+  }
+}
+
 const vue = app.mount('#app')
 
 // ─────────────────────────────────────────────

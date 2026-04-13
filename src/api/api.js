@@ -122,8 +122,8 @@ export function getBirthMonthChild() {
   return get(`${constants.CONTEXT_PATH}/child/birth`)
 }
 
-export function checkChild(name, className) {
-  return get(`${constants.CONTEXT_PATH}/child/checkChild`, { name, className })
+export function checkChild(param) {
+  return get(`${constants.CONTEXT_PATH}/child/checkChild`, param)
 }
 
 export function addChild(param) {
@@ -231,4 +231,9 @@ export function addUser(param) {
 // ========== Auth API ==========
 export function refreshToken(param) {
   return post(`${constants.CONTEXT_PATH}/jwt/refresh`, param)
+}
+
+export function checkDuplicateUserId(userId) {
+  return null
+  // return get(`${constants.CONTEXT_PATH}/user/checkId`, { userId })
 }

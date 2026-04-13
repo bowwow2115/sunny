@@ -1,180 +1,270 @@
 <template>
-  <v-dialog v-model="visible">
+  <!-- ✅ teleport="body" 로 오버레이 컨텍스트 보장 -->
+  <v-dialog
+    v-model="dialogModel"
+    persistent
+    max-width="600px"
+    teleport="body"
+    @click:outside="handleCancel"
+  >
     <v-card class="pa-2">
-      <v-card-title class="title">{{
-        (am ? '오전' : '오후') + (isEdit ? '차량 정보 수정' : '차량 정보 추가')
-      }}</v-card-title>
-      <v-form v-model="isValid" ref="form" lazy-validation>
+      <!-- 헤더 -->
+      <v-card-title class="d-flex align-center justify-space-between">
+        <span class="text-h6 font-weight-bold">
+          {{
+            (am ? '오전' : '오후') +
+            (isEdit ? '차량 정보 수정' : '차량 정보 추가')
+          }}
+        </span>
+        <v-btn icon size="small" variant="text" @click="handleCancel">
+          <v-icon icon="ri-close-line"></v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-form ref="formRef" v-model="isValid">
         <v-card-text class="mt-4">
           <v-row>
+            <!-- 코스 선택 -->
             <v-col cols="12" md="6">
               <v-select
                 v-model="selectedSunnyRide"
-                :items="am ? amRideNameList : pmRideNameList"
-                item-text="name"
+                :items="am ? amRideList : pmRideList"
+                item-title="name"
                 return-object
-                :rules="rideRule"
+                :rules="rideRules"
                 :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
-                @input="resetMeetingLocation()"
-                outlined
+                variant="outlined"
                 hide-details="auto"
+                density="comfortable"
+                @update:model-value="resetMeetingLocation"
               ></v-select>
             </v-col>
+
+            <!-- 승하차 장소 선택 -->
             <v-col cols="12" md="6">
               <v-select
                 v-model="form.meetingLocation.id"
-                :label="'승하차 장소를 선택해주세요.'"
-                :rules="meetingLocationRule"
-                item-text="name"
+                :items="selectedSunnyRide?.meetingLocationList || []"
+                item-title="name"
                 item-value="id"
-                :items="selectedSunnyRide.meetingLocationList"
-                outlined
+                :label="'승하차 장소를 선택해주세요.'"
+                :rules="meetingLocationRules"
+                variant="outlined"
                 hide-details="auto"
+                density="comfortable"
+                :disabled="!selectedSunnyRide?.id"
               ></v-select>
             </v-col>
+
+            <!-- 비고 -->
             <v-col cols="12">
               <v-text-field
-                prepend-inner-icon="ri-message-2-fill"
                 v-model="form.comment"
+                prepend-inner-icon="ri-message-2-fill"
                 label="비고"
-                outlined
+                variant="outlined"
                 clearable
                 clear-icon="ri-close-circle-fill"
+                density="comfortable"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
+
+        <!-- 하단 액션 -->
+        <v-card-actions class="flex-wrap justify-end py-4 px-6">
+          <v-btn variant="text" color="grey" size="large" @click="handleCancel">
+            닫기
+          </v-btn>
+          <v-btn
+            variant="text"
+            color="accent"
+            size="large"
+            :loading="loading"
+            @click="handleConfirm"
+          >
+            {{ isEdit ? '수정' : '추가' }}
+          </v-btn>
+        </v-card-actions>
       </v-form>
-      <v-card-actions class="flex-wrap justify-end py-4 px-6">
-        <v-btn color="gray" text large @click="cancel">닫기</v-btn>
-        <v-btn color="accent" text large @click="confirm">{{
-          isEdit ? '수정' : '추가'
-        }}</v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue'
 import { getRideList, addChildRide, updateChildRide } from '@/api/api'
-export default {
-  mounted() {
-    this.getRideList()
-  },
-  data() {
-    return {
-      isValid: false,
-      visible: false,
-      resolve: null,
-      reject: null,
-      form: {
-        id: '',
-        comment: '',
-        meetingLocation: {
-          id: '',
-          name: '',
-          sunnyRide: {
-            am: false,
-            comment: '',
-            name: '',
-            time: '',
-            id: '',
-            meetingLocationList: [],
-          },
-        },
-        child: { id: '' },
-      },
-      isEdit: false,
-      am: false,
-      amRideNameList: [],
-      pmRideNameList: [],
-      selectedSunnyRide: { meetingLocationList: [] },
-      rideRule: [(v) => !!v || '필수 항목입니다.'],
-      meetingLocationRule: [(v) => !!v || '필수 항목입니다.'],
-    }
-  },
-  methods: {
-    getRideList() {
-      getRideList()
-        .then((response) => {
-          if (response.data != null) {
-            response.data.forEach((ride) => {
-              if (ride.meetingLocationList != null)
-                ride.meetingLocationList.forEach((meetingLocation) => {
-                  meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
-                })
-              if (ride.am) this.amRideNameList.push(ride)
-              else this.pmRideNameList.push(ride)
-            })
-            if (this.isEdit) {
-              this.selectedSunnyRide = this.am
-                ? this.amRideNameList.find(
-                    (item) => item.id == this.form.meetingLocation.sunnyRide.id
-                  )
-                : this.pmRideNameList.find(
-                    (item) => item.id == this.form.meetingLocation.sunnyRide.id
-                  )
-            }
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$showError(error)
-        })
-    },
-    open(item) {
-      this.visible = true
-      this.form.id = item.id
-      this.form.comment = item.comment
-      if (item.isEdit) this.form.meetingLocation = item.meetingLocation
-      this.form.child = item.child
-      this.isEdit = item.isEdit
-      this.am = item.am
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
-    },
-    cancel() {
-      this.visible = false
-    },
-    confirm() {
-      if (this.$refs.form.validate())
-        if (this.isEdit) {
-          this.$withLoading(
-            updateChildRide(this.form)
-              .then((response) => {
-                if (response.code == '0') {
-                  this.visible = false
-                  this.resolve(response.data)
-                }
-              })
-              .catch((e) => {
-                this.$showError(e)
-              })
-          )
-        } else {
-          this.$withLoading(
-            addChildRide(this.form)
-              .then((response) => {
-                if (response.code == '0') {
-                  this.visible = false
-                  this.resolve(response.data)
-                }
-              })
-              .catch((e) => {
-                this.$showError(e)
-              })
-          )
+import { useGlobal } from '@/composables/useGlobal'
+
+const { $showError, $withLoading } = useGlobal()
+
+// ✅ 플러그인 연동용 props
+const props = defineProps({
+  // 데이터 props
+  id: { type: [String, Number], default: '' },
+  comment: { type: String, default: '' },
+  meetingLocation: { type: Object, default: () => ({}) },
+  child: { type: Object, default: () => ({}) },
+  isEdit: { type: Boolean, default: false },
+  am: { type: Boolean, default: true }, // 오전/오후 구분
+
+  // ✅ 플러그인 콜백 (필수)
+  onClose: { type: Function, default: () => {} },
+  onError: { type: Function, default: () => {} },
+})
+
+// ✅ 상태 관리
+const dialogModel = ref(true)
+const isValid = ref(false)
+const loading = ref(false)
+const formRef = ref(null)
+
+// ✅ 폼 데이터
+const form = ref({
+  id: props.id,
+  comment: props.comment,
+  meetingLocation: { ...props.meetingLocation },
+  child: { ...props.child },
+})
+
+// ✅ 차량 목록 (오전/오후 분리)
+const amRideList = ref([])
+const pmRideList = ref([])
+const selectedSunnyRide = ref({ meetingLocationList: [] })
+
+// ✅ 검증 규칙
+const rideRules = [(v) => !!v || '필수 항목입니다.']
+const meetingLocationRules = [(v) => !!v || '필수 항목입니다.']
+
+// ✅ 차량 목록 로딩
+const fetchRideList = async () => {
+  try {
+    const response = await getRideList()
+
+    if (response?.data) {
+      // ✅ 데이터 가공: meetingLocation 이름 포맷팅
+      response.data.forEach((ride) => {
+        // ✅ 원본 데이터 변조 방지를 위해 얕은 복사 고려 (필요시)
+        if (ride.meetingLocationList) {
+          ride.meetingLocationList = ride.meetingLocationList.map((loc) => ({
+            ...loc,
+            name: `${loc.name}(${loc.time})`,
+          }))
         }
-    },
-    resetMeetingLocation() {
-      this.form.meetingLocation.id = ''
-    },
-  },
+
+        if (ride.am) {
+          amRideList.value.push(ride)
+        } else {
+          pmRideList.value.push(ride)
+        }
+      })
+
+      // ✅ 수정 모드인 경우 기존 선택값 복원
+      if (props.isEdit && props.meetingLocation?.sunnyRide?.id) {
+        const targetList = props.am ? amRideList.value : pmRideList.value
+        const found = targetList.find(
+          (item) => item.id === props.meetingLocation.sunnyRide.id
+        )
+        if (found) {
+          selectedSunnyRide.value = found
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load ride list:', error)
+    $showError?.(error)
+  }
 }
+
+// ✅ 승하차 장소 초기화 (코스 변경 시)
+const resetMeetingLocation = () => {
+  form.value.meetingLocation.id = ''
+  form.value.meetingLocation.name = ''
+}
+
+// ✅ 다이얼로그 닫기 (취소)
+const handleCancel = () => {
+  dialogModel.value = false
+  setTimeout(() => {
+    props.onClose(null)
+  }, 150)
+}
+
+// ✅ 확인 및 저장 실행
+const handleConfirm = async () => {
+  // ✅ Vuetify 3 폼 검증 (비동기)
+  const { valid } = (await formRef.value?.validate?.()) || {
+    valid: isValid.value,
+  }
+
+  if (!valid) {
+    // $showMessage?.({ type: 'warning', message: '입력값을 확인해주세요.' })
+    return
+  }
+
+  // ✅ 선택된 코스 정보 form 에 병합
+  if (selectedSunnyRide.value) {
+    form.value.meetingLocation.sunnyRide = {
+      ...selectedSunnyRide.value,
+      am: props.am,
+    }
+  }
+
+  loading.value = true
+
+  try {
+    const apiCall = props.isEdit
+      ? () => updateChildRide(form.value)
+      : () => addChildRide(form.value)
+
+    const response = await ($withLoading?.(apiCall()) ?? apiCall())
+
+    if (response?.code === '0' || response?.code === 0) {
+      // $showMessage?.({ type: 'success', message: '성공적으로 저장했습니다.' })
+      dialogModel.value = false
+      setTimeout(() => {
+        props.onClose(response.data)
+      }, 150)
+    }
+  } catch (error) {
+    console.error('Save ride error:', error)
+    props.onError?.(error)
+    $showError?.(error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// ✅ 마운트 시 초기화
+onMounted(() => {
+  fetchRideList()
+
+  // ✅ ESC 키로 닫기
+  const onKeydown = (e) => {
+    if (e.key === 'Escape') {
+      handleCancel()
+      document.removeEventListener('keydown', onKeydown)
+    }
+  }
+  document.addEventListener('keydown', onKeydown)
+})
 </script>
 
 <style scoped>
-/* 원하는 스타일 추가 */
+/* Vue 3 deep selector 예시 */
+:deep(.v-select__selection) {
+  min-height: 24px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .v-card-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .v-card-actions .v-btn {
+    width: 100%;
+  }
+}
 </style>

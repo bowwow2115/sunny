@@ -1,159 +1,194 @@
 <template>
-  <v-dialog v-model="visible" :fullscreen="isMobile" :hide-overlay="isMobile">
+  <v-dialog
+    v-model="dialogModel"
+    :fullscreen="isMobile"
+    :scrim="!isMobile"
+    persistent
+    teleport="body"
+    @click:outside="handleCancel"
+  >
     <v-card class="pa-2 _pop-small-card">
-      <v-card-title>
-        {{ '사용자 관리' }}
-      </v-card-title>
-      <v-list>
-        <v-list-group
-          :value="true"
-          prepend-icon="ri-user-fill"
-          :no-action="true"
+      <!-- 헤더 -->
+      <v-card-title class="d-flex align-center justify-space-between">
+        <span class="text-h6 font-weight-bold">사용자 관리</span>
+        <v-btn
+          v-if="!isMobile"
+          icon
+          size="small"
+          variant="text"
+          @click="handleCancel"
         >
-          <template v-slot:activator>
-            <v-list-item-title>사용자</v-list-item-title>
+          <v-icon icon="ri-close-line"></v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <!-- 사용자 목록 섹션 -->
+      <v-list class="pa-0">
+        <v-list-group v-model="groups.users" value="users">
+          <template #activator="{ props: activatorProps }">
+            <v-list-item v-bind="activatorProps" prepend-icon="ri-user-fill">
+              <v-list-item-title>사용자</v-list-item-title>
+            </v-list-item>
           </template>
-          <div v-if="form.userList.length != 0">
-            <v-list-item-group
-              v-for="(user, index) in form.userList"
-              :key="index"
+
+          <!-- 사용자 목록 -->
+          <template v-if="userList?.length">
+            <v-list-item
+              v-for="(user, index) in userList"
+              :key="user.id || index"
               class="ml-14"
             >
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class="_list-title-with-sub">
-                    {{ `${user.userId}` }}
-                    <span>{{ user.userName }}</span>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </div>
+              <v-list-item-title class="_list-title-with-sub">
+                <span class="font-weight-medium">{{ user.userId }}</span>
+                <span class="text-grey ms-2">{{ user.userName }}</span>
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+
+          <!-- 빈 상태 -->
           <v-list-item v-else>
             <v-list-item-icon>
-              <v-icon>mdi-information-off</v-icon>
+              <v-icon icon="mdi-information-off"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                등록된 유저의 정보가 없습니다.
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title>
+              등록된 유저의 정보가 없습니다.
+            </v-list-item-title>
           </v-list-item>
-          <!-- <v-list-item style="padding: 0px">
-            <v-spacer></v-spacer>
-            <v-btn @click="openClassAddDialog()"
-              ><v-icon color="green darken3">mdi-plus</v-icon></v-btn
+
+          <!-- ✅ 사용자 추가 버튼 (주석 해제 시 사용) -->
+          <!--
+          <v-list-item class="py-2">
+            <v-btn
+              block
+              variant="flat"
+              @click="openUserAddDialog"
             >
-            <v-spacer></v-spacer>
-          </v-list-item> -->
+              사용자 추가
+              <v-icon icon="ri-add-fill" color="success" class="ml-2"></v-icon>
+            </v-btn>
+          </v-list-item>
+          -->
         </v-list-group>
       </v-list>
+
+      <!-- 하단 액션 -->
       <v-card-actions class="flex-wrap justify-end py-4 px-6">
-        <v-btn color="gray" text @click="cancel" large>닫기</v-btn>
+        <v-btn variant="text" color="grey" size="large" @click="handleCancel">
+          닫기
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
 import { getUsers } from '@/api/api'
-import ClassAddDialog from '@/components/admin/ClassAddDialog.vue'
+import { useGlobal } from '@/composables/useGlobal'
 
-export default {
-  mounted() {
-    this.getUsers()
-    this.checkIfMobile()
-  },
-  data() {
-    return {
-      visible: false,
-      resolve: null,
-      reject: null,
-      form: {
-        userList: [],
-      },
-      isEdit: false,
-      isMobile: false,
-    }
-  },
-  methods: {
-    open() {
-      this.visible = true
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve
-        this.reject = reject
-      })
-    },
-    cancel() {
-      this.visible = false
-      this.resolve(true)
-    },
-    async deleteClass(user) {
-      const result = await this.$confirm({
-        message: `${user.name}을 정말 삭제하시겠습니까?`,
-      })
-      if (result) {
-        this.$withLoading(
-          deleteClass(user.id)
-            .then((response) => {
-              if (response.code == '0') {
-                this.$showMessage({
-                  type: 'success',
-                  message: '성공적으로 삭제했습니다.',
-                })
-                let index = this.form.userList.findIndex(
-                  (item) => item.id === user.id
-                )
-                if (index !== 1) {
-                  this.$delete(this.form.userList, index)
-                }
-              }
-            })
-            .catch((e) => {
-              this.$showError(e)
-            })
-        )
-      }
-    },
-    async openClassAddDialog() {
-      const result = await this.$dialog(ClassAddDialog, null)
-      if (result != null) {
-        this.$showMessage({
-          type: 'success',
-          message: '성공적으로 추가했습니다.',
-        })
-        this.$set(this.form.userList, this.form.userList.length, result)
-      }
-    },
-    getUsers() {
-      getUsers()
-        .then((response) => {
-          if (response.code == '0') {
-            this.form.userList = response.data
-          }
-        })
-        .catch((e) => {
-          this.$showError(e)
-        })
-    },
-    checkIfMobile() {
-      // 사용자 에이전트 문자열에서 모바일 기기를 확인
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+// const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
-      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
-      if (
-        /android/i.test(userAgent) ||
-        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
-      ) {
-        this.isMobile = true
-      } else {
-        this.isMobile = false
-      }
-    },
-  },
+// ✅ 플러그인 연동용 props
+const props = defineProps({
+  onClose: { type: Function, default: () => {} },
+  onError: { type: Function, default: () => {} },
+})
+
+// ✅ 상태 관리
+const dialogModel = ref(true)
+const isMobile = ref(false)
+const groups = ref({ users: true })
+const userList = ref([])
+
+// ✅ 모바일 감지
+const checkIfMobile = () => {
+  const ua = navigator.userAgent || navigator.vendor || window.opera
+  isMobile.value =
+    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
 }
+
+// ✅ 사용자 목록 로딩
+const fetchUsers = async () => {
+  try {
+    const response = await getUsers()
+    if (response?.code === '0' || response?.code === 0) {
+      userList.value = response.data || []
+    }
+  } catch (e) {
+    console.error('Fetch users error:', e)
+    // $showError?.(e)
+  }
+}
+
+// ✅ 다이얼로그 닫기
+const handleCancel = () => {
+  dialogModel.value = false
+  setTimeout(() => {
+    props.onClose(true)
+  }, 150)
+}
+
+// ✅ 사용자 추가 다이얼로그 (필요시 주석 해제)
+// const openUserAddDialog = async () => {
+//   try {
+//     // const { default: UserAddDialog } = await import('@/components/admin/UserAddDialog.vue')
+//     // const result = await $dialog?.(UserAddDialog, null)
+//     // if (result) {
+//     //   $showMessage?.({ type: 'success', message: '성공적으로 추가했습니다.' })
+//     //   userList.value.push(result)
+//     // }
+//   } catch (e) {
+//     console.error('UserAddDialog error:', e)
+//     props.onError?.(e)
+//   }
+// }
+
+// ✅ 마운트 시 초기화
+onMounted(() => {
+  checkIfMobile()
+  fetchUsers()
+
+  // ✅ ESC 키로 닫기
+  const onKeydown = (e) => {
+    if (e.key === 'Escape') {
+      handleCancel()
+      document.removeEventListener('keydown', onKeydown)
+    }
+  }
+  document.addEventListener('keydown', onKeydown)
+})
 </script>
 
 <style scoped>
-/* 원하는 스타일 추가 */
+._pop-small-card {
+  border-radius: 16px;
+}
+
+._list-title-with-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Vue 3 deep selector */
+:deep(.v-list-group__items) {
+  padding-left: 8px;
+}
+
+:deep(.v-list-item__prepend) {
+  margin-inline-end: 12px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .v-card-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .v-card-actions .v-btn {
+    width: 100%;
+  }
+}
 </style>

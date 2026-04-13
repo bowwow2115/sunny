@@ -1,231 +1,108 @@
-<!-- ********** 카드 타입 ********** -->
-<!-- <template>
-  <div>
-    <child-more-info ref="childMoreInfo"></child-more-info>
-    <v-data-iterator
-      :items="childrenList"
-      :items-per-page.sync="itemsPerPage"
-      :page.sync="page"
-      :search="search"
-      :sort-by="sortBy"
-      :sort-desc="sortDesc"
-      hide-default-footer
-    >
-      <template v-slot:header>
-        <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
-          <v-text-field
-            v-model="search"
-            clearable
-            flat
-            solo-inverted
-            hide-details
-            prepend-inner-icon="ri-search-line"
-            label="검색어를 입력하세요."
-          ></v-text-field>
-          <v-select
-            v-model="sortBy"
-            flat
-            solo-inverted
-            hide-details
-            :items="keys"
-            item-text="name"
-            item-value="key"
-            prepend-inner-icon="ri-sort-desc"
-            label="정렬"
-            class="ml-2"
-          >
-          </v-select>
-          <v-btn
-            v-if="!sortDesc"
-            fab
-            depressed
-            small
-            color="primary"
-            @click="sortDesc = true"
-          >
-            <v-icon>ri-arrow-up-fill</v-icon>
-          </v-btn>
-          <v-btn
-            v-else
-            fab
-            depressed
-            small
-            color="primary"
-            @click="sortDesc = false"
-          >
-            <v-icon>ri-arrow-down-fill</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </template>
-      <template v-slot:default="props">
-        <v-row>
-          <v-col
-            v-for="(item, index) in props.items"
-            :key="index"
-            cols="12"
-            md="6"
-          >
-            <v-card class="pa-2 rounded-xl">
-              <v-card-title class="font-weight-bold justify-space-between">
-                {{ item.name }}
-                <v-btn
-                  small
-                  depressed
-                  color="plus"
-                  @click="openInfoDialog(item)"
-                  >더보기<v-icon right>ri-add-circle-fill</v-icon></v-btn
-                >
-              </v-card-title>
-
-              <v-card-text>
-                <v-list>
-                  <v-list-item
-                    v-for="(itemKey, index) in filteredKeys"
-                    :key="index"
-                    class="text-body-1 pa-0 _list-item"
-                  >
-                    <v-icon small color="primary">ri-check-line</v-icon>
-                    <v-list-item-content
-                      :class="{ 'blue--text': sortBy === itemKey.key }"
-                      class="_list-item-name"
-                    >
-                      {{ itemKey.name }}
-                    </v-list-item-content>
-                    <v-list-item-content
-                      :class="{ 'blue--text': sortBy === itemKey.key }"
-                      class="_list-item-key"
-                    >
-                      <span>{{ item[itemKey.key] }}</span>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:footer>
-        <v-row class="justify-space-between">
-          <v-col>
-            <v-menu offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn text outlined v-bind="attrs" v-on="on">
-                  목록 더보기
-                  {{ itemsPerPage }}
-                  <v-icon>ri-arrow-down-s-fill</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="(number, index) in itemsPerPageArray"
-                  :key="index"
-                  @click="updateItemsPerPage(number)"
-                >
-                  <v-list-item-title>{{ number }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-col class="d-flex align-center justify-end">
-            <div>
-              <v-btn fab small depressed @click="formerPage">
-                <v-icon>ri-arrow-left-s-line</v-icon>
-              </v-btn>
-              <span class="grey--text mx-4">
-                {{ page }} / {{ numberOfPages }}
-              </span>
-              <v-btn fab small depressed @click="nextPage">
-                <v-icon>ri-arrow-right-s-line</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-      </template>
-    </v-data-iterator>
-  </div>
-</template> -->
-
-<!-- ********** 테이블 타입 ********** -->
 <template>
   <div>
-    <child-more-info ref="childMoreInfo"></child-more-info>
+    <!-- ✅ v-if 조건에 childrenList 도 체크 -->
+    <!-- group by 기능 vuetify3 부터 변경된 듯 -->
+    <!-- :sort-by="sortBy"
+      :sort-desc="sortDesc"
+      v-model:group-by="groupBy" -->
     <v-data-table
+      v-if="Array.isArray(childrenList) && childrenList.length >= 0"
       v-model="selectedRow"
       :items="childrenList"
-      :items-per-page.sync="itemsPerPage"
-      :page.sync="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:page="page"
       :search="search"
-      :sort-by="sortBy"
-      :sort-desc="sortDesc"
       :headers="headers"
-      :group-by="groupBy"
       :dense="true"
       show-select
       item-key="id"
       no-data-text="등록된 원아가 존재하지 않습니다."
       class="elevation-1 mt-0 _mobile-table"
       hide-default-footer
+      :items-per-page-text="'명씩'"
     >
+      <!-- 상단 툴바 -->
       <template v-slot:top>
         <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
           <v-text-field
             v-model="search"
             clearable
             flat
-            solo-inverted
+            variant="solo"
+            bg-color="white"
             hide-details
             prepend-inner-icon="ri-search-line"
             label="검색어를 입력하세요."
+            class="me-2"
           ></v-text-field>
+
           <v-select
             v-model="groupBy"
             flat
-            solo-inverted
+            variant="solo"
+            bg-color="white"
             hide-details
             prepend-inner-icon="ri-sort-desc"
             :items="[
               { name: '반명', value: 'className' },
               { name: '재원여부', value: 'status' },
             ]"
-            item-text="name"
+            item-title="name"
             item-value="value"
             label="집합 정렬할 기준을 선택해주세요."
-          >
-          </v-select>
+            class="_group-select"
+            clearable
+          ></v-select>
         </v-toolbar>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-btn icon @click="openInfoDialog(item)">
-          <v-icon>ri-more-2-line</v-icon>
+      <!-- 액션 버튼 -->
+      <template #[`item.actions`]="{ item }">
+        <v-btn icon size="small" variant="text" @click="openInfoDialog(item)">
+          <v-icon icon="ri-more-2-line"></v-icon>
         </v-btn>
       </template>
 
-      <template v-slot:body.append="{ headers, items }">
+      <!-- ✅ body-append: 슬롯에서 headers 받지 않고, 고정값 또는 computed 사용 -->
+      <template v-slot:body-append="{ items }">
         <tr>
-          <td :colspan="headers.length">
-            {{ `총 ${items.length}건의 원아가 검색되었습니다.` }}
+          <td
+            :colspan="headers.length + 1"
+            class="text-center py-2 text-body-2 grey--text"
+          >
+            총 {{ items?.length || 0 }}건의 원아가 검색되었습니다.
           </td>
         </tr>
       </template>
+
+      <!-- 푸터 -->
       <template v-slot:footer>
-        <v-row style="padding: 5px">
-          <v-col>
+        <v-row class="align-center" style="padding: 5px">
+          <v-col cols="auto">
             <v-btn
               type="button"
               class="font-weight-bold"
               color="accent"
+              variant="flat"
               @click="openChangeClassDialog"
-              >반 변경</v-btn
             >
+              반 변경
+            </v-btn>
           </v-col>
+
           <v-col class="d-flex align-center justify-end">
-            <v-menu style="margin-right: 10px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn text outlined v-bind="attrs" v-on="on">
-                  {{ itemsPerPage == -1 ? '모두' : itemsPerPage + '명씩 보기' }}
-                  <v-icon>ri-arrow-down-s-fill</v-icon>
+            <v-menu location="top">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  variant="outlined"
+                  size="small"
+                  class="me-2"
+                  v-bind="props"
+                >
+                  {{
+                    itemsPerPage === -1 ? '모두' : itemsPerPage + '명씩 보기'
+                  }}
+                  <v-icon icon="ri-arrow-down-s-fill" end></v-icon>
                 </v-btn>
               </template>
               <v-list>
@@ -234,172 +111,260 @@
                   :key="index"
                   @click="updateItemsPerPage(number)"
                 >
-                  <v-list-item-title>{{
-                    number == -1 ? '모두' : number
-                  }}</v-list-item-title>
+                  <v-list-item-title>
+                    {{ number === -1 ? '모두' : number }}
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
-            <div>
-              <v-btn fab small depressed @click="formerPage">
-                <v-icon>ri-arrow-left-s-line</v-icon>
+
+            <div class="d-flex align-center">
+              <v-btn
+                icon
+                size="small"
+                variant="tonal"
+                :disabled="page <= 1"
+                @click="formerPage"
+              >
+                <v-icon icon="ri-arrow-left-s-line"></v-icon>
               </v-btn>
-              <span class="grey--text mx-4">
+
+              <span class="grey--text mx-4 text-body-2">
                 {{ page }} / {{ numberOfPages }}
               </span>
-              <v-btn fab small depressed @click="nextPage">
-                <v-icon>ri-arrow-right-s-line</v-icon>
+
+              <v-btn
+                icon
+                size="small"
+                variant="tonal"
+                :disabled="page >= numberOfPages"
+                @click="nextPage"
+              >
+                <v-icon icon="ri-arrow-right-s-line"></v-icon>
               </v-btn>
             </div>
           </v-col>
         </v-row>
       </template>
     </v-data-table>
+
+    <!-- ✅ 로딩 중일 때 대체 UI -->
+    <div v-else class="text-center py-8">
+      <v-progress-circular indeterminate color="primary" size="48" />
+      <p class="mt-4 text-body-2 grey--text">데이터를 불러오는 중...</p>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue'
 import { getAllChildren } from '@/api/api'
-import ChildMoreInfo from '@/views/ChildMoreInfo.vue'
-import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
-export default {
-  name: 'ChildrenList',
-  mounted() {
-    this.getAllChildren()
-  },
-  data() {
-    return {
-      childrenList: [],
-      itemsPerPageArray: [20, 30, 40, 50, -1],
-      search: '',
-      filter: {},
-      sortDesc: false,
-      page: 1,
-      itemsPerPage: -1,
-      sortBy: 'name',
-      groupBy: null,
-      selectedRow: [],
-      //sortByList: ['이름', '입학일', '반명', '주소', '생일', '재원여부'], 리스트를 테이블로 변경(headers)
-      headers: [
-        { text: '이름', value: 'name' },
-        { text: '입학일', value: 'admissionDate' },
-        { text: '반명', value: 'className' },
-        { text: '주소', value: 'addressName' },
-        { text: '생일', value: 'birthday' },
-        { text: '재원여부', value: 'status' },
-        { text: '보호자', value: 'parents' },
-        { text: '작업', value: 'actions', sortable: false },
-      ],
-      keys: [
-        { key: 'name', name: '이름' },
-        { key: 'admissionDate', name: '입학일' },
-        { key: 'className', name: '반명' },
-        { key: 'addressName', name: '주소' },
-        { key: 'birthday', name: '생일' },
-        { key: 'status', name: '재원여부' },
-        { key: 'parents', name: '보호자' },
-        { key: 'id', name: 'id' },
-      ],
-    }
-  },
-  computed: {
-    numberOfPages() {
-      return Math.ceil(
-        this.childrenList.length /
-          (this.itemsPerPage == -1
-            ? this.childrenList.length
-            : this.itemsPerPage)
-      )
-    },
-  },
-  methods: {
-    async openChangeClassDialog() {
-      if (this.selectedRow.length == 0) {
-        this.$showMessage({
-          type: 'warning',
-          message: '선택된 원아가 없습니다.',
-        })
-        return
-      }
+import ChildMoreInfo from '@/views/ChildMoreInfo.vue' // ← 유지 가능
 
-      const result = await this.$dialog(ChangeClassDialog, this.selectedRow)
-      if (result) {
-        this.$showMessage({
-          type: 'success',
-          message: '성공적으로 변경했습니다.',
-        })
-        this.getAllChildren()
-      }
-    },
-    getAllChildren() {
-      this.$withLoading(
-        getAllChildren()
-          .then((response) => {
-            if (response.code == '0') {
-              response.data.forEach((element) => {
-                let parentNameList = ''
-                element.parentList.forEach((parent) => {
-                  parentNameList += parent.name + ' '
-                })
-                element.parents = parentNameList
-                element.actions = null
-                element.addressName = `${element.address.address} ${element.address.detailAddress}`
-                // element.status = element.status ? '재원' : '졸업 or 퇴원'
-              })
-              this.childrenList = response.data
+import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
+import { useGlobal } from '@/composables/useGlobal'
+
+const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
+
+// ✅ 상태 정의
+const childrenList = ref([])
+const itemsPerPageArray = [20, 30, 40, 50, -1]
+const search = ref('')
+const sortDesc = ref(false)
+const page = ref(1)
+const itemsPerPage = ref(10) // ✅ 초기값을 -1 이 아닌 숫자로 설정
+const sortBy = ref('name')
+const groupBy = ref(null)
+const selectedRow = ref([])
+
+// ❌ headers 는 ref() 로 감싸지 않음! (Vuetify 내부 처리와 충돌)
+// ✅ 평범한 상수 배열로 정의
+const headers = [
+  { title: '이름', key: 'name' },
+  { title: '입학일', key: 'admissionDate' },
+  { title: '반명', key: 'className' },
+  { title: '주소', key: 'addressName' },
+  { title: '생일', key: 'birthday' },
+  { title: '재원여부', key: 'status' },
+  { title: '보호자', key: 'parents' },
+  { title: '작업', key: 'actions', sortable: false },
+]
+
+// ✅ groupBy 유효성 검사 (headers.key 와 일치하는지)
+watch(groupBy, (newVal) => {
+  if (!newVal) return
+  const validKeys = headers.map((h) => h.key)
+  if (!validKeys.includes(newVal)) {
+    console.warn(`⚠️ Invalid groupBy: "${newVal}"`)
+    groupBy.value = null
+  }
+})
+
+// ✅ 페이지 수 계산 (안전 처리)
+const numberOfPages = computed(() => {
+  const list = childrenList.value || []
+  const perPage =
+    itemsPerPage.value === -1 ? list.length : itemsPerPage.value || 10
+  return perPage > 0 ? Math.ceil(list.length / perPage) : 1
+})
+
+onMounted(() => {
+  fetchAllChildren()
+})
+
+// ✅ 데이터 로딩 - 모든 필드 안전 처리 + 필수 id 보장
+const fetchAllChildren = async () => {
+  try {
+    await $withLoading(
+      getAllChildren().then((response) => {
+        if (response?.code === '0' && Array.isArray(response.data)) {
+          childrenList.value = response.data.map((element) => {
+            const parentNameList =
+              element.parentList?.map((parent) => parent.name).join(' ') || ''
+
+            return {
+              ...element,
+              // ✅ item-key="id" 에 필수: 모든 아이템에 id 보장
+              id:
+                element.id ??
+                element.idx ??
+                `child_${Date.now()}_${Math.random()}`,
+              parents: parentNameList,
+              actions: null,
+              addressName: `${element.address?.address || ''} ${
+                element.address?.detailAddress || ''
+              }`.trim(),
+              className: element.className ?? '',
+              status: element.status ?? '',
+              // ✅ groupBy 에서 사용할 필드들도 항상 존재하도록
+              admissionDate: element.admissionDate ?? '',
+              birthday: element.birthday ?? '',
+              name: element.name ?? '',
             }
           })
-          .catch((e) => {
-            this.$showError(e)
-          })
-      )
-    },
-    async openInfoDialog(info) {
-      let amChildRideList = []
-      let pmChildRideList = []
-      if (info.childRideList != null)
-        info.childRideList.forEach((childRide) => {
-          if (childRide.meetingLocation.sunnyRide.am)
-            amChildRideList.push(childRide)
-          else pmChildRideList.push(childRide)
-        })
-      const result = await this.$dialog(ChildMoreInfo, {
-        id: info.id,
-        admissionDate: info.admissionDate,
-        className: info.className,
-        address: info.address,
-        birthday: info.birthday,
-        parentList: info.parentList,
-        status: info.status,
-        amChildRideList: amChildRideList,
-        pmChildRideList: pmChildRideList,
-        name: info.name,
-      })
-      // 삭제 성공 시
-      if (result) {
-        this.$showMessage({
-          type: 'success',
-          message: '성공적으로 삭제했습니다.',
-        })
-        let index = this.childrenList.findIndex((item) => item.id === info.id)
-        if (index !== 1) {
-          this.$delete(this.childrenList, index)
+        } else {
+          childrenList.value = []
         }
-      } else {
-        this.getAllChildren()
-      }
-    },
-    nextPage() {
-      if (this.page + 1 <= this.numberOfPages) this.page += 1
-    },
-    formerPage() {
-      if (this.page - 1 >= 1) this.page -= 1
-    },
-    updateItemsPerPage(number) {
-      this.itemsPerPage = number
-    },
-  },
+      })
+    )
+  } catch (e) {
+    console.error('Fetch error:', e)
+    childrenList.value = []
+    $showError?.(e)
+  }
 }
+
+// 반 변경 다이얼로그
+const openChangeClassDialog = async () => {
+  if (selectedRow.value.length === 0) {
+    $showMessage?.({
+      type: 'warning',
+      message: '선택된 원아가 없습니다.',
+    })
+    return
+  }
+
+  try {
+    const result = await $dialog?.(ChangeClassDialog, selectedRow.value)
+    if (result) {
+      $showMessage?.({
+        type: 'success',
+        message: '성공적으로 변경했습니다.',
+      })
+      await fetchAllChildren()
+    }
+  } catch (e) {
+    $showError?.(e)
+  }
+}
+
+// 상세 정보 다이얼로그
+// ChildList.vue - openInfoDialog 함수
+const openInfoDialog = async (info) => {
+  console.log('[openInfoDialog] Called with:', info)
+  console.log('[openInfoDialog] $dialog available:', !!$dialog)
+
+  // ✅ 입력 검증
+  if (!info?.id) {
+    $showMessage?.({
+      type: 'warning',
+      message: '유효하지 않은 원아 정보입니다.',
+    })
+    return
+  }
+
+  // ✅ 승하차 정보 분리
+  const amChildRideList = []
+  const pmChildRideList = []
+
+  if (Array.isArray(info.childRideList)) {
+    info.childRideList.forEach((childRide) => {
+      const isAm = childRide?.meetingLocation?.sunnyRide?.am === true
+      ;(isAm ? amChildRideList : pmChildRideList).push(childRide)
+    })
+  }
+
+  try {
+    console.log('[openInfoDialog] About to open dialog...')
+    // ✅ $dialog 로 동적 마운트 (ChildMoreInfo 는 템플릿에 없어야 함!)
+    const result = await $dialog?.(ChildMoreInfo, {
+      id: info.id,
+      name: info.name ?? '',
+      admissionDate: info.admissionDate ?? '',
+      className: info.className ?? '',
+      birthday: info.birthday ?? '',
+      status: info.status ?? '',
+      address: info.address,
+      parentList: info.parentList,
+      amChildRideList,
+      pmChildRideList,
+      closable: true, // ✅ ESC/오버레이 클릭으로 닫기 허용
+    })
+
+    console.log('[openInfoDialog] Result:', result)
+
+    // ✅ 결과 처리
+    if (result?.success === true && result?.id === info.id) {
+      $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
+      // 목록에서 제거
+      const idx = childrenList.value.findIndex((item) => item.id === info.id)
+      if (idx !== -1) childrenList.value.splice(idx, 1)
+      // 선택 상태도 동기화
+      const selIdx = selectedRow.value.findIndex((item) => item.id === info.id)
+      if (selIdx !== -1) selectedRow.value.splice(selIdx, 1)
+    } else if (result?.refresh === true) {
+      await fetchAllChildren()
+    }
+    // result === null 이면 취소/닫기: 아무 작업 안 함
+  } catch (error) {
+    console.error('[openInfoDialog] Error:', error)
+    $showError?.(error)
+    await fetchAllChildren() // 데이터 무결성 보장
+  }
+}
+
+// 페이지네이션 핸들러
+const nextPage = () => {
+  if (page.value < numberOfPages.value) {
+    page.value += 1
+  }
+}
+
+const formerPage = () => {
+  if (page.value > 1) {
+    page.value -= 1
+  }
+}
+
+const updateItemsPerPage = (number) => {
+  itemsPerPage.value = number
+  page.value = 1 // 페이지 수 변경 시 첫 페이지로 이동
+}
+
+// 외부에서 호출 가능한 메서드 노출 (필요시)
+defineExpose({
+  refresh: fetchAllChildren,
+})
 </script>
 
 <style scoped>
@@ -409,20 +374,21 @@ export default {
   z-index: 2;
   height: unset;
 }
-._custom-toolbar >>> .v-select {
+
+/* Vue 3: deep selector 는 :deep() 사용 */
+._custom-toolbar :deep(.v-select) {
   width: min-content;
 }
-._list-item {
-  gap: 0 10px;
+
+._group-select {
+  min-width: 200px;
 }
-._list-item >>> .v-list-item__content {
-  flex: unset;
+
+._mobile-table :deep(.v-data-table-header) {
+  font-size: 0.875rem;
 }
-._list-item-name {
-  min-width: 80px;
-  margin: 0;
-}
-._list-item-key {
-  opacity: 0.65;
+
+._mobile-table :deep(.v-data-table__td) {
+  padding: 8px 12px;
 }
 </style>

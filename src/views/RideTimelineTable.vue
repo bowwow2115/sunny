@@ -1,188 +1,234 @@
 <template>
   <div class="_print-paper">
-    <v-card>
-      <v-card-title>
+    <v-card elevation="0">
+      <v-card-title class="d-flex align-center justify-space-between">
         <v-select
           v-model="selectedRide"
           :items="rideList"
-          item-text="name"
+          item-title="name"
           return-object
-        >
-          <!-- <strong>{{
-            ride.name +
-            (ride.time ? `(${ride.time})` : '') +
-            (ride.comment ? ` 비고사항: ${ride.comment}` : '')
-          }}</strong> -->
-        </v-select>
+          variant="outlined"
+          density="compact"
+          label="차량 선택"
+          class="me-4"
+          style="max-width: 400px"
+        ></v-select>
+
         <v-btn
-          onClick="window.print()"
+          variant="flat"
           color="black"
-          class="ml-4 font-weight-regular"
-          ><v-icon color="#fff">ri-printer-line</v-icon></v-btn
+          class="font-weight-regular no-print"
+          @click="handlePrint"
         >
+          <v-icon icon="ri-printer-line" color="white" start></v-icon>
+          인쇄
+        </v-btn>
       </v-card-title>
-      <v-simple-table dense fixed-header class="_print-ride-table">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th>장소</th>
-              <th>시간</th>
-              <th>비고</th>
-              <th>원아</th>
-              <th>보호자1</th>
-              <th>보호자2</th>
-              <th>요일</th>
-            </tr>
-          </thead>
-          <tbody
-            v-for="(meetingLocation, j) in selectedRide.meetingLocationList"
-            :key="j"
+
+      <v-table density="compact" fixed-header class="_print-ride-table">
+        <thead>
+          <tr>
+            <th class="text-left">장소</th>
+            <th class="text-left">시간</th>
+            <th class="text-left">비고</th>
+            <th class="text-left">원아</th>
+            <th class="text-left">보호자1</th>
+            <th class="text-left">보호자2</th>
+            <th class="text-left">요일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template
+            v-for="(meetingLocation, j) in selectedRide?.meetingLocationList ||
+            []"
+            :key="meetingLocation.id || j"
           >
             <tr
-              v-for="(childRide, k) in meetingLocation.childRideList"
-              :key="k"
+              v-for="(childRide, k) in meetingLocation.childRideList || []"
+              :key="childRide.id || `${j}-${k}`"
             >
-              <!-- 첫 번째 childRide에만 부모 데이터 출력 -->
+              <!-- 첫 번째 childRide에만 장소/시간/비고 출력 (rowspan) -->
               <template v-if="k === 0">
                 <td
-                  :rowspan="meetingLocation.childRideList.length"
+                  :rowspan="meetingLocation.childRideList?.length || 1"
                   class="_rt-lo"
                 >
-                  <v-icon>ri-map-pin-fill</v-icon>
+                  <v-icon
+                    icon="ri-map-pin-fill"
+                    size="small"
+                    class="me-1"
+                  ></v-icon>
                   {{ meetingLocation.name }}
                 </td>
                 <td
-                  :rowspan="meetingLocation.childRideList.length"
+                  :rowspan="meetingLocation.childRideList?.length || 1"
                   class="_rt-da"
                 >
                   {{ meetingLocation.time }}
                 </td>
                 <td
-                  :rowspan="meetingLocation.childRideList.length"
+                  :rowspan="meetingLocation.childRideList?.length || 1"
                   class="_rt-co"
                 >
-                  {{ meetingLocation.comment }}
+                  {{ meetingLocation.comment || '-' }}
                 </td>
               </template>
-              <td class="py-2">
-                {{ `${childRide.child.name} (${childRide.child.className})` }}
-              </td>
+
               <td class="py-2">
                 {{
-                  `${childRide.child.parentList[0].telephone} (${childRide.child.parentList[0].relation})`
+                  `${childRide.child?.name || ''} (${
+                    childRide.child?.className || ''
+                  })`
                 }}
               </td>
               <td class="py-2">
-                {{
-                  childRide.child.parentList.length >= 2
-                    ? `${childRide.child.parentList[1].telephone} (${childRide.child.parentList[1].relation})`
-                    : ''
-                }}
+                {{ formatParent(childRide.child?.parentList?.[0]) }}
+              </td>
+              <td class="py-2">
+                {{ formatParent(childRide.child?.parentList?.[1]) }}
               </td>
               <td class="py-2">
                 <div class="_rt-day">
-                  <span>월</span><span>화</span><span>수</span><span>목</span
-                  ><span>금</span>
+                  <span
+                    v-for="day in ['월', '화', '수', '목', '금']"
+                    :key="day"
+                    >{{ day }}</span
+                  >
                 </div>
               </td>
             </tr>
-          </tbody>
-          <tr>
-            <td colspan="7" class="_rt-total">
-              <strong>{{ `총 인원: ${selectedRide.count}` }}</strong>
+          </template>
+
+          <!-- 총 인원 행 -->
+          <tr class="_rt-total">
+            <td colspan="7" class="text-center font-weight-bold">
+              총 인원: {{ selectedRide?.count || 0 }}명
             </td>
           </tr>
-        </template>
-      </v-simple-table>
+        </tbody>
+      </v-table>
     </v-card>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { getRideList } from '@/api/api'
-export default {
-  mounted() {
-    console.log('Received data:', this.$route.query)
-    // this.rideList = this.$route.query
-    this.getRideList()
-  },
-  data() {
-    return {
-      rideList: [],
-      selectedRide: null,
-    }
-  },
-  methods: {
-    getRideList() {
-      this.rideList = []
-      this.amRideList = []
-      this.pmRideList = []
-      this.$withLoading(
-        getRideList()
-          .then((response) => {
-            if (response.code == '0') {
-              this.rideList = response.data
-              this.rideList?.forEach((item) => {
-                let count = 0
-                item.meetingLocationList?.forEach((meetingLocation) => {
-                  count += meetingLocation.childRideList.length
-                })
-                item.count = count
-                if (item.am) {
-                  item.name = '오전 ' + item.name
-                  this.amRideList.push(item)
-                } else {
-                  item.name = '오후 ' + item.name
-                  this.pmRideList.push(item)
-                }
-              })
-              this.selectedRide = this.rideList.find(
-                (ride) => ride.id == this.$route.query.id
-              )
+import { useGlobal } from '@/composables/useGlobal'
+
+const route = useRoute()
+const { $showError, $withLoading } = useGlobal()
+
+// ✅ 상태 관리
+const rideList = ref([])
+const selectedRide = ref(null)
+
+// ✅ 보호자 정보 포맷팅 헬퍼
+const formatParent = (parent) => {
+  if (!parent) return ''
+  return `${parent.telephone || ''} (${parent.relation || ''})`
+}
+
+// ✅ 차량 목록 로딩
+const fetchRideList = async () => {
+  rideList.value = []
+
+  try {
+    await $withLoading(
+      getRideList().then((response) => {
+        if (response?.code === '0' || response?.code === 0) {
+          const data = response.data || []
+
+          rideList.value = data.map((item) => {
+            // ✅ 총 인원 계산
+            let count = 0
+            item.meetingLocationList?.forEach((ml) => {
+              count += ml.childRideList?.length || 0
+            })
+
+            // ✅ 오전/오후 접두사 추가
+            const prefix = item.am ? '오전 ' : '오후 '
+
+            return {
+              ...item,
+              name: prefix + (item.name || ''),
+              count,
             }
           })
-          .catch((e) => {
-            this.$showError(e)
-          })
-      )
-    },
-  },
+
+          // ✅ URL 쿼리 파라미터에 맞는 차량 선택
+          const rideId = route.query?.id
+          if (rideId) {
+            selectedRide.value =
+              rideList.value.find((ride) => ride.id == rideId) ||
+              rideList.value[0]
+          } else {
+            selectedRide.value = rideList.value[0] || null
+          }
+        }
+      })
+    )
+  } catch (e) {
+    console.error('Fetch ride list error:', e)
+    $showError?.(e)
+  }
 }
+
+// ✅ 인쇄 실행
+const handlePrint = () => {
+  window.print()
+}
+
+// ✅ 마운트 시 초기화
+onMounted(() => {
+  console.log('Received query:', route.query)
+  fetchRideList()
+})
 </script>
 
 <style scoped>
-body {
-  margin: 0;
-  padding: 0;
-}
-/* ********** print 인쇄 스타일 ********** */
+/* ********** 기본 스타일 ********** */
 ._print-paper {
   display: block;
   margin: 1rem 10%;
+  background: #fff;
 }
+
 ._print-ride-table {
-  tbody:nth-child(even) {
+  /* 짝수 행 배경색 */
+  :deep(tbody tr:nth-child(even)) {
     background-color: #f5f5f5;
   }
-  tr {
-    transition: 0.2s;
+
+  /* 호버 효과 (인쇄 시 제외) */
+  :deep(tbody tr) {
+    transition: background-color 0.2s;
   }
-  tr:hover {
-    background-color: var(--v-secondary-lighten5) !important;
+
+  :deep(tbody tr:hover) {
+    background-color: var(--v-secondary-lighten5, #fafafa) !important;
   }
+
+  /* rowspan 셀 스타일 */
   ._rt-lo,
   ._rt-da,
   ._rt-co {
     border-bottom: none !important;
+    vertical-align: top;
   }
+
   ._rt-lo {
     font-weight: 600;
-    word-break: auto-phrase;
+    word-break: keep-all;
   }
+
+  /* 요일 칩 스타일 */
   ._rt-day {
     display: flex;
     align-items: center;
     gap: 0.5em;
+
     span {
       display: flex;
       align-items: center;
@@ -194,12 +240,16 @@ body {
       border-radius: 100%;
     }
   }
-  .v-icon.v-icon {
+
+  /* 아이콘 스타일 */
+  :deep(.v-icon) {
     font-size: 1.2em;
     opacity: 0.8;
   }
+
+  /* 총 인원 행 */
   ._rt-total {
-    background: none;
+    background: none !important;
     color: unset;
     border-top: thin solid rgba(0, 0, 0, 0.87);
     text-align: center;
@@ -207,42 +257,75 @@ body {
   }
 }
 
-/* 인쇄 시 A4 크기로 설정 */
-@media print {
-  * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+/* 인쇄 버튼 숨김 클래스 */
+.no-print {
+  @media print {
+    display: none !important;
   }
-  @page {
-    size: A4; /* A4 크기 설정 */
-    margin: 5mm; /* 용지 여백 설정 (20mm 권장) */
+}
+
+/* ********** 인쇄 전용 스타일 ********** */
+@media print {
+  /* 색상 정확히 출력 */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* 페이지에 맞게 레이아웃 설정 */
+  /* A4 용지 설정 */
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
   html,
   body {
     margin: 0;
     padding: 0;
-    background-color: #fff;
+    background-color: #fff !important;
+    -webkit-print-color-adjust: exact;
   }
+
   ._print-paper {
     width: 210mm;
-    height: 297mm;
+    min-height: 297mm;
     margin: 0 auto;
     padding: 0;
     box-sizing: border-box;
+    background: #fff;
   }
+
   ._print-ride-table {
-    tr {
+    /* 페이지 분할 방지 */
+    :deep(tr) {
       page-break-inside: avoid;
       page-break-after: auto;
     }
-    td {
-      font-size: 12px !important;
+
+    /* 글자 크기 조정 */
+    :deep(td) {
+      font-size: 10px !important;
+      padding: 4px 8px !important;
+    }
+
+    :deep(th) {
+      font-size: 11px !important;
+      padding: 6px 8px !important;
     }
   }
-  .v-btn {
-    display: none !important;
+
+  /* Vuetify 컴포넌트 인쇄 최적화 */
+  :deep(.v-card) {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  :deep(.v-select) {
+    pointer-events: none;
+  }
+
+  :deep(.v-field__input) {
+    min-height: auto !important;
   }
 }
 </style>

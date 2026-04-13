@@ -477,7 +477,8 @@ export default {
       form: {
         id: '',
         birthday: '',
-        admissionDate: `${moment().format('YYYY-MM-DD')}`,
+        admissionDate: '',
+        // admissionDate: `${moment().format('YYYY-MM-DD')}`,
         className: '',
         address: { detailAddress: '', zipCode: '', address: '' },
         status: '재원',

@@ -1,8 +1,9 @@
 <template>
   <v-card class="mx-auto" style="padding: 0">
-    <v-card dark flat class="_timeline">
+    <v-card flat variant="tonal" class="_timeline">
+      <!-- 오전 배경 -->
       <v-img
-        v-if="selectedAmPm == '오전'"
+        v-if="selectedAmPm === '오전'"
         src="@/assets/images/morning.webp"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
@@ -12,35 +13,52 @@
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
+                variant="solo"
+                bg-color="white"
+                density="compact"
+                class="me-2"
+                @update:model-value="handleAmPmChange"
               ></v-select>
               <v-select
                 v-model="selectedRide"
-                :items="selectedAmPm == '오전' ? amRideList : pmRideList"
-                item-text="name"
+                :items="selectedAmPm === '오전' ? amRideList : pmRideList"
+                item-title="name"
                 return-object
+                variant="solo"
+                bg-color="white"
+                density="compact"
+                label="차량 선택"
               ></v-select>
             </div>
             <div class="_btn-grp flex-nowrap">
               <v-btn
-                @click="openRideTable()"
+                @click="openRideTable"
+                variant="flat"
                 color="black"
                 class="font-weight-regular"
+                size="small"
               >
-                <v-icon>ri-printer-line</v-icon></v-btn
-              >
+                <v-icon icon="ri-printer-line" start></v-icon>
+                인쇄
+              </v-btn>
               <v-btn
-                @click="openAddMeetingLocationDialog(selectedRide)"
+                @click="openAddMeetingLocationDialog"
+                variant="flat"
                 color="accent"
-                class="ml-1 font-weight-regular"
+                class="ml-2 font-weight-regular"
+                size="small"
               >
-                <v-icon>ri-add-line</v-icon>
+                <v-icon icon="ri-add-line" start></v-icon>
+                장소 추가
               </v-btn>
             </div>
           </div>
         </v-container>
       </v-img>
+
+      <!-- 오후 배경 -->
       <v-img
-        v-if="selectedAmPm == '오후'"
+        v-if="selectedAmPm === '오후'"
         src="@/assets/images/sunset.webp"
         gradient="to top, rgba(0,0,0,.2), rgba(0,0,0,0.6)"
       >
@@ -50,203 +68,364 @@
               <v-select
                 v-model="selectedAmPm"
                 :items="['오전', '오후']"
+                variant="solo"
+                bg-color="white"
+                density="compact"
+                class="me-2"
+                @update:model-value="handleAmPmChange"
               ></v-select>
               <v-select
                 v-model="selectedRide"
-                :items="selectedAmPm == '오전' ? amRideList : pmRideList"
-                item-text="name"
+                :items="selectedAmPm === '오전' ? amRideList : pmRideList"
+                item-title="name"
                 return-object
+                variant="solo"
+                bg-color="white"
+                density="compact"
+                label="차량 선택"
               ></v-select>
             </div>
             <div class="_btn-grp flex-nowrap">
-              <v-btn @click="openRideTable()" class="font-weight-light">
-                <v-icon>ri-printer-line</v-icon></v-btn
-              >
               <v-btn
-                @click="openAddMeetingLocationDialog(selectedRide)"
-                color="accent"
-                class="ml-1"
+                @click="openRideTable"
+                variant="flat"
+                class="font-weight-regular"
+                size="small"
               >
-                <v-icon>ri-add-line</v-icon>
+                <v-icon icon="ri-printer-line" start></v-icon>
+                인쇄
+              </v-btn>
+              <v-btn
+                @click="openAddMeetingLocationDialog"
+                variant="flat"
+                color="accent"
+                class="ml-2"
+                size="small"
+              >
+                <v-icon icon="ri-add-line" start></v-icon>
+                장소 추가
               </v-btn>
             </div>
           </div>
         </v-container>
       </v-img>
     </v-card>
+
     <v-card-text>
       <v-timeline
+        v-if="selectedRide?.meetingLocationList?.length"
         dense
-        v-if="selectedRide?.meetingLocationList?.length > 0"
+        side="end"
         class="pt-0"
       >
         <v-timeline-item
-          class="py-0"
-          :color="selectedAmPm == '오전' ? 'tertiary' : 'info'"
-          small
-          v-for="(meetingLocation, index) in selectedRide?.meetingLocationList"
-          :key="index"
+          v-for="(meetingLocation, index) in selectedRide.meetingLocationList"
+          :key="meetingLocation.id || index"
+          :color="selectedAmPm === '오전' ? 'tertiary' : 'info'"
+          size="small"
+          class="py-2"
         >
-          <!-- <v-card :width="isMobile ? '100%' : '80%'"> -->
           <v-card
-            :class="selectedAmPm == '오전' ? '_am-card' : '_pm-card'"
+            :class="selectedAmPm === '오전' ? '_am-card' : '_pm-card'"
             class="_timeline-card py-4"
-            flat
+            variant="outlined"
+            rounded="lg"
           >
-            <v-card-title class="py-0">
-              <h3>
-                {{ meetingLocation.time }}
-              </h3>
-              <v-btn icon @click="openMeetingLocationMoreInfo(meetingLocation)">
-                <v-icon>ri-edit-2-fill</v-icon>
+            <v-card-title class="py-0 d-flex align-start justify-space-between">
+              <div>
+                <h3 class="text-h6 font-weight-bold">
+                  {{ meetingLocation.time }}
+                </h3>
+                <p class="text-body-1 mt-1">
+                  {{ meetingLocation.name }}
+                  <small v-if="meetingLocation.comment" class="text-grey">
+                    ({{ meetingLocation.comment }})
+                  </small>
+                </p>
+              </div>
+              <v-btn
+                icon
+                size="small"
+                variant="text"
+                @click="openMeetingLocationMoreInfo(meetingLocation)"
+              >
+                <v-icon icon="ri-edit-2-fill"></v-icon>
               </v-btn>
-              <p>
-                {{ `${meetingLocation.name}` }}
-                <small>{{
-                  meetingLocation.comment == null
-                    ? ''
-                    : `(${meetingLocation.comment})`
-                }}</small>
-              </p>
             </v-card-title>
-            <V-card-text class="py-0">
+
+            <v-card-text class="py-2">
               <v-chip
                 v-for="(childRide, j) in meetingLocation.childRideList"
-                :key="j"
+                :key="childRide.id || j"
+                variant="outlined"
+                size="small"
+                class="me-2 mb-2"
                 @click="openParentsDialog(meetingLocation.childRideList)"
               >
-                <b class="mr-1">{{ `${childRide.child.name}` }}</b>
-                <span>{{ `(${childRide.child.className})` }}</span>
-                <span class="_comment ml-1">{{
-                  `${childRide.comment || ''}`
-                }}</span>
+                <b class="me-1">{{ childRide.child?.name }}</b>
+                <span class="text-grey"
+                  >({{ childRide.child?.className }})</span
+                >
+                <span v-if="childRide.comment" class="_comment text-grey ms-1">
+                  {{ childRide.comment }}
+                </span>
               </v-chip>
-            </V-card-text>
+            </v-card-text>
           </v-card>
         </v-timeline-item>
       </v-timeline>
-      <v-card-title v-else style="justify-content: center; min-height: 600px">
-        <v-icon>mdi-information-off</v-icon> 승하차 장소의 정보가
-        없습니다</v-card-title
-      >
+
+      <div v-else class="text-center py-16">
+        <v-icon icon="mdi-information-off" size="48" class="mb-4"></v-icon>
+        <p class="text-body-1 text-grey">승하차 장소의 정보가 없습니다</p>
+      </div>
     </v-card-text>
   </v-card>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { getRideList } from '@/api/api'
 import ReadParentsDialog from '@/components/dialog/ReadParentsDialog.vue'
 import MeetingLocationMoreInfo from '@/views/MeetingLocationMoreInfo.vue'
 import ManageMeetingLocationDialog from '@/components/dialog/ManageMeetingLocationDialog.vue'
-export default {
-  name: 'RideTimeline',
-  data() {
-    return {
-      events: [],
-      input: null,
-      nonce: 0,
-      rideList: [],
-      amRideList: [],
-      pmRideList: [],
-      selectedRide: { meetingLocationList: [], am: false },
-      selectedAmPm: '오전',
-      isMobile: false,
-    }
-  },
-  mounted() {
-    this.getRideList(true)
-    this.checkIfMobile()
-  },
-  methods: {
-    getRideList(init = false) {
-      this.rideList = []
-      this.amRideList = []
-      this.pmRideList = []
-      this.$withLoading(
-        getRideList()
-          .then((response) => {
-            if (response.code == '0') {
-              this.rideList = response.data
-              response.data.forEach((item) => {
-                if (item.am) this.amRideList.push(item)
-                else this.pmRideList.push(item)
-              })
-              if (init) this.selectedRide = this.amRideList[0]
-              else {
-                if (this.selectedRide.am) {
-                  this.selectedRide = this.amRideList.find(
-                    (amRide) => amRide.id == this.selectedRide.id
-                  )
-                } else {
-                  this.selectedRide = this.pmRideList.find(
-                    (pmRide) => pmRide.id == this.selectedRide.id
-                  )
-                }
-              }
-            }
-          })
-          .catch((e) => {
-            this.$showError(e)
-          })
-      )
-    },
-    async openParentsDialog(childRideList) {
-      await this.$dialog(ReadParentsDialog, childRideList)
-    },
-    async openMeetingLocationMoreInfo(meetingLocation) {
-      const result = await this.$dialog(
-        MeetingLocationMoreInfo,
-        meetingLocation
-      )
-      if (result) this.getRideList()
-    },
-    async openAddMeetingLocationDialog(selectedRide) {
-      if (
-        selectedRide == null ||
-        selectedRide.id == undefined ||
-        selectedRide.id == null ||
-        selectedRide.id == ''
-      ) {
-        this.$showMessage({
-          type: 'warning',
-          message: '차량을 먼저 선택해주세요.',
-        })
-        return
-      }
-      let item = {}
-      item.isEdit = false
-      item.sunnyRide = selectedRide
-      const result = await this.$dialog(ManageMeetingLocationDialog, item)
-      if (result) this.getRideList()
-    },
-    checkIfMobile() {
-      // 사용자 에이전트 문자열에서 모바일 기기를 확인
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+import { useGlobal } from '@/composables/useGlobal'
 
-      // 모바일 기기 감지 (iOS, Android, 기타 모바일 기기들)
-      if (
-        /android/i.test(userAgent) ||
-        (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
-      ) {
-        this.isMobile = true
-      } else {
-        this.isMobile = false
-      }
-    },
-    openRideTable() {
-      // 새 창에서 특정 라우터 경로 열기
-      console.log(this.selectedRide.id)
-      let param = {}
-      param.id = this.selectedRide.id
+const router = useRouter()
+const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
-      const url = this.$router.resolve({
-        name: 'RideTimelineTable',
-        query: param,
-      }).href
-      window.open(url, '_blank')
-    },
-  },
+// ✅ 상태 관리
+const events = ref([])
+const input = ref(null)
+const nonce = ref(0)
+const rideList = ref([])
+const amRideList = ref([])
+const pmRideList = ref([])
+const selectedRide = ref({ meetingLocationList: [], am: false })
+const selectedAmPm = ref('오전')
+const isMobile = ref(false)
+
+// ✅ 차량 목록 로딩
+const fetchRideList = async (init = false) => {
+  rideList.value = []
+  amRideList.value = []
+  pmRideList.value = []
+
+  try {
+    await $withLoading(
+      getRideList().then((response) => {
+        if (response?.code === '0' || response?.code === 0) {
+          rideList.value = response.data || []
+
+          response.data?.forEach((item) => {
+            if (item.am) amRideList.value.push(item)
+            else pmRideList.value.push(item)
+          })
+
+          if (init && amRideList.value[0]) {
+            selectedRide.value = amRideList.value[0]
+          } else if (selectedRide.value?.id) {
+            const targetList = selectedRide.value.am
+              ? amRideList.value
+              : pmRideList.value
+            const found = targetList.find(
+              (ride) => ride.id === selectedRide.value.id
+            )
+            if (found) selectedRide.value = found
+          }
+        }
+      })
+    )
+  } catch (e) {
+    console.error('Fetch ride list error:', e)
+    $showError?.(e)
+  }
 }
+
+// ✅ 오전/오후 변경 핸들러
+const handleAmPmChange = () => {
+  const targetList =
+    selectedAmPm.value === '오전' ? amRideList.value : pmRideList.value
+  if (targetList?.[0]) {
+    selectedRide.value = targetList[0]
+  }
+}
+
+// ✅ 보호자 정보 다이얼로그
+const openParentsDialog = async (childRideList) => {
+  try {
+    await $dialog?.(ReadParentsDialog, childRideList)
+  } catch (e) {
+    console.error('ReadParentsDialog error:', e)
+  }
+}
+
+// ✅ 승하차 장소 상세 정보
+const openMeetingLocationMoreInfo = async (meetingLocation) => {
+  try {
+    const result = await $dialog?.(MeetingLocationMoreInfo, meetingLocation)
+    if (result) {
+      await fetchRideList()
+    }
+  } catch (e) {
+    console.error('MeetingLocationMoreInfo error:', e)
+    $showError?.(e)
+  }
+}
+
+// ✅ 승하차 장소 추가 다이얼로그
+const openAddMeetingLocationDialog = async () => {
+  if (!selectedRide.value?.id) {
+    $showMessage?.({
+      type: 'warning',
+      message: '차량을 먼저 선택해주세요.',
+    })
+    return
+  }
+
+  try {
+    const result = await $dialog?.(ManageMeetingLocationDialog, {
+      isEdit: false,
+      sunnyRide: selectedRide.value,
+    })
+    if (result) {
+      await fetchRideList()
+    }
+  } catch (e) {
+    console.error('ManageMeetingLocationDialog error:', e)
+    $showError?.(e)
+  }
+}
+
+// ✅ 모바일 감지
+const checkIfMobile = () => {
+  const ua = navigator.userAgent || navigator.vendor || window.opera
+  isMobile.value =
+    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+}
+
+// ✅ 인쇄용 테이블 새 창 열기
+const openRideTable = () => {
+  if (!selectedRide.value?.id) {
+    $showMessage?.({
+      type: 'warning',
+      message: '차량을 먼저 선택해주세요.',
+    })
+    return
+  }
+
+  const url = router.resolve({
+    name: 'RideTimelineTable',
+    query: { id: selectedRide.value.id },
+  }).href
+  window.open(url, '_blank')
+}
+
+// ✅ 마운트 시 초기화
+onMounted(() => {
+  fetchRideList(true)
+  checkIfMobile()
+})
+
+// ✅ selectedAmPm 변경 시 selectedRide 초기화
+watch(selectedAmPm, () => {
+  handleAmPmChange()
+})
 </script>
 
-<style></style>
+<style scoped>
+._timeline {
+  position: relative;
+}
+
+._timeline-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+._timeline-select {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+._timeline-select :deep(.v-select) {
+  min-width: 120px;
+}
+
+._btn-grp {
+  display: flex;
+  gap: 8px;
+}
+
+._timeline-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+._timeline-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+._am-card {
+  border-left: 4px solid var(--v-tertiary-base);
+}
+
+._pm-card {
+  border-left: 4px solid var(--v-info-base);
+}
+
+._comment {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+._list-title-with-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Vue 3 deep selector */
+:deep(.v-timeline-item__dot) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+:deep(.v-chip__content) {
+  font-size: 0.875rem;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  ._timeline-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  ._timeline-select {
+    flex-direction: column;
+  }
+
+  ._timeline-select :deep(.v-select) {
+    width: 100%;
+  }
+
+  ._btn-grp {
+    justify-content: center;
+  }
+
+  :deep(.v-timeline) {
+    padding-left: 8px;
+  }
+
+  :deep(.v-timeline-item__body) {
+    min-width: 0;
+  }
+}
+</style>
