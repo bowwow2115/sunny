@@ -80,9 +80,10 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { getClassList, updateChildrenClass } from '@/api/api'
+import type { Child } from '@/types'
 
 // ✅ 플러그인 연동용 props
 const props = defineProps({
@@ -98,26 +99,26 @@ const props = defineProps({
   // ✅ 전역 메서드 주입 (useGlobal 훅 또는 globalProperties 사용)
   $confirm: { type: Function, default: null },
   $showError: { type: Function, default: null },
-  $withLoading: { type: Function, default: (fn) => fn() },
+  $withLoading: { type: Function, default: (fn: any) => fn() },
 })
 
 // ✅ 상태 관리
 const dialogModel = ref(true)
 const isValid = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<any>(null)
 
 // ✅ 폼 데이터
-const form = ref({
-  childrenList: [...props.childrenList],
+const form = ref<{ childrenList: Child[]; className: string }>({
+  childrenList: [...(props.childrenList as Child[])],
   className: props.className,
 })
 
 // ✅ 반 목록
-const classList = ref([])
+const classList = ref<string[]>([])
 
 // ✅ 검증 규칙
-const nameRules = [(v) => !!v || '필수 항목입니다.']
+const nameRules = [(v: any) => !!v || '필수 항목입니다.']
 
 // ✅ 반 목록 로딩
 const fetchClassList = async () => {
@@ -125,7 +126,7 @@ const fetchClassList = async () => {
     const response = await getClassList()
     if (response?.code === '0' || response?.code === 0) {
       // ✅ Vuetify 3 select 는 { title, value } 객체 배열 또는 단순 문자열 배열 모두 지원
-      classList.value = response.data?.map((element) => element.name) || []
+      classList.value = response.data?.map((element: any) => element.name) || []
     }
   } catch (error) {
     console.error('Failed to load class list:', error)
@@ -172,7 +173,7 @@ const handleConfirm = async () => {
     const execute = () =>
       updateChildrenClass(form.value.childrenList, form.value.className)
 
-    const response = await (props.$withLoading?.(execute()) ?? execute())
+    const response: any = await (props.$withLoading?.(execute()) ?? execute())
 
     if (response?.code === '0' || response?.code === 0) {
       // $showMessage?.({ type: 'success', message: '성공적으로 변경했습니다.' })
@@ -195,7 +196,7 @@ onMounted(() => {
   fetchClassList()
 
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

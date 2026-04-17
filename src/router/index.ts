@@ -1,29 +1,36 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { h, defineComponent } from 'vue'
+import {
+  createRouter,
+  createWebHashHistory,
+  type RouteRecordRaw,
+  type RouteLocationNormalized,
+} from 'vue-router'
 import auth from '@/api/auth'
-import constants from '@/Constants.js'
-import store from '@/store/index.js'
+import constants from '@/Constants'
+import store from '@/store'
 import Utils from '@/utils/utils'
 
-// ✅ 에러 핸들링 래퍼 함수 (수정됨)
-function withLoadingError(importFn, componentName) {
-  // ✅ 이 함수가 () => Promise 를 반환해야 함
+function withLoadingError(
+  importFn: () => Promise<any>,
+  componentName: string
+): () => Promise<any> {
   return () => {
-    return importFn().catch((error) => {
+    return importFn().catch((error: Error) => {
       console.error(`[Router] Failed to load ${componentName}:`, error)
-
-      // ✅ 에러 발생 시 대체 컴포넌트 반환 (Promise 가 아닌 객체)
-      return {
+      return defineComponent({
         setup() {
-          return () => {
-            // ✅ Vue 3 h() 함수 사용 (런타임에 동적 생성)
-            const { h } = require('vue')
-            return h('div', { class: 'pa-8 text-center' }, [
+          return () =>
+            h('div', { class: 'pa-8 text-center' }, [
               h('v-icon', {
                 icon: 'ri-error-warning-fill',
                 color: 'error',
                 size: '48',
               }),
-              h('h3', { class: 'text-h6 mt-4' }, `${componentName} 로딩 실패`),
+              h(
+                'h3',
+                { class: 'text-h6 mt-4' },
+                `${componentName} 로딩 실패`
+              ),
               h('p', { class: 'text-grey mt-2' }, error.message),
               h(
                 'v-btn',
@@ -35,14 +42,12 @@ function withLoadingError(importFn, componentName) {
                 '새로고침'
               ),
             ])
-          }
         },
-      }
+      })
     })
   }
 }
 
-// ✅ 라우트 컴포넌트 정의 (래퍼 함수 직접 사용, 화살표 함수로 감싸지 않음)
 const Layout = withLoadingError(
   () => import('@/components/Layout.vue'),
   'Layout'
@@ -75,29 +80,11 @@ const RideTimelineTable = withLoadingError(
   'RideTimelineTable'
 )
 
-const routes = [
-  {
-    path: '/',
-    redirect: { name: constants.DEFAULT_HOME || 'SunnyHome' },
-  },
-  {
-    path: '/SignIn',
-    name: 'SignIn',
-    component: SignIn,
-    meta: { requiresAuth: false },
-  },
-  {
-    path: '/SignUp',
-    name: 'SignUp',
-    component: SignUp,
-    meta: { requiresAuth: false },
-  },
-  {
-    path: '/FindId',
-    name: 'FindId',
-    component: FindId,
-    meta: { requiresAuth: false },
-  },
+const routes: RouteRecordRaw[] = [
+  { path: '/', redirect: { name: 'SunnyHome' } },
+  { path: '/SignIn', name: 'SignIn', component: SignIn, meta: { requiresAuth: false } },
+  { path: '/SignUp', name: 'SignUp', component: SignUp, meta: { requiresAuth: false } },
+  { path: '/FindId', name: 'FindId', component: FindId, meta: { requiresAuth: false } },
   {
     path: '/RideTimelineTable',
     name: 'RideTimelineTable',
@@ -107,63 +94,29 @@ const routes = [
   {
     path: '/',
     component: Layout,
-    redirect: { name: constants.DEFAULT_HOME || 'SunnyHome' },
+    redirect: { name: 'SunnyHome' },
     children: [
-      {
-        path: 'ChildRegist',
-        name: 'ChildRegist',
-        component: ChildRegist,
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'ChildList',
-        name: 'ChildList',
-        component: ChildList,
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'RideTimeline',
-        name: 'RideTimeline',
-        component: RideTimeline,
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'AdminMenu',
-        name: 'AdminMenu',
-        component: AdminMenu,
-        meta: { requiresAuth: true, requiresAdmin: true },
-      },
-      {
-        path: 'SunnyHome',
-        name: 'SunnyHome',
-        component: SunnyHome,
-        meta: { requiresAuth: true },
-      },
+      { path: 'ChildRegist', name: 'ChildRegist', component: ChildRegist, meta: { requiresAuth: true } },
+      { path: 'ChildList', name: 'ChildList', component: ChildList, meta: { requiresAuth: true } },
+      { path: 'RideTimeline', name: 'RideTimeline', component: RideTimeline, meta: { requiresAuth: true } },
+      { path: 'AdminMenu', name: 'AdminMenu', component: AdminMenu, meta: { requiresAuth: true, requiresAdmin: true } },
+      { path: 'SunnyHome', name: 'SunnyHome', component: SunnyHome, meta: { requiresAuth: true } },
     ],
   },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    redirect: { name: constants.DEFAULT_HOME || 'SunnyHome' },
-  },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'SunnyHome' } },
 ]
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
+    if (savedPosition) return savedPosition
     return { top: 0, behavior: 'smooth' }
   },
 })
 
-// ✅ 전역 가드: 인증 체크
-router.beforeEach(async (to, from) => {
-  if (to.fullPath === from.fullPath) {
-    return
-  }
+router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+  if (to.fullPath === from.fullPath) return
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
@@ -176,47 +129,41 @@ router.beforeEach(async (to, from) => {
         return { name: constants.DEFAULT_HOME || 'SunnyHome' }
       }
       return true
-    } else {
-      return {
-        name: 'SignIn',
-        query: { redirect: to.fullPath },
-      }
+    }
+    return {
+      name: 'SignIn',
+      query: { redirect: to.fullPath },
     }
   }
 
   const hasToken = !Utils.isNull(Utils.getToken())
-  if (hasToken && !['SignIn', 'SignUp', 'FindId'].includes(to.name)) {
+  if (hasToken && !['SignIn', 'SignUp', 'FindId'].includes(to.name as string)) {
     return { name: constants.DEFAULT_HOME || 'SunnyHome' }
   }
 
   return true
 })
 
-async function validateAuth() {
+async function validateAuth(): Promise<boolean> {
   try {
     const response = await auth.loggedIn()
-
-    if (response?.code === '0' || response?.code === 0) {
-      return true
-    }
+    if (response?.code === '0' || response?.code === 0) return true
     return false
   } catch (error) {
     console.warn('Auth validation failed:', error)
-
     try {
       Utils.deleteCookie?.(constants.TOKEN)
-      store.commit?.('SET_USER', null)
+      store.commit?.('SET_USERID', '')
       store.commit?.('SET_ADMIN', false)
     } catch (e) {
       console.error('Cookie cleanup error:', e)
     }
-
     return false
   }
 }
 
-router.afterEach((to, from) => {
-  const titles = {
+router.afterEach((to) => {
+  const titles: Record<string, string> = {
     SignIn: '로그인 - 해맑은 어린이집',
     SignUp: '회원가입 - 해맑은 어린이집',
     SunnyHome: '홈 - 해맑은 어린이집',
@@ -225,14 +172,16 @@ router.afterEach((to, from) => {
   }
 
   const baseTitle = '해맑은 어린이집'
-  document.title = titles[to.name] || baseTitle
+  document.title = titles[to.name as string] || baseTitle
 
   if (store.state?.isLoading) {
     store.commit?.('SET_LOADING', false)
   }
 })
 
-export function getQueryString(location = window.location.href) {
+export function getQueryString(
+  location: string = window.location.href
+): Record<string, string> {
   const url = new URL(location)
   return Object.fromEntries(url.searchParams.entries())
 }

@@ -86,10 +86,20 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { updateRide, addRide } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Ride } from '@/types'
+
+interface RideForm {
+  id: string | number
+  name: string
+  time: string
+  timeInput: string
+  comment: string
+  am: boolean
+}
 
 const { $showError, $withLoading } = useGlobal()
 
@@ -109,14 +119,14 @@ const props = defineProps({
 })
 
 // ✅ 상태 관리
-const dialogModel = ref(true)
-const isValid = ref(false)
-const loading = ref(false)
-const formRef = ref(null)
-const isEdit = ref(props.isEdit)
+const dialogModel = ref<boolean>(true)
+const isValid = ref<boolean>(false)
+const loading = ref<boolean>(false)
+const formRef = ref<any>(null) // v-form doesn't have a strict type, this is simpler
+const isEdit = ref<boolean>(props.isEdit)
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<RideForm>({
   id: props.id,
   name: props.name,
   time: props.time,
@@ -126,20 +136,20 @@ const form = ref({
 })
 
 // ✅ 검증 규칙
-const nameRules = [(v) => !!v || '필수 항목입니다.']
+const nameRules = [(v: string) => !!v || '필수 항목입니다.']
 const timeRules = [
-  (v) => !!v || '필수 항목입니다.',
-  (v) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
-  (v) => /^\d{4}$/.test(v) || '4 자리로 입력해 주세요',
+  (v: string) => !!v || '필수 항목입니다.',
+  (v: string) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
+  (v: string) => /^\d{4}$/.test(v) || '4 자리로 입력해 주세요',
 ]
 
 // ✅ 시간 입력 포맷팅 (숫자만 허용)
-const formatTimeInput = () => {
+const formatTimeInput = (): void => {
   form.value.timeInput = form.value.timeInput.replace(/[^0-9]/g, '').slice(0, 4)
 }
 
 // ✅ 다이얼로그 닫기 (취소)
-const handleCancel = () => {
+const handleCancel = (): void => {
   dialogModel.value = false
   setTimeout(() => {
     props.onClose(null)
@@ -147,7 +157,7 @@ const handleCancel = () => {
 }
 
 // ✅ 확인 및 저장 실행
-const handleConfirm = async () => {
+const handleConfirm = async (): Promise<void> => {
   // ✅ Vuetify 3 폼 검증 (비동기)
   const { valid } = (await formRef.value?.validate?.()) || {
     valid: isValid.value,
@@ -190,7 +200,7 @@ const handleConfirm = async () => {
 // ✅ props 변경 시 form 동기화 (선택사항)
 watch(
   () => props.time,
-  (newVal) => {
+  (newVal: string) => {
     if (newVal) {
       form.value.timeInput = newVal.replace(':', '')
     }
@@ -199,7 +209,7 @@ watch(
 
 watch(
   () => props.isEdit,
-  (newVal) => {
+  (newVal: boolean) => {
     isEdit.value = newVal
   }
 )
@@ -207,7 +217,7 @@ watch(
 // ✅ 마운트 시 초기화
 onMounted(() => {
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

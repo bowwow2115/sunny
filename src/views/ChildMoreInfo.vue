@@ -334,10 +334,11 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useClipboard } from '@vueuse/core' // ✅ 클립보드 유틸 (vue-clipboard3 대체)
 import { useGlobal } from '@/composables/useGlobal'
+import type { Parent, ChildRide } from '@/types'
 
 const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 // import { useGlobal } from '@/composables/useGlobal' // 플러그인 훅
@@ -365,11 +366,11 @@ const props = defineProps({
 })
 
 // ✅ 다이얼로그 상태
-const dialogModel = ref(true)
-const isMobile = ref(false)
+const dialogModel = ref<boolean>(true)
+const isMobile = ref<boolean>(false)
 
 // ✅ 폼 데이터 (반응형)
-const form = ref({
+const form = ref<any>({
   id: props.id,
   name: props.name,
   admissionDate: props.admissionDate,
@@ -401,25 +402,27 @@ const fullAddress = computed(() => {
 
 // ✅ 모바일 감지
 const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
 // ✅ 차량 정보 포맷팅 헬퍼
-const formatRideTitle = (ride) => {
+const formatRideTitle = (ride: any) => {
   const sunny = ride?.meetingLocation?.sunnyRide || {}
   const timeStr = sunny.time ? `(${sunny.time})` : ''
   return `${sunny.name || ''}${timeStr}`
 }
 
-const formatRideSubtitle = (ride) => {
+const formatRideSubtitle = (ride: any) => {
   const sunny = ride?.meetingLocation?.sunnyRide || {}
   return `${sunny.time || ''} ${sunny.comment || ''}`.trim()
 }
 
 // ✅ 클립보드 복사
-const copyToClipboard = async (text) => {
+const copyToClipboard = async (text: string) => {
   try {
     await copy(text)
     // ✅ 성공 메시지 (글로벌 훅 사용)
@@ -470,7 +473,7 @@ const openChildDialog = async () => {
 }
 
 // ✅ 보호자 정보 다이얼로그
-const openParentsDialog = async (isEdit, item = {}) => {
+const openParentsDialog = async (isEdit: boolean, item: any = {}) => {
   try {
     const { default: ParentsDialog } = await import(
       '@/components/dialog/ManageParentsDialog.vue'
@@ -482,7 +485,7 @@ const openParentsDialog = async (isEdit, item = {}) => {
       childId: form.value.id,
     }
 
-    const result = await window.$dialog?.(ParentsDialog, dialogProps)
+    const result = await (window as any).$dialog?.(ParentsDialog, dialogProps)
 
     if (result) {
       // $showMessage?.({
@@ -492,7 +495,9 @@ const openParentsDialog = async (isEdit, item = {}) => {
 
       if (isEdit) {
         // ✅ 수정: 기존 아이템 교체
-        const idx = form.value.parentList.findIndex((p) => p.id === result.id)
+        const idx = form.value.parentList.findIndex(
+          (p: Parent) => p.id === result.id
+        )
         if (idx !== -1) {
           form.value.parentList[idx] = result
         }
@@ -508,7 +513,11 @@ const openParentsDialog = async (isEdit, item = {}) => {
 }
 
 // ✅ 차량 정보 다이얼로그 (AM/PM 공용)
-const openChildRideDialog = async (isEdit, item = {}, isAm) => {
+const openChildRideDialog = async (
+  isEdit: boolean,
+  item: any = {},
+  isAm: boolean
+) => {
   try {
     const { default: ChildRideDialog } = await import(
       '@/components/dialog/ManageChildRideDialog.vue'
@@ -521,7 +530,10 @@ const openChildRideDialog = async (isEdit, item = {}, isAm) => {
       child: { id: form.value.id },
     }
 
-    const result = await window.$dialog?.(ChildRideDialog, dialogProps)
+    const result = await (window as any).$dialog?.(
+      ChildRideDialog,
+      dialogProps
+    )
 
     if (result) {
       // $showMessage?.({
@@ -535,7 +547,7 @@ const openChildRideDialog = async (isEdit, item = {}, isAm) => {
 
       if (isEdit) {
         // ✅ 수정
-        const idx = targetList.findIndex((r) => r.id === result.id)
+        const idx = targetList.findIndex((r: ChildRide) => r.id === result.id)
         if (idx !== -1) {
           targetList[idx] = result
         }
@@ -551,9 +563,9 @@ const openChildRideDialog = async (isEdit, item = {}, isAm) => {
 }
 
 // ✅ 보호자 삭제
-const deleteParents = async (parent) => {
+const deleteParents = async (parent: Parent) => {
   try {
-    const confirmed = await window.$confirm?.({
+    const confirmed = await (window as any).$confirm?.({
       message: `${parent.name}님의 정보를 정말 삭제하시겠습니까?`,
     })
 
@@ -565,7 +577,9 @@ const deleteParents = async (parent) => {
     //   $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
 
     // ✅ 배열에서 제거 (Vue 3: splice)
-    const idx = form.value.parentList.findIndex((p) => p.id === parent.id)
+    const idx = form.value.parentList.findIndex(
+      (p: Parent) => p.id === parent.id
+    )
     if (idx !== -1) {
       form.value.parentList.splice(idx, 1)
     }
@@ -577,10 +591,10 @@ const deleteParents = async (parent) => {
 }
 
 // ✅ 차량 정보 삭제
-const deleteChildRide = async (childRide) => {
+const deleteChildRide = async (childRide: any) => {
   try {
     const rideName = childRide?.meetingLocation?.sunnyRide?.name || '이 차량'
-    const confirmed = await window.$confirm?.({
+    const confirmed = await (window as any).$confirm?.({
       message: `${rideName}를 정말 삭제하시겠습니까?`,
     })
 
@@ -597,7 +611,7 @@ const deleteChildRide = async (childRide) => {
       : form.value.pmChildRideList
 
     // ✅ 배열에서 제거
-    const idx = targetList.findIndex((r) => r.id === childRide.id)
+    const idx = targetList.findIndex((r: ChildRide) => r.id === childRide.id)
     if (idx !== -1) {
       targetList.splice(idx, 1)
     }
@@ -611,7 +625,7 @@ const deleteChildRide = async (childRide) => {
 // ✅ 원아 삭제 (최상위)
 const handleDeleteChild = async () => {
   try {
-    const confirmed = await window.$confirm?.({
+    const confirmed = await (window as any).$confirm?.({
       message: `주의: ${form.value.name}을 정말 삭제하시겠습니까?`,
     })
 
@@ -654,7 +668,7 @@ onMounted(() => {
 
   // ✅ ESC 키로 닫기
   if (props.closable) {
-    const onKeydown = (e) => {
+    const onKeydown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         handleCancel()
       }

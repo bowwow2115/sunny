@@ -44,33 +44,31 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
+import type { ConfirmOptions } from '@/types'
 
-// ✅ props 대신 ref로 상태 관리
 const message = ref('')
 const confirmText = ref('확인')
 const cancelText = ref('닫기')
 const persistent = ref(true)
 
-// ✅ dialogModel 은 플러그인 마운트용으로 true 로 시작
 const dialogModel = ref(true)
 
-// ✅ 외부에서 호출할 함수 (Promise 반환)
-const showConfirm = (payload) => {
-  return new Promise((resolve) => {
+let currentResolve: ((value: boolean) => void) | null = null
+
+const showConfirm = (payload: ConfirmOptions): Promise<boolean> => {
+  return new Promise<boolean>((resolve) => {
     message.value = payload.message || ''
     confirmText.value = payload.confirmText || '확인'
     cancelText.value = payload.cancelText || '닫기'
     persistent.value =
-      payload.persistent !== undefined ? payload.persistent : false // ✅ 기본값: false (닫기 가능)
+      payload.persistent !== undefined ? payload.persistent : false
 
     currentResolve = resolve
     dialogModel.value = true
   })
 }
-
-let currentResolve = null
 
 const handleConfirm = () => {
   dialogModel.value = false
@@ -87,19 +85,14 @@ const handleCancel = () => {
     dialogModel.value = false
     setTimeout(() => {
       if (currentResolve) {
-        currentResolve(false) // ✅ 닫기/취소도 false로 반환
+        currentResolve(false)
         currentResolve = null
       }
     }, 150)
   }
 }
 
-// 외부에서 호출 가능하도록 노출
-defineExpose({
-  showConfirm,
-})
-
-// ✅ ESC 키로 닫기 처리는 제거 (showConfirm의 persistent 옵션으로 제어)
+defineExpose({ showConfirm })
 </script>
 
 <style scoped>

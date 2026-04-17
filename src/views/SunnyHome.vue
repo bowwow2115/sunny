@@ -176,10 +176,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { getBirthMonthChild } from '@/api/api'
 import auth from '@/api/auth'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
@@ -187,6 +187,7 @@ import ManageClassDialog from '@/components/admin/ClassDialog.vue'
 import ManageUserDialog from '@/components/admin/UserDialog.vue'
 import ManageRideDialog from '@/components/admin/RideDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Child } from '@/types'
 
 const router = useRouter()
 const store = useStore()
@@ -200,15 +201,15 @@ const {
 } = useGlobal()
 
 // ✅ 상태 관리
-const birthMonthChildList = ref([])
-const beingBirthdayChildList = ref([])
-const currentMonth = ref('')
+const birthMonthChildList = ref<Child[]>([])
+const beingBirthdayChildList = ref<Array<Child & { dDay: number }>>([])
+const currentMonth = ref<number | string>('')
 
 // ✅ Vuex getters (computed 로 연결)
-const isAdmin = computed(() => store.getters.isAdmin)
-const userId = computed(() => store.getters.userId)
+const isAdmin = computed<boolean>(() => store.getters.isAdmin)
+const userId = computed<string>(() => store.getters.userId)
 
-const copyToClipboard = async (text) => {
+const copyToClipboard = async (text: string) => {
   try {
     // ✅ 성공 메시지 (글로벌 훅 사용)
     $showConfirm?.({
@@ -224,26 +225,28 @@ const copyToClipboard = async (text) => {
 // ✅ 이번 달 생일자 목록 조회
 const fetchBirthMonthChildren = async () => {
   try {
-    const response = await getBirthMonthChild()
+    const response: any = await getBirthMonthChild()
 
     if (response?.code === '0' || response?.code === 0) {
-      const list = response.data || []
+      const list: Child[] = response.data || []
 
       // ✅ 생일순 정렬 (일자 오름차순)
-      birthMonthChildList.value = [...list].sort((a, b) => {
-        const dayA = new Date(a.birthday).getDate()
-        const dayB = new Date(b.birthday).getDate()
+      birthMonthChildList.value = [...list].sort((a: Child, b: Child) => {
+        const dayA = new Date(a.birthday as string).getDate()
+        const dayB = new Date(b.birthday as string).getDate()
         return dayA - dayB
       })
 
       // ✅ D-day 계산 및 다가오는 생일 필터링
       beingBirthdayChildList.value = birthMonthChildList.value
-        .map((child) => {
-          const dDay = calculateMMDDDifference(child.birthday)
+        .map((child: Child) => {
+          const dDay = calculateMMDDDifference(child.birthday as string)
           return dDay >= 0 ? { ...child, dDay } : null
         })
         .filter(Boolean)
-        .sort((a, b) => a.dDay - b.dDay) // ✅ D-day 오름차순
+        .sort(
+          (a: any, b: any) => a.dDay - b.dDay
+        ) as Array<Child & { dDay: number }> // ✅ D-day 오름차순
     }
   } catch (e) {
     console.error('Fetch birth children error:', e)
@@ -258,7 +261,7 @@ const getCurrentMonth = () => {
 }
 
 // ✅ D-day 계산 (MM-DD 기준, 올해 기준)
-const calculateMMDDDifference = (targetDate) => {
+const calculateMMDDDifference = (targetDate: string): number => {
   const now = new Date()
   const [targetYear, targetMonth, targetDay] = targetDate.split('-').map(Number)
 
@@ -270,7 +273,7 @@ const calculateMMDDDifference = (targetDate) => {
     target = new Date(now.getFullYear() + 1, targetMonth - 1, targetDay)
   }
 
-  const diffMs = target - now
+  const diffMs = target.getTime() - now.getTime()
   return Math.ceil(diffMs / (1000 * 60 * 60 * 24))
 }
 

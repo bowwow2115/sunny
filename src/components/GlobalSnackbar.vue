@@ -24,18 +24,17 @@
   </v-snackbar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
+import type { SnackbarOptions } from '@/types'
 
-// 상태 관리
 const show = ref(false)
 const message = ref('')
-const type = ref('info')
+const type = ref<SnackbarOptions['type']>('info')
 const timeout = ref(3000)
 
-let timeoutId = null
+let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-// 타입별 아이콘 및 색상 설정 (RemixIcon 사용)
 const typeIcon = computed(() => {
   switch (type.value) {
     case 'success':
@@ -50,30 +49,19 @@ const typeIcon = computed(() => {
   }
 })
 
-const snackbarColor = computed(() => {
-  // 배경색을 타입에 따라 다르게 하려면 반환, 단색으로 통일 하려면 제거
-  return undefined
-})
+const snackbarColor = computed<string | undefined>(() => undefined)
 
-// 스낵바 표시 (외부에서 호출 가능하도록 노출)
-const showSnackbar = (payload) => {
-  // 기존 타이머 정리
-  if (timeoutId) {
-    clearTimeout(timeoutId)
-  }
+const showSnackbar = (payload: SnackbarOptions) => {
+  if (timeoutId) clearTimeout(timeoutId)
 
   type.value = payload.type || 'info'
   message.value = payload.message || ''
   timeout.value = payload.timeout || 3000
   show.value = true
 
-  // 자동 닫기
-  timeoutId = setTimeout(() => {
-    closeSnackbar()
-  }, timeout.value)
+  timeoutId = setTimeout(() => closeSnackbar(), timeout.value)
 }
 
-// 스낵바 닫기
 const closeSnackbar = () => {
   show.value = false
   if (timeoutId) {
@@ -82,11 +70,7 @@ const closeSnackbar = () => {
   }
 }
 
-// 외부에서 호출 가능하도록 노출
-defineExpose({
-  showSnackbar,
-  closeSnackbar,
-})
+defineExpose({ showSnackbar, closeSnackbar })
 </script>
 
 <style scoped>

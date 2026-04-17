@@ -2,82 +2,82 @@ import constants from '@/Constants'
 import CryptoJS from 'crypto-js'
 
 const Utils = {
-  regExpIp() {
+  regExpIp(): RegExp {
     return /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]|[*])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]|[*])$/
   },
-  // COOKIES
-  setCookie(cName, cValue, seconds = 3600, path = '/') {
-    // 현재 시간을 기준으로 쿠키 만료일 설정
-    let expire = new Date()
-    expire.setTime(expire.getTime() + seconds * 1000) // 밀리초 단위로 계산
-    // 쿠키 문자열 생성
+
+  setCookie(cName: string, cValue: string, seconds = 3600, path = '/'): void {
+    const expire = new Date()
+    expire.setTime(expire.getTime() + seconds * 1000)
     let cookies =
       cName + '=' + encodeURIComponent(cValue) + '; path=' + path + ';'
-    cookies += 'expires=' + expire.toUTCString() + ';' // 만료일 설정
-
-    // 쿠키 설정
+    cookies += 'expires=' + expire.toUTCString() + ';'
     document.cookie = cookies
   },
-  deleteCookie(cookieName, path = '') {
-    let expireDate = new Date()
-    if (path === '') path = '/'
 
+  deleteCookie(cookieName: string, path = ''): void {
+    const expireDate = new Date()
+    if (path === '') path = '/'
     expireDate.setDate(expireDate.getDate() - 1)
     document.cookie =
       cookieName +
       '= ' +
       '; expires=' +
-      expireDate.toGMTString() +
+      expireDate.toUTCString() +
       '; path=' +
       path
   },
-  getCookie(cName) {
-    cName = cName + '='
-    let cookieData = document.cookie
-    let start = cookieData.indexOf(cName)
+
+  getCookie(cName: string): string {
+    const key = cName + '='
+    const cookieData = document.cookie
+    let start = cookieData.indexOf(key)
     let cValue = ''
-    if (start != -1) {
-      start += cName.length
+    if (start !== -1) {
+      start += key.length
       let end = cookieData.indexOf(';', start)
-      if (end == -1) end = cookieData.length
+      if (end === -1) end = cookieData.length
       cValue = cookieData.substring(start, end)
     }
-    return unescape(cValue)
+    return decodeURIComponent(cValue)
   },
-  getToken() {
+
+  getToken(): string {
     return Utils.getCookie('auth')
   },
-  tripleDESenc(parameters) {
+
+  tripleDESenc(parameters: string): string {
     const key = CryptoJS.enc.Utf8.parse('vf_9g13j4j91j27c582ji693')
     const iv = CryptoJS.enc.Utf8.parse('vf_iv000')
-
-    let encrypt = CryptoJS.TripleDES.encrypt(parameters, key, {
-      iv: iv,
-      keySize: 8,
+    const encrypt = CryptoJS.TripleDES.encrypt(parameters, key, {
+      iv,
       mode: CryptoJS.mode.CBC,
       padding: CryptoJS.pad.Pkcs7,
-    })
+    } as any)
     return encrypt.toString()
   },
-  getTenant() {
+
+  getTenant(): string {
     return Utils.getCookie('tenant')
   },
-  isNull(str) {
+
+  isNull(str: unknown): boolean {
     return str === null || str === undefined || str === ''
   },
-  checkEnv(NODE_ENV) {
+
+  checkEnv(NODE_ENV: string | undefined): string {
     if (NODE_ENV === 'production') {
       return `${constants.CONTEXT_PATH}/#/signIn`
-    } else {
-      return '/'
     }
+    return '/'
   },
-  convertDateToLocalDateTime(dateString) {
+
+  convertDateToLocalDateTime(dateString: string): string {
     return dateString + 'T00:00:00'
   },
-  getTimeIntervals(startTime, endTime) {
-    // 시간 문자열을 Date 객체로 변환하는 함수
-    function parseTime(timeStr) {
+
+  getTimeIntervals(startTime: string, endTime: string): string[] {
+    function parseTime(timeStr: string): Date {
       const [hours, minutes] = timeStr.split(':').map(Number)
       const date = new Date()
       date.setHours(hours)
@@ -86,8 +86,7 @@ const Utils = {
       return date
     }
 
-    // Date 객체를 "HH:mm" 형식의 문자열로 변환하는 함수
-    function formatTime(date) {
+    function formatTime(date: Date): string {
       const hours = String(date.getHours()).padStart(2, '0')
       const minutes = String(date.getMinutes()).padStart(2, '0')
       return `${hours}:${minutes}`
@@ -95,19 +94,18 @@ const Utils = {
 
     const start = parseTime(startTime)
     const end = parseTime(endTime)
-    const intervals = []
+    const intervals: string[] = []
 
     while (start <= end) {
       intervals.push(formatTime(start))
-      start.setMinutes(start.getMinutes() + 1) // 5분 단위로 증가
+      start.setMinutes(start.getMinutes() + 1)
     }
 
     return intervals
   },
-  truncateString(str, maxLength) {
-    if (str.length <= maxLength) {
-      return str
-    }
+
+  truncateString(str: string, maxLength: number): string {
+    if (str.length <= maxLength) return str
     return str.slice(0, maxLength) + '...'
   },
 }

@@ -75,30 +75,28 @@
   </v-main>
 </template>
 
-<script>
-export default {
-  name: 'FindId',
-  components: {},
+<script setup lang="ts">
+import { ref } from 'vue'
 
-  data() {
-    return {
-      valid: true,
-      form: {
-        userId: '',
-        userEmail: '',
-        newPw: '',
-      },
-      wation: false,
-      countdown: 3, // 이메일 인증코드 재전송 타임 예시
-    }
-  },
-
-  methods: {
-    // 로그인 폼 submit
-    FindId() {
-      // 로그인 폼 submit
-    },
-    sendEmailCode() {}, // 시간이 카운트다운되면 좋겠습니당..
-  },
+interface FindIdForm {
+  userId: string
+  userEmail: string
+  newPw: string
 }
+
+const valid = ref<boolean>(true)
+const form = ref<FindIdForm>({
+  userId: '',
+  userEmail: '',
+  newPw: '',
+})
+const waiting = ref<boolean>(false)
+const countdown = ref<number>(3) // 이메일 인증코드 재전송 타임 예시
+
+// 로그인 폼 submit
+const FindId = () => {
+  // 로그인 폼 submit
+}
+
+const sendEmailCode = () => {} // 시간이 카운트다운되면 좋겠습니당..
 </script>

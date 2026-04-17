@@ -31,7 +31,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 
 // ✅ 플러그인 연동용 props
@@ -51,8 +51,8 @@ const props = defineProps({
 const dialogModel = ref(true)
 
 // ✅ 에러 정보 (props 와 동기화)
-const errorCode = ref(props.code || '정의되지 않은 에러입니다.')
-const errorMessage = ref(props.message || '관리자에게 문의하세요')
+const errorCode = ref<string | number>(props.code || '정의되지 않은 에러입니다.')
+const errorMessage = ref<string>(props.message || '관리자에게 문의하세요')
 
 // ✅ props 변경 시 에러 정보 업데이트
 watch(

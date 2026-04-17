@@ -156,26 +156,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { getAllChildren } from '@/api/api'
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue' // ← 유지 가능
 
 import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Child } from '@/types'
 
 const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
 // ✅ 상태 정의
-const childrenList = ref([])
-const itemsPerPageArray = [20, 30, 40, 50, -1]
-const search = ref('')
-const sortDesc = ref(false)
-const page = ref(1)
-const itemsPerPage = ref(10) // ✅ 초기값을 -1 이 아닌 숫자로 설정
-const sortBy = ref('name')
-const groupBy = ref(null)
-const selectedRow = ref([])
+const childrenList = ref<Child[]>([])
+const itemsPerPageArray: number[] = [20, 30, 40, 50, -1]
+const search = ref<string>('')
+const sortDesc = ref<boolean>(false)
+const page = ref<number>(1)
+const itemsPerPage = ref<number>(10) // ✅ 초기값을 -1 이 아닌 숫자로 설정
+const sortBy = ref<string>('name')
+const groupBy = ref<string | null>(null)
+const selectedRow = ref<Child[]>([])
 
 // ❌ headers 는 ref() 로 감싸지 않음! (Vuetify 내부 처리와 충돌)
 // ✅ 평범한 상수 배열로 정의
@@ -191,7 +192,7 @@ const headers = [
 ]
 
 // ✅ groupBy 유효성 검사 (headers.key 와 일치하는지)
-watch(groupBy, (newVal) => {
+watch(groupBy, (newVal: string | null) => {
   if (!newVal) return
   const validKeys = headers.map((h) => h.key)
   if (!validKeys.includes(newVal)) {
@@ -216,11 +217,12 @@ onMounted(() => {
 const fetchAllChildren = async () => {
   try {
     await $withLoading(
-      getAllChildren().then((response) => {
+      getAllChildren().then((response: any) => {
         if (response?.code === '0' && Array.isArray(response.data)) {
-          childrenList.value = response.data.map((element) => {
+          childrenList.value = response.data.map((element: any) => {
             const parentNameList =
-              element.parentList?.map((parent) => parent.name).join(' ') || ''
+              element.parentList?.map((parent: any) => parent.name).join(' ') ||
+              ''
 
             return {
               ...element,
@@ -280,7 +282,7 @@ const openChangeClassDialog = async () => {
 
 // 상세 정보 다이얼로그
 // ChildList.vue - openInfoDialog 함수
-const openInfoDialog = async (info) => {
+const openInfoDialog = async (info: any) => {
   console.log('[openInfoDialog] Called with:', info)
   console.log('[openInfoDialog] $dialog available:', !!$dialog)
 
@@ -294,11 +296,11 @@ const openInfoDialog = async (info) => {
   }
 
   // ✅ 승하차 정보 분리
-  const amChildRideList = []
-  const pmChildRideList = []
+  const amChildRideList: any[] = []
+  const pmChildRideList: any[] = []
 
   if (Array.isArray(info.childRideList)) {
-    info.childRideList.forEach((childRide) => {
+    info.childRideList.forEach((childRide: any) => {
       const isAm = childRide?.meetingLocation?.sunnyRide?.am === true
       ;(isAm ? amChildRideList : pmChildRideList).push(childRide)
     })
@@ -327,10 +329,14 @@ const openInfoDialog = async (info) => {
     if (result?.success === true && result?.id === info.id) {
       $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
       // 목록에서 제거
-      const idx = childrenList.value.findIndex((item) => item.id === info.id)
+      const idx = childrenList.value.findIndex(
+        (item: Child) => item.id === info.id
+      )
       if (idx !== -1) childrenList.value.splice(idx, 1)
       // 선택 상태도 동기화
-      const selIdx = selectedRow.value.findIndex((item) => item.id === info.id)
+      const selIdx = selectedRow.value.findIndex(
+        (item: Child) => item.id === info.id
+      )
       if (selIdx !== -1) selectedRow.value.splice(selIdx, 1)
     } else if (result?.refresh === true) {
       await fetchAllChildren()
@@ -356,7 +362,7 @@ const formerPage = () => {
   }
 }
 
-const updateItemsPerPage = (number) => {
+const updateItemsPerPage = (number: number) => {
   itemsPerPage.value = number
   page.value = 1 // 페이지 수 변경 시 첫 페이지로 이동
 }
