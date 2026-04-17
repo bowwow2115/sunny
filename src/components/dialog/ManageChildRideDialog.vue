@@ -91,10 +91,11 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { getRideList, addChildRide, updateChildRide } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Ride } from '@/types'
 
 const { $showError, $withLoading } = useGlobal()
 
@@ -117,10 +118,10 @@ const props = defineProps({
 const dialogModel = ref(true)
 const isValid = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<any>(null)
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<any>({
   id: props.id,
   comment: props.comment,
   meetingLocation: { ...props.meetingLocation },
@@ -128,13 +129,13 @@ const form = ref({
 })
 
 // ✅ 차량 목록 (오전/오후 분리)
-const amRideList = ref([])
-const pmRideList = ref([])
-const selectedSunnyRide = ref({ meetingLocationList: [] })
+const amRideList = ref<any[]>([])
+const pmRideList = ref<any[]>([])
+const selectedSunnyRide = ref<any>({ meetingLocationList: [] })
 
 // ✅ 검증 규칙
-const rideRules = [(v) => !!v || '필수 항목입니다.']
-const meetingLocationRules = [(v) => !!v || '필수 항목입니다.']
+const rideRules = [(v: any) => !!v || '필수 항목입니다.']
+const meetingLocationRules = [(v: any) => !!v || '필수 항목입니다.']
 
 // ✅ 차량 목록 로딩
 const fetchRideList = async () => {
@@ -143,10 +144,10 @@ const fetchRideList = async () => {
 
     if (response?.data) {
       // ✅ 데이터 가공: meetingLocation 이름 포맷팅
-      response.data.forEach((ride) => {
+      response.data.forEach((ride: any) => {
         // ✅ 원본 데이터 변조 방지를 위해 얕은 복사 고려 (필요시)
         if (ride.meetingLocationList) {
-          ride.meetingLocationList = ride.meetingLocationList.map((loc) => ({
+          ride.meetingLocationList = ride.meetingLocationList.map((loc: any) => ({
             ...loc,
             name: `${loc.name}(${loc.time})`,
           }))
@@ -163,7 +164,7 @@ const fetchRideList = async () => {
       if (props.isEdit && props.meetingLocation?.sunnyRide?.id) {
         const targetList = props.am ? amRideList.value : pmRideList.value
         const found = targetList.find(
-          (item) => item.id === props.meetingLocation.sunnyRide.id
+          (item: any) => item.id === (props.meetingLocation as any).sunnyRide.id
         )
         if (found) {
           selectedSunnyRide.value = found
@@ -217,7 +218,7 @@ const handleConfirm = async () => {
       ? () => updateChildRide(form.value)
       : () => addChildRide(form.value)
 
-    const response = await ($withLoading?.(apiCall()) ?? apiCall())
+    const response: any = await ($withLoading?.(apiCall()) ?? apiCall())
 
     if (response?.code === '0' || response?.code === 0) {
       // $showMessage?.({ type: 'success', message: '성공적으로 저장했습니다.' })
@@ -240,7 +241,7 @@ onMounted(() => {
   fetchRideList()
 
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

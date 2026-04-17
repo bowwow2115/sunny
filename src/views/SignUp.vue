@@ -140,24 +140,33 @@
   </v-main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { addUser, checkDuplicateUserId } from '@/api/api.js'
+import { addUser, checkDuplicateUserId } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
 
 const router = useRouter()
 const { $showMessage, $showError, $withLoading } = useGlobal()
 
 // ✅ 상태 관리
-const formRef = ref(null)
-const isValid = ref(false)
-const loading = ref(false)
-const checkingId = ref(false)
-const idChecked = ref(false) // 중복확인 완료 여부
+const formRef = ref<any>(null)
+const isValid = ref<boolean>(false)
+const loading = ref<boolean>(false)
+const checkingId = ref<boolean>(false)
+const idChecked = ref<boolean>(false) // 중복확인 완료 여부
 
 // ✅ 폼 데이터
-const form = ref({
+interface SignUpForm {
+  userId: string
+  password: string
+  passwordCheck: string
+  name: string
+  telephone: string
+  email: string
+}
+
+const form = ref<SignUpForm>({
   userId: '',
   password: '',
   passwordCheck: '',
@@ -168,37 +177,38 @@ const form = ref({
 
 // ✅ 검증 규칙
 const userIdRules = [
-  (v) => !!v || '아이디는 필수 항목입니다.',
-  (v) => /^[a-zA-Z0-9]+$/.test(v) || '영문과 숫자만 사용 가능합니다.',
-  (v) => (v && v.length >= 4) || '최소 4자 이상 입력해주세요.',
-  (v) => (v && v.length <= 20) || '최대 20자 이하로 입력해주세요.',
+  (v: string) => !!v || '아이디는 필수 항목입니다.',
+  (v: string) => /^[a-zA-Z0-9]+$/.test(v) || '영문과 숫자만 사용 가능합니다.',
+  (v: string) => (v && v.length >= 4) || '최소 4자 이상 입력해주세요.',
+  (v: string) => (v && v.length <= 20) || '최대 20자 이하로 입력해주세요.',
 ]
 
 const passwordRules = [
-  (v) => !!v || '비밀번호는 필수 항목입니다.',
-  (v) => /^[a-zA-Z0-9]+$/.test(v) || '영문과 숫자만 사용 가능합니다.',
-  (v) => (v && v.length >= 4) || '최소 4자 이상 입력해주세요.',
-  (v) => (v && v.length <= 10) || '최대 10자 이하로 입력해주세요.',
+  (v: string) => !!v || '비밀번호는 필수 항목입니다.',
+  (v: string) => /^[a-zA-Z0-9]+$/.test(v) || '영문과 숫자만 사용 가능합니다.',
+  (v: string) => (v && v.length >= 4) || '최소 4자 이상 입력해주세요.',
+  (v: string) => (v && v.length <= 10) || '최대 10자 이하로 입력해주세요.',
 ]
 
 const passwordCheckRules = [
-  (v) => !!v || '비밀번호 확인은 필수 항목입니다.',
-  (v) => (v && v === form.value.password) || '비밀번호가 일치하지 않습니다.',
+  (v: string) => !!v || '비밀번호 확인은 필수 항목입니다.',
+  (v: string) =>
+    (v && v === form.value.password) || '비밀번호가 일치하지 않습니다.',
 ]
 
 const nameRules = [
-  (v) => !!v || '이름은 필수 항목입니다.',
-  (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]+$/.test(v) || '한글만 입력 가능합니다.',
-  (v) => (v && v.length <= 20) || '20자 이하로 입력해주세요.',
+  (v: string) => !!v || '이름은 필수 항목입니다.',
+  (v: string) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]+$/.test(v) || '한글만 입력 가능합니다.',
+  (v: string) => (v && v.length <= 20) || '20자 이하로 입력해주세요.',
 ]
 
 const phoneRules = [
-  (v) => !!v || '전화번호는 필수 항목입니다.',
-  (v) => /^\d{10,11}$/.test(v) || '올바른 전화번호 형식이 아닙니다.',
+  (v: string) => !!v || '전화번호는 필수 항목입니다.',
+  (v: string) => /^\d{10,11}$/.test(v) || '올바른 전화번호 형식이 아닙니다.',
 ]
 
 const emailRules = [
-  (v) =>
+  (v: string) =>
     !v ||
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ||
     '올바른 이메일 형식이 아닙니다.',
@@ -244,7 +254,7 @@ const checkDuplicateId = async () => {
       type: 'success',
       message: `'${form.value.userId}'는 사용 가능한 아이디입니다.`,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Duplicate check error:', error)
     $showError?.(error)
     idChecked.value = false
@@ -290,7 +300,7 @@ const handleJoin = async () => {
     }
 
     // ✅ API 호출
-    const response = await ($withLoading?.(addUser(submitData)) ??
+    const response: any = await ($withLoading?.(addUser(submitData)) ??
       addUser(submitData))
 
     if (response?.code === '0' || response?.code === 0) {
@@ -299,7 +309,7 @@ const handleJoin = async () => {
       // ✅ 로그인 페이지로 이동
       await router.push({ path: '/SignIn' })
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Signup error:', error)
     $showError?.(error)
   } finally {

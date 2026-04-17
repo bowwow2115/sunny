@@ -225,7 +225,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { getClassList, updateChild } from '@/api/api'
 
@@ -249,8 +249,8 @@ const props = defineProps({
 const dialogModel = ref(true)
 const isValid = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
-const detailAddressRef = ref(null)
+const formRef = ref<any>(null)
+const detailAddressRef = ref<any>(null)
 
 // ✅ 메뉴 상태
 const admissionDateMenu = ref(false)
@@ -259,7 +259,7 @@ const activePicker = ref('DATE')
 const postcodeDialog = ref(false)
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<any>({
   id: props.id,
   name: props.name,
   status: props.status,
@@ -270,23 +270,23 @@ const form = ref({
 })
 
 // ✅ 반 목록
-const classNameList = ref([])
+const classNameList = ref<string[]>([])
 
 // ✅ 검증 규칙
 const nameRules = [
-  (v) => !!v || '필수 항목입니다.',
-  (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
-  (v) => !v || v.length <= 16 || '16자 이내로 입력해주세요.',
+  (v: any) => !!v || '필수 항목입니다.',
+  (v: any) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: any) => !v || v.length <= 16 || '16자 이내로 입력해주세요.',
 ]
 
 const statusRules = [
-  (v) => !!v || '필수 항목입니다.',
-  (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
-  (v) => !v || v.length <= 8 || '8자 이내로 입력해주세요.',
+  (v: any) => !!v || '필수 항목입니다.',
+  (v: any) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: any) => !v || v.length <= 8 || '8자 이내로 입력해주세요.',
 ]
 
-const datePicRules = [(v) => !!v || '날짜를 선택해 주세요.']
-const classNameRules = [(v) => !!v || '반을 선택해 주세요.']
+const datePicRules = [(v: any) => !!v || '날짜를 선택해 주세요.']
+const classNameRules = [(v: any) => !!v || '반을 선택해 주세요.']
 
 // ✅ 계산된 속성: 오늘 날짜 (max date for birthday)
 const maxDate = computed(() => {
@@ -295,12 +295,12 @@ const maxDate = computed(() => {
 })
 
 // ✅ 날짜 포맷팅 헬퍼
-const getDay = (date) => {
+const getDay = (date: string | number | Date) => {
   const days = ['일', '월', '화', '수', '목', '금', '토']
   return days[new Date(date).getDay()]
 }
 
-const getMonth = (date) => {
+const getMonth = (date: string | number | Date) => {
   const months = [
     '1월',
     '2월',
@@ -318,7 +318,7 @@ const getMonth = (date) => {
   return months[new Date(date).getMonth()]
 }
 
-const changeHeader = (date) => {
+const changeHeader = (date: string | number | Date) => {
   const y = new Date(date).getFullYear()
   const m = new Date(date).getMonth() + 1
   return `${y}년 ${m}월`
@@ -329,7 +329,7 @@ const fetchClassList = async () => {
   try {
     const response = await getClassList()
     if (response?.data) {
-      classNameList.value = response.data.map((item) => item.name)
+      classNameList.value = response.data.map((item: any) => item.name)
     }
   } catch (error) {
     console.error('Failed to load class list:', error)
@@ -386,9 +386,9 @@ const openPostcode = async () => {
   await nextTick()
 
   // ✅ Daum Postcode 스크립트 로딩 (전역에 이미 로드되어 있다고 가정)
-  if (typeof window.daum?.Postcode === 'function') {
-    new window.daum.Postcode({
-      oncomplete: (data) => {
+  if (typeof (window as any).daum?.Postcode === 'function') {
+    new (window as any).daum.Postcode({
+      oncomplete: (data: any) => {
         let addr =
           data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
         let extraAddr = ''
@@ -422,7 +422,7 @@ const openPostcode = async () => {
       },
       width: '100%',
       height: '100%',
-    }).embed(document.getElementById('postcode'))
+    }).embed(document.getElementById('postcode') as HTMLElement)
   } else {
     console.error('Daum Postcode script not loaded')
     // $showError?.({ message: '주소 검색 스크립트를 불러올 수 없습니다.' })
@@ -434,7 +434,7 @@ onMounted(() => {
   fetchClassList()
 
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

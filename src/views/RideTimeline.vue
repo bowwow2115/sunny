@@ -183,7 +183,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRideList } from '@/api/api'
@@ -196,29 +196,29 @@ const router = useRouter()
 const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
 // ✅ 상태 관리
-const events = ref([])
-const input = ref(null)
-const nonce = ref(0)
-const rideList = ref([])
-const amRideList = ref([])
-const pmRideList = ref([])
-const selectedRide = ref({ meetingLocationList: [], am: false })
-const selectedAmPm = ref('오전')
-const isMobile = ref(false)
+const events = ref<any[]>([])
+const input = ref<any>(null)
+const nonce = ref<number>(0)
+const rideList = ref<any[]>([])
+const amRideList = ref<any[]>([])
+const pmRideList = ref<any[]>([])
+const selectedRide = ref<any>({ meetingLocationList: [], am: false })
+const selectedAmPm = ref<string>('오전')
+const isMobile = ref<boolean>(false)
 
 // ✅ 차량 목록 로딩
-const fetchRideList = async (init = false) => {
+const fetchRideList = async (init: boolean = false) => {
   rideList.value = []
   amRideList.value = []
   pmRideList.value = []
 
   try {
     await $withLoading(
-      getRideList().then((response) => {
+      getRideList().then((response: any) => {
         if (response?.code === '0' || response?.code === 0) {
           rideList.value = response.data || []
 
-          response.data?.forEach((item) => {
+          response.data?.forEach((item: any) => {
             if (item.am) amRideList.value.push(item)
             else pmRideList.value.push(item)
           })
@@ -230,7 +230,7 @@ const fetchRideList = async (init = false) => {
               ? amRideList.value
               : pmRideList.value
             const found = targetList.find(
-              (ride) => ride.id === selectedRide.value.id
+              (ride: any) => ride.id === selectedRide.value.id
             )
             if (found) selectedRide.value = found
           }
@@ -253,7 +253,7 @@ const handleAmPmChange = () => {
 }
 
 // ✅ 보호자 정보 다이얼로그
-const openParentsDialog = async (childRideList) => {
+const openParentsDialog = async (childRideList: any[]) => {
   try {
     await $dialog?.(ReadParentsDialog, childRideList)
   } catch (e) {
@@ -262,7 +262,7 @@ const openParentsDialog = async (childRideList) => {
 }
 
 // ✅ 승하차 장소 상세 정보
-const openMeetingLocationMoreInfo = async (meetingLocation) => {
+const openMeetingLocationMoreInfo = async (meetingLocation: any) => {
   try {
     const result = await $dialog?.(MeetingLocationMoreInfo, meetingLocation)
     if (result) {
@@ -300,9 +300,11 @@ const openAddMeetingLocationDialog = async () => {
 
 // ✅ 모바일 감지
 const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
 // ✅ 인쇄용 테이블 새 창 열기

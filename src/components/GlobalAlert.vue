@@ -13,34 +13,26 @@
   </v-alert>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
+import type { AlertOptions } from '@/types'
 
-// 상태 관리
 const show = ref(false)
-const type = ref('success')
+const type = ref<AlertOptions['type']>('success')
 const message = ref('')
 
-let timeoutId = null
+let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-// 알림 표시 (외부에서 호출 가능하도록 노출)
-const showAlert = (payload) => {
-  // 기존 타이머 정리
-  if (timeoutId) {
-    clearTimeout(timeoutId)
-  }
+const showAlert = (payload: AlertOptions) => {
+  if (timeoutId) clearTimeout(timeoutId)
 
   type.value = payload.type || 'info'
   message.value = payload.message || ''
   show.value = true
 
-  // 2초 후 자동 닫기
-  timeoutId = setTimeout(() => {
-    closeAlert()
-  }, 2000)
+  timeoutId = setTimeout(() => closeAlert(), 2000)
 }
 
-// 알림 닫기
 const closeAlert = () => {
   show.value = false
   if (timeoutId) {
@@ -49,11 +41,7 @@ const closeAlert = () => {
   }
 }
 
-// 외부에서 showAlert 메서드 호출 가능하도록 노출
-defineExpose({
-  showAlert,
-  closeAlert,
-})
+defineExpose({ showAlert, closeAlert })
 </script>
 
 <style scoped>

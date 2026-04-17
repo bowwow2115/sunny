@@ -111,21 +111,22 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getRideList } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Parent } from '@/types'
 
 const route = useRoute()
 const { $showError, $withLoading } = useGlobal()
 
 // ✅ 상태 관리
-const rideList = ref([])
-const selectedRide = ref(null)
+const rideList = ref<any[]>([])
+const selectedRide = ref<any>(null)
 
 // ✅ 보호자 정보 포맷팅 헬퍼
-const formatParent = (parent) => {
+const formatParent = (parent: Parent | undefined | null) => {
   if (!parent) return ''
   return `${parent.telephone || ''} (${parent.relation || ''})`
 }
@@ -136,14 +137,14 @@ const fetchRideList = async () => {
 
   try {
     await $withLoading(
-      getRideList().then((response) => {
+      getRideList().then((response: any) => {
         if (response?.code === '0' || response?.code === 0) {
           const data = response.data || []
 
-          rideList.value = data.map((item) => {
+          rideList.value = data.map((item: any) => {
             // ✅ 총 인원 계산
             let count = 0
-            item.meetingLocationList?.forEach((ml) => {
+            item.meetingLocationList?.forEach((ml: any) => {
               count += ml.childRideList?.length || 0
             })
 
@@ -161,7 +162,7 @@ const fetchRideList = async () => {
           const rideId = route.query?.id
           if (rideId) {
             selectedRide.value =
-              rideList.value.find((ride) => ride.id == rideId) ||
+              rideList.value.find((ride: any) => ride.id == rideId) ||
               rideList.value[0]
           } else {
             selectedRide.value = rideList.value[0] || null

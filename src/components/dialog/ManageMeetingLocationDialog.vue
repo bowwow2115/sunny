@@ -85,7 +85,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { updateMeetingLocation, addMeetingLocation } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
@@ -111,10 +111,10 @@ const props = defineProps({
 const dialogModel = ref(true)
 const isValid = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<any>(null)
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<any>({
   id: props.id,
   name: props.name,
   time: props.time,
@@ -124,15 +124,15 @@ const form = ref({
 })
 
 // ✅ 검증 규칙
-const nameRules = [(v) => !!v || '필수 항목입니다.']
+const nameRules = [(v: any) => !!v || '필수 항목입니다.']
 const timeRules = [
-  (v) => !!v || '필수 항목입니다.',
-  (v) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
-  (v) => /^\d{4}$/.test(v) || '4 자리로 입력해 주세요',
+  (v: any) => !!v || '필수 항목입니다.',
+  (v: any) => /^\d+$/.test(v) || '숫자만 입력해 주세요.',
+  (v: any) => /^\d{4}$/.test(v) || '4 자리로 입력해 주세요',
 ]
 
 // ✅ 시간 입력 포맷팅 (숫자만 허용)
-const formatTimeInput = (event) => {
+const formatTimeInput = (event: Event) => {
   // ✅ 숫자 외 문자 제거
   form.value.timeInput = form.value.timeInput.replace(/[^0-9]/g, '').slice(0, 4)
 }
@@ -168,7 +168,7 @@ const handleConfirm = async () => {
       ? () => updateMeetingLocation(form.value) // ✅ 오타 수정: Loaction → Location
       : () => addMeetingLocation(form.value)
 
-    const response = await ($withLoading?.(apiCall()) ?? apiCall())
+    const response: any = await ($withLoading?.(apiCall()) ?? apiCall())
 
     if (response?.code === '0' || response?.code === 0) {
       // $showMessage?.({ type: 'success', message: '성공적으로 저장했습니다.' })
@@ -199,7 +199,7 @@ watch(
 // ✅ 마운트 시 초기화
 onMounted(() => {
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

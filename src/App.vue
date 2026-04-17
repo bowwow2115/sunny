@@ -30,44 +30,37 @@
   </v-app>
 </template>
 
-<script setup>
-import { ref, computed, watch } from 'vue'
-import { useStore } from 'vuex'
+<script setup lang="ts">
+import { ref, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useStore } from '@/store'
 import GlobalAlert from '@/components/GlobalAlert.vue'
 import GlobalSnackbar from '@/components/GlobalSnackbar.vue'
 import GlobalConfirmSheet from '@/components/GlobalConfirmSheet.vue'
-import { provide } from 'vue'
 
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-// ✅ 로딩 상태 (Vuex 와 연동)
-const loadingOverlay = computed({
+const loadingOverlay = computed<boolean>({
   get: () => store.state.isLoading,
-  set: (value) => store.commit('SET_LOADING', value),
+  set: (value: boolean) => store.commit('SET_LOADING', value),
 })
 
-// ✅ 전역 컴포넌트 ref (provide/inject 용)
-const alertRef = ref(null)
-const snackbarRef = ref(null)
-const confirmRef = ref(null)
+const alertRef = ref<InstanceType<typeof GlobalAlert> | null>(null)
+const snackbarRef = ref<InstanceType<typeof GlobalSnackbar> | null>(null)
+const confirmRef = ref<InstanceType<typeof GlobalConfirmSheet> | null>(null)
 
-// ✅ 하위 컴포넌트에서 useAlert/useSnackbar 훅으로 접근 가능하게 제공
 provide('alertRef', alertRef)
 provide('snackbarRef', snackbarRef)
 provide('confirmRef', confirmRef)
 
-// ✅ 라우터 가드: 로딩 상태 초기화 (선택사항)
 router.afterEach(() => {
-  // 페이지 이동 시 로딩 강제 종료 (안전장치)
   if (store.state.isLoading) {
     store.commit('SET_LOADING', false)
   }
 })
 
-// ✅ Vuex store 변경 감지 (디버깅용)
 watch(
   () => store.state.isLoading,
   (newVal) => {

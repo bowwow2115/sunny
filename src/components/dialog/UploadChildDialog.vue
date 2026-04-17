@@ -47,9 +47,9 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
-import { registChildAsExcel } from '@/api/api.js'
+import { registChildAsExcel } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
 
 const { $showMessage, $showError, $withLoading } = useGlobal()
@@ -62,15 +62,15 @@ const props = defineProps({
 const dialogModel = ref(true)
 const isValid = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<any>(null)
 
-const form = ref({
+const form = ref<{ file: File | null }>({
   file: null,
 })
 
 const fileRules = [
-  (v) => !!v || '필수 항목입니다.',
-  (v) =>
+  (v: any) => !!v || '필수 항목입니다.',
+  (v: any) =>
     v?.type ===
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
     v?.type === 'application/vnd.ms-excel' ||
@@ -100,7 +100,7 @@ const handleConfirm = async () => {
     const formData = new FormData()
     formData.append('file', form.value.file)
 
-    const response = await ($withLoading?.(registChildAsExcel(formData)) ??
+    const response: any = await ($withLoading?.(registChildAsExcel(formData)) ??
       registChildAsExcel(formData))
 
     if (response?.code === '0' || response?.code === 0) {
@@ -120,7 +120,7 @@ const handleConfirm = async () => {
 }
 
 // ESC 키로 닫기
-const onKeydown = (e) => {
+const onKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
     handleCancel()
     document.removeEventListener('keydown', onKeydown)

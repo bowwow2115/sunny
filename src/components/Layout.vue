@@ -117,25 +117,27 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
-import { useStore } from 'vuex'
 import auth from '@/api/auth'
 
-const route = useRoute()
-const router = useRouter()
-const store = useStore()
-const { mdAndUp, name: deviceName } = useDisplay()
+interface MenuItem {
+  title: string
+  icon: string
+  to: string
+  name: string
+}
 
-// ✅ 상태 관리 (모두 ref() 로 선언!)
+const route = useRoute()
+const { mdAndUp } = useDisplay()
+
 const drawer = ref(false)
 const isScrolled = ref(false)
 const isRail = ref(false)
 
-// ✅ 메뉴 아이템
-const menuItems = [
+const menuItems: MenuItem[] = [
   { title: '홈', icon: 'ri-home-5-fill', to: '/SunnyHome', name: 'SunnyHome' },
   {
     title: '원아등록',
@@ -166,23 +168,18 @@ const currentTitle = computed(() => {
   return item?.title || '해맑은 어린이집'
 })
 
-// ✅ 라우트 활성화 체크
-const isActiveRoute = (item) => {
+const isActiveRoute = (item: MenuItem): boolean => {
   return route.name === item.name || route.path.startsWith(item.to)
 }
 
-// ✅ 드로어 토글 (명시적 함수)
 const toggleDrawer = () => {
   drawer.value = !drawer.value
-  console.log('Drawer toggled:', drawer.value) // ✅ 디버깅 로그
 }
 
-// ✅ 로그아웃
 const handleLogout = () => {
   auth.logout()
 }
 
-// ✅ 스크롤 감지
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 10
 }

@@ -86,12 +86,13 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 // ✅ API 함수 임포트 시 별칭 사용 (이름 충돌 방지)
 import { getClassList, deleteClass as deleteClassApi } from '@/api/api'
 import ClassAddDialog from './ClassAddDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
+import type { ClassInfo } from '@/types'
 
 const { $showMessage, $showError, $withLoading, $dialog, $confirm } =
   useGlobal()
@@ -101,18 +102,20 @@ const props = defineProps({
   onError: { type: Function, default: () => {} },
 })
 
-const dialogModel = ref(true)
-const isMobile = ref(false)
-const groups = ref({ classes: true })
-const classList = ref([])
+const dialogModel = ref<boolean>(true)
+const isMobile = ref<boolean>(false)
+const groups = ref<{ classes: boolean }>({ classes: true })
+const classList = ref<ClassInfo[]>([])
 
-const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+const checkIfMobile = (): void => {
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
-const fetchClassList = async () => {
+const fetchClassList = async (): Promise<void> => {
   try {
     const response = await getClassList()
     if (response?.code === '0' || response?.code === 0) {
@@ -124,7 +127,7 @@ const fetchClassList = async () => {
   }
 }
 
-const handleCancel = () => {
+const handleCancel = (): void => {
   dialogModel.value = false
   setTimeout(() => {
     props.onClose(true)
@@ -132,7 +135,7 @@ const handleCancel = () => {
 }
 
 // ✅ 로컬 함수 이름 변경: deleteClass → handleDeleteClass
-const handleDeleteClass = async (sunnyClass) => {
+const handleDeleteClass = async (sunnyClass: ClassInfo): Promise<void> => {
   try {
     const confirmed = await $confirm?.({
       message: `${sunnyClass.name}을 정말 삭제하시겠습니까?`,
@@ -147,7 +150,9 @@ const handleDeleteClass = async (sunnyClass) => {
 
     if (response?.code === '0' || response?.code === 0) {
       $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
-      const idx = classList.value.findIndex((item) => item.id === sunnyClass.id)
+      const idx = classList.value.findIndex(
+        (item: ClassInfo) => item.id === sunnyClass.id
+      )
       if (idx !== -1) {
         classList.value.splice(idx, 1)
       }
@@ -158,13 +163,13 @@ const handleDeleteClass = async (sunnyClass) => {
   }
 }
 
-const openClassAddDialog = async () => {
+const openClassAddDialog = async (): Promise<void> => {
   try {
     const result = await $dialog?.(ClassAddDialog)
 
     if (result) {
       $showMessage?.({ type: 'success', message: '성공적으로 추가했습니다.' })
-      classList.value.push(result)
+      classList.value.push(result as ClassInfo)
     }
   } catch (e) {
     console.error('ClassAddDialog error:', e)
@@ -176,7 +181,7 @@ onMounted(() => {
   checkIfMobile()
   fetchClassList()
 
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)
