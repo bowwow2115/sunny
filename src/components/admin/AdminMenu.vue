@@ -41,7 +41,7 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useGlobal } from '@/composables/useGlobal'
 import ManageClassDialog from '@/components/admin/ClassDialog.vue'
 import ManageUserDialog from '@/components/admin/UserDialog.vue'
@@ -50,7 +50,7 @@ import ManageRideDialog from '@/components/admin/RideDialog.vue'
 const { $dialog, $showError } = useGlobal()
 
 // ✅ 반 관리 다이얼로그
-const openManageClassDialog = async () => {
+const openManageClassDialog = async (): Promise<void> => {
   try {
     await $dialog?.(ManageClassDialog, null)
   } catch (error) {
@@ -60,7 +60,7 @@ const openManageClassDialog = async () => {
 }
 
 // ✅ 사용자 관리 다이얼로그
-const openManageUserDialog = async () => {
+const openManageUserDialog = async (): Promise<void> => {
   try {
     await $dialog?.(ManageUserDialog, null)
   } catch (error) {
@@ -70,7 +70,7 @@ const openManageUserDialog = async () => {
 }
 
 // ✅ 차량 관리 다이얼로그
-const openManageRideDialog = async () => {
+const openManageRideDialog = async (): Promise<void> => {
   try {
     await $dialog?.(ManageRideDialog, null)
   } catch (error) {

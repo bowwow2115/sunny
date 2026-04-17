@@ -2,68 +2,47 @@
   "name": "sunny",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.vue src",
-    "lint:fix": "eslint --fix --ext .js,.vue src",
-    "format": "prettier --write \"src/**/*.{js,vue}\""
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint --ext .js,.ts,.vue src",
+    "lint:fix": "eslint --fix --ext .js,.ts,.vue src",
+    "format": "prettier --write \"src/**/*.{js,ts,vue}\""
   },
   "dependencies": {
     "@vueuse/core": "^14.2.1",
     "axios": "^0.26.1",
-    "core-js": "^3.8.3",
     "crypto-js": "^3.1.9-1",
     "hangul-js": "^0.2.6",
     "jquery": "^3.3.1",
-    "json-loader": "^0.5.7",
+    "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "remixicon": "^4.3.0",
     "vue": "^3.3.0",
     "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.2.0",
     "vuetify": "^3.5.0",
-    "vuex": "^4.1.0",
-    "yaml-loader": "^0.5.0",
-    "yml-loader": "^2.1.0"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "@babel/eslint-parser": "^7.24.7",
-    "deepmerge": "^4.3.1",
+    "@types/crypto-js": "^4.2.2",
+    "@types/jquery": "^3.5.30",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^9.0.0",
     "prettier": "^2.3.2",
     "sass": "^1.32.13",
-    "vite": "^5.1.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {
-      "max-len": "off",
-      "vue/html-indent": [
-        "error",
-        2
-      ],
-      "no-unused-vars": "off"
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "typescript": "^5.4.0",
+    "vite": "^5.1.0",
+    "vue-tsc": "^2.0.0"
+  }
 }

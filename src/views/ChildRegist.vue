@@ -1,7 +1,7 @@
 <template>
   <!-- fluid(100%) 없으면 자동 반응형 container 설정너비 -->
   <!-- <v-container fluid></v-container> -->
-  <v-form v-model="isValid" ref="form">
+  <v-form v-model="isValid" ref="formRef">
     <!-- ---------- 원아 정보 ---------- -->
     <v-card class="my-4 pa-2 rounded-xl">
       <div class="d-flex justify-space-between align-center flex-wrap">
@@ -77,7 +77,7 @@
         <v-row>
           <v-col cols="12" sm="6">
             <v-menu
-              ref="menu"
+              ref="menuRef"
               v-model="addmisionDateWrap"
               :close-on-content-click="false"
               transition="scale-transition"
@@ -106,13 +106,13 @@
                 :month-format="getMonth"
                 :header-date-format="changeHeader"
                 width="100%"
-                @change="$refs.menu.save((addmisionDateWrap = false))"
+                @change="menuRef?.save((addmisionDateWrap = false))"
               ></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="12" sm="6">
             <v-menu
-              ref="menu"
+              ref="menuRef"
               v-model="birthdayWrap"
               :close-on-content-click="false"
               transition="scale-transition"
@@ -147,7 +147,7 @@
                 :month-format="getMonth"
                 :header-date-format="changeHeader"
                 width="100%"
-                @change="$refs.menu.save((birthdayWrap = false))"
+                @change="menuRef?.save((birthdayWrap = false))"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -203,7 +203,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               v-model="form.address.detailAddress"
-              ref="detailAddress"
+              ref="detailAddressRef"
               label="상세주소 입력"
               hide-details="auto"
               outlined
@@ -452,327 +452,351 @@
   </v-form>
 </template>
 
-<script>
-import { addChild, getClassList, getRideList, checkChild } from '@/api/api'
+<script setup lang="ts">
+import { ref, onMounted, nextTick } from 'vue'
+import {
+  addChild as apiAddChild,
+  getClassList as apiGetClassList,
+  getRideList as apiGetRideList,
+  checkChild as apiCheckChild,
+} from '@/api/api'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
-export default {
-  name: 'ChildRegist',
-  components: {
-    //ChildRegistForm, // ChildRegistForm 컴포넌트 등록
-  },
-  mounted() {
-    this.init()
-  },
-  data() {
-    return {
-      isValid: false,
-      birthdayWrap: false, // 생년월일 필드와 picker를 묶는 역할
-      addmisionDateWrap: false,
-      activePicker: null,
-      hasRide: false,
-      amPm: '오전',
-      selectedRide: { meetingLocationList: [] },
-      selectedMeetingLocation: {},
-      childRideComment: '',
-      form: {
-        id: '',
-        birthday: '',
-        admissionDate: '',
-        // admissionDate: `${moment().format('YYYY-MM-DD')}`,
-        className: '',
-        address: { detailAddress: '', zipCode: '', address: '' },
-        status: '재원',
-        parentList: [
-          {
-            relation: '',
-            name: '',
-            telephone: '',
-          },
-        ],
-        childRideList: [
-          // { comment: '', meetingLocation: { name: '', time: '' } },
-        ],
-        // amRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
-        // pmRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
-      },
-      classNameList: [],
-      birthday: '',
-      // parentBoxes: [
-      //   {
-      //     relation: '',
-      //     name: '',
-      //     telephone: '',
-      //   },
-      // ],
-      parentTypeList: ['부', '모', '조부', '조모', '그 외'],
-      amRideNameList: [],
-      pmRideNameList: [],
-      numRules: [
-        (v) => !!v || '필수 항목입니다.',
-        (v) => /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
-        (v) => /^.{8,11}$/.test(v) || '8~11자 이내로 입력해주세요.',
-      ],
-      nameRules: [
-        (v) => !!v || '필수 항목입니다.',
-        (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.', // 한글자모음 정규식 // 한글정규식 /^[가-힣]*$/
-        (v) => /^.{0,16}$/.test(v) || '16자 이내로 입력해주세요.',
-      ],
-      statusRules: [
-        (v) => !!v || '필수 항목입니다.',
-        (v) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.', // 한글자모음 정규식 // 한글정규식 /^[가-힣]*$/
-        (v) => /^.{0,8}$/.test(v) || '8자 이내로 입력해주세요.',
-      ],
-      datePicRules: [(v) => !!v || '날짜를 선택해 주세요.'],
-      classNameRules: [(v) => !!v || '반을 선택해 주세요.'],
-      pbRelationRules: [(v) => !!v || '관계를 선택해 주세요.'],
+import { useGlobal } from '@/composables/useGlobal'
 
-      postcodeDialog: false,
-    }
-  },
-  methods: {
-    init() {
-      this.getClassList()
-      this.getRideList()
-    },
-    async openUploadChildDialog() {
-      await this.$dialog(UploadChildDialog)
-    },
-    getDay(date) {
-      const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
-      let week = new Date(date).getDay(date)
-      return daysOfWeek[week]
-    },
-    getMonth(date) {
-      const monthName = [
-        '1월',
-        '2월',
-        '3월',
-        '4월',
-        '5월',
-        '6월',
-        '7월',
-        '8월',
-        '9월',
-        '10월',
-        '11월',
-        '12월',
-      ]
-      let month = new Date(date).getMonth(date)
-      return monthName[month]
-    },
-    changeHeader(date) {
-      const year = new Date(date).getFullYear()
-      const month = new Date(date).getMonth() + 1
-      return `${year}년 ${month}월`
-    },
-    addParentBox() {
-      this.form.parentList.push({
-        parentType: '',
-        parent: '',
-        parentPhone: '',
-      })
-    },
-    removeParentBox(index) {
-      if (this.form.parentList.length > 1) {
-        this.form.parentList.splice(index, 1)
-      }
-    },
-    addChild() {
-      if (this.$refs.form.validate()) {
-        let param = this.form
-        if (
-          this.form.childRideList == null ||
-          this.form.childRideList.length == 0
-        )
-          this.form.childRideList = null
+const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
-        this.form.parentList.forEach((parents) => {
-          parents.telephone = this.formatPhoneNumber(parents.telephone)
-        })
+// ✅ 템플릿 refs
+const formRef = ref<any>(null)
+const menuRef = ref<any>(null)
+const detailAddressRef = ref<any>(null)
 
-        this.$withLoading(
-          addChild(param)
-            .then((response) => {
-              if (response.code == '0') {
-                this.$showMessage({
-                  type: 'success',
-                  message: '원아 등록이 성공적으로 완료되었습니다.',
-                })
-                this.$refs.form.reset()
-                //TODO: 화면이동 or 인풋값 초기화
-              }
-            })
-            .catch((e) => {
-              this.$showError(e)
-            })
-        )
-      }
+// ✅ 상태
+const isValid = ref<boolean>(false)
+const birthdayWrap = ref<boolean>(false) // 생년월일 필드와 picker를 묶는 역할
+const addmisionDateWrap = ref<boolean>(false)
+const activePicker = ref<any>(null)
+const hasRide = ref<boolean>(false)
+const amPm = ref<string>('오전')
+const selectedRide = ref<any>({ meetingLocationList: [] })
+const selectedMeetingLocation = ref<any>({})
+const childRideComment = ref<string>('')
+
+const form = ref<any>({
+  id: '',
+  name: '',
+  birthday: '',
+  admissionDate: '',
+  // admissionDate: `${moment().format('YYYY-MM-DD')}`,
+  className: '',
+  address: { detailAddress: '', zipCode: '', address: '' },
+  status: '재원',
+  parentList: [
+    {
+      relation: '',
+      name: '',
+      telephone: '',
     },
-    pushChildRideList() {
-      if (
-        this.selectedMeetingLocation.name == null ||
-        this.selectedRide.name == null
-      ) {
-        this.$showMessage({
-          type: 'warning',
-          message: '차량코스와 승하차 장소를 선택해주세요',
-        })
-        return
-      }
-      let childRide = {}
-      childRide.comment = this.childRideComment
-      childRide.meetingLocation = this.selectedMeetingLocation
-      childRide.rideName = this.selectedRide.name
-      childRide.amPm = this.amPm
-      childRide.menuOpen = false
-      this.form.childRideList.push(childRide)
-      //입력값 초기화
-      this.childRideComment = ''
-      this.selectedMeetingLocation = {}
-      this.selectedRide = { meetingLocationList: [] }
-    },
-    getClassList() {
-      getClassList()
-        .then((response) => {
-          if (response.data != null) {
-            let array = []
-            response.data.forEach((element) => {
-              array.push(element.name)
-            })
-            this.classNameList = array
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$showError(error)
-        })
-    },
-    getRideList() {
-      getRideList()
-        .then((response) => {
-          if (response.data != null) {
-            response.data.forEach((element) => {
-              if (element.meetingLocationList != null)
-                element.meetingLocationList.forEach((meetingLocation) => {
-                  meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
-                })
-              if (element.am) this.amRideNameList.push(element)
-              else this.pmRideNameList.push(element)
-            })
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$showError(error)
-        })
-    },
-    truncateString(str, maxLength) {
-      if (str.length <= maxLength) {
-        return str
-      }
-      return str.slice(0, maxLength) + '...'
-    },
+  ],
+  childRideList: [
+    // { comment: '', meetingLocation: { name: '', time: '' } },
+  ],
+  // amRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
+  // pmRide: { sunnyRide: { id: '', name: '' }, comment: '', time: '' },
+})
 
-    openPostcode() {
-      this.postcodeDialog = true
+const classNameList = ref<string[]>([])
+const birthday = ref<string>('')
+const parentTypeList: string[] = ['부', '모', '조부', '조모', '그 외']
+const amRideNameList = ref<any[]>([])
+const pmRideNameList = ref<any[]>([])
 
-      // Daum 주소 검색 팝업 열기
-      this.$nextTick(() => {
-        new daum.Postcode({
-          oncomplete: (data) => {
-            // 주소 조합하기
-            let addr = '' // 주소 변수
-            let extraAddr = '' // 참고항목 변수
+const numRules = [
+  (v: string) => !!v || '필수 항목입니다.',
+  (v: string) =>
+    /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
+  (v: string) => /^.{8,11}$/.test(v) || '8~11자 이내로 입력해주세요.',
+]
+const nameRules = [
+  (v: string) => !!v || '필수 항목입니다.',
+  (v: string) =>
+    /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: string) => /^.{0,16}$/.test(v) || '16자 이내로 입력해주세요.',
+]
+const statusRules = [
+  (v: string) => !!v || '필수 항목입니다.',
+  (v: string) =>
+    /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: string) => /^.{0,8}$/.test(v) || '8자 이내로 입력해주세요.',
+]
+const datePicRules = [(v: string) => !!v || '날짜를 선택해 주세요.']
+const classNameRules = [(v: string) => !!v || '반을 선택해 주세요.']
+const pbRelationRules = [(v: string) => !!v || '관계를 선택해 주세요.']
 
-            // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져오기
-            if (data.userSelectedType === 'R') {
-              addr = data.roadAddress // 도로명 주소
-            } else {
-              addr = data.jibunAddress // 지번 주소
-            }
+const postcodeDialog = ref<boolean>(false)
 
-            // 참고항목 조합하기
-            if (data.userSelectedType === 'R') {
-              // 법정동명이 있을 경우 추가 (법정리는 제외)
-              // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-              if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-                extraAddr += data.bname
-              }
-              // 건물명이 있고, 공동주택일 경우 추가
-              if (data.buildingName !== '' && data.apartment === 'Y') {
-                extraAddr +=
-                  extraAddr !== ''
-                    ? ', ' + data.buildingName
-                    : data.buildingName
-              }
-              // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-              if (extraAddr !== '') {
-                extraAddr = ' (' + extraAddr + ')'
-              }
-            }
-
-            // 선택한 주소 정보를 form에 반영
-            this.form.address.zipCode = data.zonecode // 우편번호
-            this.form.address.address = addr // 주소
-            this.form.address.detailAddress = extraAddr // 상세주소
-
-            // 다이얼로그 닫기
-            this.postcodeDialog = false
-
-            // 상세주소 입력칸에 포커스
-            this.$nextTick(() => {
-              this.$refs.detailAddress.focus()
-            })
-          },
-          width: '100%',
-          height: '100%',
-        }).embed(document.getElementById('postcode'))
-      })
-    },
-    formatPhoneNumber(phoneNumber) {
-      // 숫자만 추출
-      const cleaned = phoneNumber.replace(/\D/g, '')
-
-      // 전화번호가 10자리일 경우 (예: 02-1234-5678) 또는 11자리일 경우 (예: 010-1234-5678)
-      const match = cleaned.match(/^(\d{2,3})(\d{3,4})(\d{4})$/)
-
-      if (match) {
-        return `${match[1]}-${match[2]}-${match[3]}`
-      }
-
-      return null // 잘못된 형식의 전화번호일 경우 null 반환
-    },
-    checkChild() {
-      if (this.form.className == '' || this.form.name == '') {
-        this.$showMessage({
-          type: 'warning',
-          message: `원아와 반이름 모두 입력해주세요.`,
-        })
-        return
-      }
-      let param = {}
-      param.className = this.form.className
-      param.name = this.form.name
-      checkChild(param)
-        .then((response) => {
-          if (response.data != null) {
-            this.$showMessage({
-              type: 'warning',
-              message: `${this.form.className}에 ${this.form.name} 원아가 이미 존재합니다.`,
-            })
-          } else {
-            this.$showMessage({
-              type: 'success',
-              message: '해당원아는 등록 가능합니다.',
-            })
-          }
-        })
-        .catch((e) => {
-          this.$showError(e)
-        })
-    },
-  },
+// ✅ 메서드
+const openUploadChildDialog = async () => {
+  await $dialog?.(UploadChildDialog)
 }
+
+const getDay = (date: string | Date): string => {
+  const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
+  const week = new Date(date).getDay()
+  return daysOfWeek[week]
+}
+
+const getMonth = (date: string | Date): string => {
+  const monthName = [
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
+  ]
+  const month = new Date(date).getMonth()
+  return monthName[month]
+}
+
+const changeHeader = (date: string | Date): string => {
+  const year = new Date(date).getFullYear()
+  const month = new Date(date).getMonth() + 1
+  return `${year}년 ${month}월`
+}
+
+const addParentBox = () => {
+  form.value.parentList.push({
+    parentType: '',
+    parent: '',
+    parentPhone: '',
+  })
+}
+
+const removeParentBox = (index: any) => {
+  if (form.value.parentList.length > 1) {
+    form.value.parentList.splice(Number(index), 1)
+  }
+}
+
+const formatPhoneNumber = (phoneNumber: string): string | null => {
+  // 숫자만 추출
+  const cleaned = phoneNumber.replace(/\D/g, '')
+
+  // 전화번호가 10자리일 경우 (예: 02-1234-5678) 또는 11자리일 경우 (예: 010-1234-5678)
+  const match = cleaned.match(/^(\d{2,3})(\d{3,4})(\d{4})$/)
+
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`
+  }
+
+  return null // 잘못된 형식의 전화번호일 경우 null 반환
+}
+
+const addChildFn = () => {
+  if (formRef.value?.validate()) {
+    const param = form.value
+    if (
+      form.value.childRideList == null ||
+      form.value.childRideList.length == 0
+    )
+      form.value.childRideList = null
+
+    form.value.parentList.forEach((parents: any) => {
+      parents.telephone = formatPhoneNumber(parents.telephone)
+    })
+
+    $withLoading?.(
+      apiAddChild(param)
+        .then((response: any) => {
+          if (response.code == '0') {
+            $showMessage?.({
+              type: 'success',
+              message: '원아 등록이 성공적으로 완료되었습니다.',
+            })
+            formRef.value?.reset()
+            //TODO: 화면이동 or 인풋값 초기화
+          }
+        })
+        .catch((e: any) => {
+          $showError?.(e)
+        })
+    )
+  }
+}
+// Template 호환성 유지 (template에서 addChild 호출)
+const addChild = addChildFn
+
+const pushChildRideList = () => {
+  if (
+    selectedMeetingLocation.value.name == null ||
+    selectedRide.value.name == null
+  ) {
+    $showMessage?.({
+      type: 'warning',
+      message: '차량코스와 승하차 장소를 선택해주세요',
+    })
+    return
+  }
+  const childRide: any = {}
+  childRide.comment = childRideComment.value
+  childRide.meetingLocation = selectedMeetingLocation.value
+  childRide.rideName = selectedRide.value.name
+  childRide.amPm = amPm.value
+  childRide.menuOpen = false
+  form.value.childRideList.push(childRide)
+  //입력값 초기화
+  childRideComment.value = ''
+  selectedMeetingLocation.value = {}
+  selectedRide.value = { meetingLocationList: [] }
+}
+
+const getClassList = () => {
+  apiGetClassList()
+    .then((response: any) => {
+      if (response.data != null) {
+        const array: string[] = []
+        response.data.forEach((element: any) => {
+          array.push(element.name)
+        })
+        classNameList.value = array
+      }
+    })
+    .catch((error: any) => {
+      console.log(error)
+      $showError?.(error)
+    })
+}
+
+const getRideList = () => {
+  apiGetRideList()
+    .then((response: any) => {
+      if (response.data != null) {
+        response.data.forEach((element: any) => {
+          if (element.meetingLocationList != null)
+            element.meetingLocationList.forEach((meetingLocation: any) => {
+              meetingLocation.name = `${meetingLocation.name}(${meetingLocation.time})`
+            })
+          if (element.am) amRideNameList.value.push(element)
+          else pmRideNameList.value.push(element)
+        })
+      }
+    })
+    .catch((error: any) => {
+      console.log(error)
+      $showError?.(error)
+    })
+}
+
+const truncateString = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) {
+    return str
+  }
+  return str.slice(0, maxLength) + '...'
+}
+
+const openPostcode = () => {
+  postcodeDialog.value = true
+
+  // Daum 주소 검색 팝업 열기
+  nextTick(() => {
+    new (window as any).daum.Postcode({
+      oncomplete: (data: any) => {
+        // 주소 조합하기
+        let addr = '' // 주소 변수
+        let extraAddr = '' // 참고항목 변수
+
+        // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져오기
+        if (data.userSelectedType === 'R') {
+          addr = data.roadAddress // 도로명 주소
+        } else {
+          addr = data.jibunAddress // 지번 주소
+        }
+
+        // 참고항목 조합하기
+        if (data.userSelectedType === 'R') {
+          // 법정동명이 있을 경우 추가 (법정리는 제외)
+          // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraAddr += data.bname
+          }
+          // 건물명이 있고, 공동주택일 경우 추가
+          if (data.buildingName !== '' && data.apartment === 'Y') {
+            extraAddr +=
+              extraAddr !== ''
+                ? ', ' + data.buildingName
+                : data.buildingName
+          }
+          // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+          if (extraAddr !== '') {
+            extraAddr = ' (' + extraAddr + ')'
+          }
+        }
+
+        // 선택한 주소 정보를 form에 반영
+        form.value.address.zipCode = data.zonecode // 우편번호
+        form.value.address.address = addr // 주소
+        form.value.address.detailAddress = extraAddr // 상세주소
+
+        // 다이얼로그 닫기
+        postcodeDialog.value = false
+
+        // 상세주소 입력칸에 포커스
+        nextTick(() => {
+          detailAddressRef.value?.focus()
+        })
+      },
+      width: '100%',
+      height: '100%',
+    }).embed(document.getElementById('postcode'))
+  })
+}
+
+const checkChildFn = () => {
+  if (form.value.className == '' || form.value.name == '') {
+    $showMessage?.({
+      type: 'warning',
+      message: `원아와 반이름 모두 입력해주세요.`,
+    })
+    return
+  }
+  const param: any = {}
+  param.className = form.value.className
+  param.name = form.value.name
+  apiCheckChild(param)
+    .then((response: any) => {
+      if (response.data != null) {
+        $showMessage?.({
+          type: 'warning',
+          message: `${form.value.className}에 ${form.value.name} 원아가 이미 존재합니다.`,
+        })
+      } else {
+        $showMessage?.({
+          type: 'success',
+          message: '해당원아는 등록 가능합니다.',
+        })
+      }
+    })
+    .catch((e: any) => {
+      $showError?.(e)
+    })
+}
+// Template 호환성 유지 (template에서 checkChild 호출)
+const checkChild = checkChildFn
+
+const init = () => {
+  getClassList()
+  getRideList()
+}
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <style lang="scss" scoped>

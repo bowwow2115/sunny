@@ -121,7 +121,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import {
   deleteChildRide,
@@ -133,7 +133,7 @@ import SearchChildDialog from '@/components/dialog/SearchChildDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
 
 const { $showMessage, $showError, $withLoading, $dialog, $confirm } =
-  useGlobal()
+  useGlobal() as any
 
 // ✅ 플러그인 연동용 props
 const props = defineProps({
@@ -146,12 +146,15 @@ const props = defineProps({
 })
 
 // ✅ 상태 관리
-const dialogModel = ref(true)
-const isMobile = ref(false)
-const groups = ref({ location: true, children: true })
+const dialogModel = ref<boolean>(true)
+const isMobile = ref<boolean>(false)
+const groups = ref<{ location: boolean; children: boolean }>({
+  location: true,
+  children: true,
+})
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<any>({
   id: props.id,
   name: props.name,
   time: props.time,
@@ -160,9 +163,11 @@ const form = ref({
 
 // ✅ 모바일 감지
 const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
 // ✅ 다이얼로그 닫기
@@ -194,7 +199,7 @@ const openMeetingLocationDialog = async () => {
 }
 
 // ✅ 원아 삭제
-const deleteChildRide1 = async (childRide) => {
+const deleteChildRide1 = async (childRide: any) => {
   try {
     const confirmed = await $confirm?.({
       message: `${childRide.child?.name}을 정말 "${form.value.name}"에서 제외시키겠습니까?`,
@@ -210,7 +215,7 @@ const deleteChildRide1 = async (childRide) => {
       $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
       // ✅ 배열에서 제거 (Vue 3: splice)
       const idx = form.value.childRideList.findIndex(
-        (item) => item.id === childRide.id
+        (item: any) => item.id === childRide.id
       )
       if (idx !== -1) {
         form.value.childRideList.splice(idx, 1)
@@ -249,10 +254,12 @@ const handleDeleteMeetingLocation = async () => {
 const openAddChildRideDialog = async () => {
   try {
     // ✅ 현재 코스에 등록되지 않은 원아만 필터링
-    const allChildren = await getAttendingChildren()
+    const allChildren: any = await getAttendingChildren()
     const availableChildren = (allChildren?.data || []).filter(
-      (child) =>
-        !form.value.childRideList.some((cr) => cr.child?.id === child.id)
+      (child: any) =>
+        !form.value.childRideList.some(
+          (cr: any) => cr.child?.id === child.id
+        )
     )
 
     const result = await $dialog?.(SearchChildDialog, {
@@ -277,7 +284,7 @@ onMounted(() => {
   checkIfMobile()
 
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

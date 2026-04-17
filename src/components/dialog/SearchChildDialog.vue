@@ -88,11 +88,12 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import Hangul from 'hangul-js'
-import { addChildRideList } from '@/api/api.js'
+import { addChildRideList } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Child } from '@/types'
 
 const { $showError, $withLoading } = useGlobal()
 
@@ -106,9 +107,9 @@ const props = defineProps({
 
 const dialogModel = ref(true)
 const searchTerm = ref('')
-const selectedChild = ref([])
-const childList = ref([...props.childList])
-const meetingLocationId = ref(props.meetingLocationId)
+const selectedChild = ref<(string | number)[]>([])
+const childList = ref<Child[]>([...(props.childList as Child[])])
+const meetingLocationId = ref<string | number>(props.meetingLocationId)
 
 const filteredList = computed(() => {
   if (!searchTerm.value) return childList.value
@@ -117,9 +118,9 @@ const filteredList = computed(() => {
   if (!input) return childList.value
 
   return childList.value.filter(
-    (item) =>
-      Hangul.search(item.name, input) !== -1 ||
-      Hangul.search(item.className, input) !== -1
+    (item: Child) =>
+      Hangul.search(item.name ?? '', input) !== -1 ||
+      Hangul.search(item.className ?? '', input) !== -1
   )
 })
 
@@ -130,7 +131,7 @@ const handleCancel = () => {
   }, 150)
 }
 
-const toggleSelection = (childId) => {
+const toggleSelection = (childId: string | number) => {
   const idx = selectedChild.value.indexOf(childId)
   if (idx === -1) {
     selectedChild.value.push(childId)
@@ -152,7 +153,7 @@ const handleConfirm = async () => {
   const form = makeForm()
 
   try {
-    const response = await ($withLoading?.(addChildRideList(form)) ??
+    const response: any = await ($withLoading?.(addChildRideList(form)) ??
       addChildRideList(form))
 
     if (response?.code === '0' || response?.code === 0) {
@@ -173,7 +174,7 @@ const searchList = () => {
 }
 
 onMounted(() => {
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

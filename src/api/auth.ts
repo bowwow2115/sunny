@@ -1,12 +1,18 @@
+import $ from 'jquery'
 import store from '@/store'
 import Utils from '@/utils/utils'
 import * as api from '@/api/api'
 import constants from '@/Constants'
+import type { LoginForm, PasswordForm, ApiResponse } from '@/types'
 
-function parseToken(result, reset = false) {
-  // result = { code: '0', data: { accessToken, refreshToken, ... } }
-  // 또는 result = { accessToken, refreshToken, ... }
-  const tokenData = result.data || result
+interface TokenData {
+  accessToken?: string
+  refreshToken?: string
+  [key: string]: any
+}
+
+function parseToken(result: any): void {
+  const tokenData: TokenData = result.data || result
 
   if (tokenData && tokenData.accessToken) {
     Utils.setCookie('auth', tokenData.accessToken, 3600 * 24, '/')
@@ -21,18 +27,18 @@ function parseToken(result, reset = false) {
   }
 }
 
-function loggedIn() {
+function loggedIn(): Promise<ApiResponse> {
   return new Promise((resolve, reject) => {
     let url = ''
     const sid = Utils.getCookie(constants.TOKEN)
-    if (sid != null && sid !== '')
+    if (sid != null && sid !== '') {
       url = `${constants.CONTEXT_PATH}/auth/validation`
+    }
     if (url !== '') {
       api
         .get(url, { sid })
-        .then((response) => {
+        .then((response: any) => {
           console.log('loggedIn Check : ', response)
-          //parseToken(response.data, true);
           if (response.code == '0') {
             if (response.data[0].authority == 'ROLE_ADMIN') {
               store.commit('SET_ADMIN', true)
@@ -46,23 +52,20 @@ function loggedIn() {
             resolve(response)
           } else if (response.code == 'EXPIRED-TOKEN') {
             const refreshToken = Utils.getCookie('refreshToken')
-            let param = {}
-            param.refreshToken = refreshToken
-            api.refreshToken(param).then((response) => {
-              if (response.code == '0') resolve(response)
+            const param = { refreshToken }
+            api.refreshToken(param).then((r: any) => {
+              if (r.code == '0') resolve(r)
               else {
                 Utils.deleteCookie('auth', '/')
                 Utils.deleteCookie('lang')
-                router.push({
-                  path: '/signIn',
-                })
+                window.location.hash = '#/SignIn'
               }
             })
           } else {
             reject(new Error('validation failure'))
           }
         })
-        .catch((error) => {
+        .catch((error: any) => {
           if (error.response) reject(new Error(error.response.data))
           else reject(new Error('validation failure'))
         })
@@ -72,44 +75,39 @@ function loggedIn() {
   })
 }
 
-function renewJWT() {
+function renewJWT(): Promise<void> {
   return new Promise((resolve, reject) => {
-    let url = ''
-    url = '/auth/json/jwt/renew'
-    if (url !== '') {
-      api
-        .get(url)
-        .then((response) => {
-          parseToken(response, true)
-          resolve()
-        })
-        .catch((error) => {
-          reject(new Error('renew failure'))
-        })
-    } else {
-      reject(new Error('No cookie'))
-    }
+    const url = '/auth/json/jwt/renew'
+    api
+      .get(url)
+      .then((response) => {
+        parseToken(response)
+        resolve()
+      })
+      .catch(() => {
+        reject(new Error('renew failure'))
+      })
   })
 }
 
-function login(form) {
+function login(form: LoginForm): Promise<any> {
   return new Promise((resolve, reject) => {
     api
       .post(`${constants.CONTEXT_PATH}/login`, form)
-      .then((r) => {
+      .then((r: any) => {
         console.log('login call : ', r)
         if (r.code != '0') {
           reject(r.code)
           return
-        } else {
-          parseToken(r)
-          if (r.data.roles[0].authority == 'ROLE_ADMIN')
-            store.commit('SET_ADMIN', true)
-          if (r.data.userId != null || r.data.userId != undefined) {
-            store.commit('SET_USERID', r.data.userId)
-          }
-          resolve(r.data)
         }
+        parseToken(r)
+        if (r.data.roles[0].authority == 'ROLE_ADMIN') {
+          store.commit('SET_ADMIN', true)
+        }
+        if (r.data.userId != null || r.data.userId != undefined) {
+          store.commit('SET_USERID', r.data.userId)
+        }
+        resolve(r.data)
       })
       .catch((error) => {
         reject(error)
@@ -117,44 +115,38 @@ function login(form) {
   })
 }
 
-function logout(user) {
-  // clear store
+function logout(): void {
   store.dispatch('resetState')
 
   Utils.deleteCookie('auth', '/')
   Utils.deleteCookie('JSESSIONID', '/')
   Utils.deleteCookie('refreshToken', '/')
-
   Utils.deleteCookie('lang')
 
   store.commit('SET_ADMIN', false)
   store.commit('SET_USERID', '')
 
-  location.href = Utils.checkEnv(process.env.NODE_ENV)
+  location.href = Utils.checkEnv(import.meta.env.MODE)
   window.location.reload()
 }
 
-function resetPwdate(user) {
-  let data = {
-    userId: user,
-  }
+function resetPwdate(user: string): Promise<any> {
+  const data = { userId: user }
 
   return new Promise((resolve, reject) => {
     api
       .post(`${constants.CONTEXT_PATH}/resetPwdate`, data)
-      .then((r) => {
-        resolve(r)
-      })
-      .catch((error) => {
+      .then((r) => resolve(r))
+      .catch((error: any) => {
         alert(error.response)
         reject(error)
       })
   })
 }
 
-function changePassword(passwordForm) {
-  const key = 'exAdm1111' // Utils.featuresDefault('security.key', '');
-  let data = null
+function changePassword(passwordForm: PasswordForm): Promise<any> {
+  const key = 'exAdm1111'
+  let data: Record<string, string> | null = null
 
   if (key) {
     data = {
@@ -173,13 +165,9 @@ function changePassword(passwordForm) {
 
   return new Promise((resolve, reject) => {
     api
-      .post(`${constants.CONTEXT_PATH}/changePw`, jQuery.param(data))
-      .then((r) => {
-        resolve(r)
-      })
-      .catch((error) => {
-        reject(error)
-      })
+      .post(`${constants.CONTEXT_PATH}/changePw`, $.param(data as any))
+      .then((r) => resolve(r))
+      .catch((error) => reject(error))
   })
 }
 

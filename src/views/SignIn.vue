@@ -88,42 +88,46 @@
   </v-main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import auth from '@/api/auth'
 import Utils from '@/utils/utils'
 import { useGlobal } from '@/composables/useGlobal' // 커스텀 훅
+import type { LoginForm } from '@/types'
 
 const router = useRouter()
 const { $showError } = useGlobal()
 
 // 상태 관리
-const formRef = ref(null)
-const valid = ref(false)
-const loading = ref(false)
-const saveLogin = ref(false)
+const formRef = ref<any>(null)
+const valid = ref<boolean>(false)
+const loading = ref<boolean>(false)
+const saveLogin = ref<boolean>(false)
 
-const form = ref({
+const form = ref<LoginForm>({
   userId: '',
   password: '',
 })
 
 // 검증 규칙
 const userIdRules = [
-  (v) => !!v || '아이디는 필수 항목입니다.',
-  (v) =>
+  (v: string) => !!v || '아이디는 필수 항목입니다.',
+  (v: string) =>
     /^[a-zA-Z0-9]+$/.test(v) || '아이디는 알파벳과 숫자만 포함할 수 있습니다.',
-  (v) => (v && v.length >= 4) || '아이디는 최소 4자 이상이어야 합니다.',
+  (v: string) =>
+    (v && v.length >= 4) || '아이디는 최소 4자 이상이어야 합니다.',
 ]
 
 const userPwRules = [
-  (v) => !!v || '비밀번호는 필수 항목입니다.',
-  (v) =>
+  (v: string) => !!v || '비밀번호는 필수 항목입니다.',
+  (v: string) =>
     /^[a-zA-Z0-9]+$/.test(v) ||
     '비밀번호는 알파벳과 숫자만 포함할 수 있습니다.',
-  (v) => (v && v.length >= 4) || '비밀번호는 최소 4자 이상이어야 합니다.',
-  (v) => !v || v.length <= 10 || '비밀번호는 최대 10자 이하이어야 합니다.',
+  (v: string) =>
+    (v && v.length >= 4) || '비밀번호는 최소 4자 이상이어야 합니다.',
+  (v: string) =>
+    !v || v.length <= 10 || '비밀번호는 최대 10자 이하이어야 합니다.',
 ]
 
 // 마운트 시 쿠키에서 아이디 복원
@@ -156,9 +160,9 @@ const login = async () => {
     }
 
     // 라우팅
-    const defaultHome = window.constants?.DEFAULT_HOME || '/'
+    const defaultHome = (window as any).constants?.DEFAULT_HOME || '/'
     await router.push({ path: defaultHome })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error)
     $showError?.(error) ||
       alert(error.message || '로그인 중 오류가 발생했습니다.')

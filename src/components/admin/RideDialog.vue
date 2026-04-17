@@ -114,12 +114,13 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 // ✅ API 함수 임포트 시 별칭 사용 (이름 충돌 방지)
 import { getRideList, deleteRide as deleteRideApi } from '@/api/api'
 import RideAddDialog from './RideAddDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
+import type { Ride } from '@/types'
 
 const { $showMessage, $showError, $withLoading, $dialog, $confirm } =
   useGlobal()
@@ -129,22 +130,24 @@ const props = defineProps({
   onError: { type: Function, default: () => {} },
 })
 
-const dialogModel = ref(true)
-const isMobile = ref(false)
-const groups = ref({ rides: true })
-const rideList = ref([])
+const dialogModel = ref<boolean>(true)
+const isMobile = ref<boolean>(false)
+const groups = ref<{ rides: boolean }>({ rides: true })
+const rideList = ref<Ride[]>([])
 
-const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+const checkIfMobile = (): void => {
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
-const fetchRideList = async () => {
+const fetchRideList = async (): Promise<void> => {
   try {
     const response = await getRideList()
     if (response?.code === '0' || response?.code === 0) {
-      rideList.value = (response.data || []).sort((a, b) => {
+      rideList.value = (response.data || []).sort((a: Ride, b: Ride) => {
         if (a.am === b.am) return 0
         return a.am ? -1 : 1
       })
@@ -155,7 +158,7 @@ const fetchRideList = async () => {
   }
 }
 
-const handleCancel = () => {
+const handleCancel = (): void => {
   dialogModel.value = false
   setTimeout(() => {
     props.onClose(true)
@@ -163,7 +166,7 @@ const handleCancel = () => {
 }
 
 // ✅ 로컬 함수 이름 변경: deleteRide → handleDeleteRide
-const handleDeleteRide = async (ride) => {
+const handleDeleteRide = async (ride: Ride): Promise<void> => {
   try {
     const confirmed = await $confirm?.({
       message: `주의: ${ride.name}을 삭제하시면 하위에 있는 승하차장소의 정보들도 삭제됩니다. 정말 삭제하시겠습니까?`,
@@ -178,7 +181,9 @@ const handleDeleteRide = async (ride) => {
 
     if (response?.code === '0' || response?.code === 0) {
       $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
-      const idx = rideList.value.findIndex((item) => item.id === ride.id)
+      const idx = rideList.value.findIndex(
+        (item: Ride) => item.id === ride.id
+      )
       if (idx !== -1) {
         rideList.value.splice(idx, 1)
       }
@@ -189,7 +194,10 @@ const handleDeleteRide = async (ride) => {
   }
 }
 
-const openRideAddDialog = async (isEdit = false, ride = {}) => {
+const openRideAddDialog = async (
+  isEdit: boolean = false,
+  ride: Ride = {}
+): Promise<void> => {
   try {
     const result = await $dialog?.(RideAddDialog, {
       id: ride.id || '',
@@ -207,13 +215,15 @@ const openRideAddDialog = async (isEdit = false, ride = {}) => {
       })
 
       if (isEdit) {
-        const idx = rideList.value.findIndex((item) => item.id === result.id)
+        const idx = rideList.value.findIndex(
+          (item: Ride) => item.id === (result as Ride).id
+        )
         if (idx !== -1) {
-          rideList.value[idx] = result
+          rideList.value[idx] = result as Ride
         }
       } else {
-        rideList.value.push(result)
-        rideList.value.sort((a, b) => {
+        rideList.value.push(result as Ride)
+        rideList.value.sort((a: Ride, b: Ride) => {
           if (a.am === b.am) return 0
           return a.am ? -1 : 1
         })
@@ -229,7 +239,7 @@ onMounted(() => {
   checkIfMobile()
   fetchRideList()
 
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

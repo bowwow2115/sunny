@@ -71,7 +71,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { updateParents, addParents } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
@@ -91,7 +91,7 @@ const props = defineProps({
 
 const dialogModel = ref(true)
 const loading = ref(false)
-const form = ref({
+const form = ref<any>({
   id: props.id,
   childId: props.childId,
   name: props.name,
@@ -100,7 +100,7 @@ const form = ref({
 })
 
 const isEdit = ref(props.isEdit)
-const parentTypeList = ['부', '모', '조부', '조모', '그 외']
+const parentTypeList: string[] = ['부', '모', '조부', '조모', '그 외']
 
 const handleCancel = () => {
   dialogModel.value = false
@@ -117,7 +117,7 @@ const handleConfirm = async () => {
       ? () => updateParents(form.value)
       : () => addParents(form.value)
 
-    const response = await ($withLoading?.(apiCall()) ?? apiCall())
+    const response: any = await ($withLoading?.(apiCall()) ?? apiCall())
 
     if (response?.code === '0' || response?.code === 0) {
       dialogModel.value = false
@@ -135,7 +135,7 @@ const handleConfirm = async () => {
 }
 
 onMounted(() => {
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

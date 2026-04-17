@@ -81,10 +81,11 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getUsers } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { User } from '@/types'
 
 // const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
@@ -95,20 +96,22 @@ const props = defineProps({
 })
 
 // ✅ 상태 관리
-const dialogModel = ref(true)
-const isMobile = ref(false)
-const groups = ref({ users: true })
-const userList = ref([])
+const dialogModel = ref<boolean>(true)
+const isMobile = ref<boolean>(false)
+const groups = ref<{ users: boolean }>({ users: true })
+const userList = ref<User[]>([])
 
 // ✅ 모바일 감지
-const checkIfMobile = () => {
-  const ua = navigator.userAgent || navigator.vendor || window.opera
+const checkIfMobile = (): void => {
+  const ua =
+    navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
-    /android/i.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+    /android/i.test(ua) ||
+    (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
 }
 
 // ✅ 사용자 목록 로딩
-const fetchUsers = async () => {
+const fetchUsers = async (): Promise<void> => {
   try {
     const response = await getUsers()
     if (response?.code === '0' || response?.code === 0) {
@@ -121,7 +124,7 @@ const fetchUsers = async () => {
 }
 
 // ✅ 다이얼로그 닫기
-const handleCancel = () => {
+const handleCancel = (): void => {
   dialogModel.value = false
   setTimeout(() => {
     props.onClose(true)
@@ -149,7 +152,7 @@ onMounted(() => {
   fetchUsers()
 
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

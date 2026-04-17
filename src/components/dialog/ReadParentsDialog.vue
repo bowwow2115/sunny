@@ -91,10 +91,11 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { useGlobal } from '@/composables/useGlobal'
+import type { ChildRide } from '@/types'
 
 const { $showMessage } = useGlobal()
 const { copy, copied } = useClipboard()
@@ -105,11 +106,11 @@ const props = defineProps({
 })
 
 const dialogModel = ref(true)
-const form = ref({
-  childRideList: [...props.childRideList],
+const form = ref<{ childRideList: ChildRide[] }>({
+  childRideList: [...(props.childRideList as ChildRide[])],
 })
 
-const groups = ref({})
+const groups = ref<Record<number, boolean>>({})
 
 // Initialize groups state
 onMounted(() => {
@@ -125,12 +126,12 @@ const handleCancel = () => {
   }, 150)
 }
 
-const copyToClipboard = async (text) => {
+const copyToClipboard = async (text: string) => {
   if (!text) return
 
   try {
-    if (typeof window.$clipboard === 'function') {
-      await window.$clipboard(text)
+    if (typeof (window as any).$clipboard === 'function') {
+      await (window as any).$clipboard(text)
     } else if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(text)
     } else {
@@ -154,7 +155,7 @@ const copyToClipboard = async (text) => {
 }
 
 onMounted(() => {
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)

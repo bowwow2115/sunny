@@ -50,10 +50,11 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { addClass } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import type { ClassInfo } from '@/types'
 
 const { $showError, $withLoading } = useGlobal()
 
@@ -64,23 +65,23 @@ const props = defineProps({
 })
 
 // ✅ 상태 관리
-const dialogModel = ref(true)
-const loading = ref(false)
+const dialogModel = ref<boolean>(true)
+const loading = ref<boolean>(false)
 
 // ✅ 폼 데이터
-const form = ref({
+const form = ref<ClassInfo>({
   id: '',
   name: '',
 })
 
 // ✅ 검증 규칙
 const nameRules = [
-  (v) => !!v || '반 이름은 필수 항목입니다.',
-  (v) => (v && v.length <= 20) || '20자 이하로 입력해주세요.',
+  (v: string) => !!v || '반 이름은 필수 항목입니다.',
+  (v: string) => (v && v.length <= 20) || '20자 이하로 입력해주세요.',
 ]
 
 // ✅ 다이얼로그 닫기 (취소)
-const handleCancel = () => {
+const handleCancel = (): void => {
   dialogModel.value = false
   setTimeout(() => {
     props.onClose(null)
@@ -88,7 +89,7 @@ const handleCancel = () => {
 }
 
 // ✅ 반 추가 실행
-const handleConfirm = async () => {
+const handleConfirm = async (): Promise<void> => {
   // ✅ 간단한 유효성 검사
   if (!form.value.name?.trim()) {
     // $showMessage?.({ type: 'warning', message: '반 이름을 입력해주세요.' })
@@ -120,7 +121,7 @@ const handleConfirm = async () => {
 // ✅ 마운트 시 초기화
 onMounted(() => {
   // ✅ ESC 키로 닫기
-  const onKeydown = (e) => {
+  const onKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancel()
       document.removeEventListener('keydown', onKeydown)
