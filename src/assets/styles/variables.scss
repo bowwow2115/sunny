@@ -1,11 +1,65 @@
 // 설명 : 프로젝트 전체에 적용되는 변수에 대해 정의함
-// 주의 : Vite 의 additionalData 로 모든 SCSS 파일에 주입되므로
-//        변수 선언만 작성해야 합니다. (@import / @font-face / 실제 CSS 출력 X)
+// 주의 : 컴포넌트 갯수 만큼 실행되기 때문에 변수에 대해서만 정의해야합니다. (실제 CSS에 대한 적용은 sass/styles.scss에 작성)
+
+// vuetify의 스타일 변수 가져오기
+@import '~vuetify/src/styles/styles.sass';
+
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 300;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-aLt.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 400;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-bRg.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 700;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-cBd.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 800;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-dEb.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 900;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-eHv.woff') format('woff');
+}
+/* ***** 폰트 - 학교안심 둥근미소 ****** */
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 400;
+  font-style: normal;
+  src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-R.woff') format('woff');
+}
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 700;
+  font-style: normal;
+  src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-B.woff') format('woff');
+}
 
 /* ***** override ****** */
 $body-font-family: NanumSquareNeo, -apple-system, BlinkMacSystemFont, system-ui,
   Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
   'Malgun Gothic', sans-serif;
+
+$text-field-outlined-fieldset-border-width: 1px !important;
+$text-field-outlined-focused-border-width: 1px !important;
 
 /* ***** 새로운 변수 ****** */
 $clr-primary-back: #f5fbe8;
