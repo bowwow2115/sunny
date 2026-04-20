@@ -88,6 +88,8 @@ export function useGlobal() {
     $showConfirm,
     $showError,
     $withLoading,
+    /** ConfirmPlugin — GlobalConfirmSheet 마운트 (window.$confirm 아님) */
+    $confirm: globalProperties?.$confirm,
     $dialog: globalProperties?.$dialog,
     $constants: globalProperties?.$constants,
     $lodash: globalProperties?.$lodash,

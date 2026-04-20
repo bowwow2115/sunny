@@ -84,56 +84,59 @@
           </template>
 
           <template v-if="form.parentList?.length">
-            <v-list-item
+            <template
               v-for="(item, index) in form.parentList"
               :key="item.id || index"
-              class="ml-14"
             >
-              <v-list-item-icon start>
-                <span class="_list-icon _list-icon-ko">{{
-                  item.relation
-                }}</span>
-              </v-list-item-icon>
+              <v-list-item class="ml-14">
+                <v-list-item-icon start>
+                  <span class="_list-icon _list-icon-ko">{{
+                    item.relation
+                  }}</span>
+                </v-list-item-icon>
 
-              <v-list-item-title class="_list-title-with-sub">
-                {{ item.name }}
-                <span class="ml-2">
+                <v-list-item-title class="_list-title-with-sub">
+                  {{ item.name }}
+                  <span class="ml-2">
+                    <v-btn
+                      icon
+                      size="x-small"
+                      variant="text"
+                      @click="copyToClipboard(item.telephone)"
+                    >
+                      <v-icon icon="ri-phone-fill" color="grey"></v-icon>
+                    </v-btn>
+                    {{ item.telephone }}
+                  </span>
+                </v-list-item-title>
+
+                <v-list-item-action start>
                   <v-btn
                     icon
-                    size="x-small"
+                    size="small"
                     variant="text"
-                    @click="copyToClipboard(item.telephone)"
+                    color="grey"
+                    @click="deleteParents(item)"
                   >
-                    <v-icon icon="ri-phone-fill" color="grey"></v-icon>
+                    <v-icon icon="ri-close-circle-fill"></v-icon>
                   </v-btn>
-                  {{ item.telephone }}
-                </span>
-              </v-list-item-title>
-
-              <v-list-item-action start>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="grey"
-                  @click="deleteParents(item)"
-                >
-                  <v-icon icon="ri-close-circle-fill"></v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="success"
-                  class="ml-2"
-                  @click="openParentsDialog(true, item)"
-                >
-                  <v-icon icon="ri-edit-2-fill"></v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-
-            <v-divider v-if="index < form.parentList.length - 1" />
+                  <v-btn
+                    icon
+                    size="small"
+                    variant="text"
+                    color="success"
+                    class="ml-2"
+                    @click="openParentsDialog(true, item)"
+                  >
+                    <v-icon icon="ri-edit-2-fill"></v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+              <v-divider
+                v-if="index < form.parentList.length - 1"
+                class="ml-14"
+              />
+            </template>
           </template>
 
           <v-list-item v-else>
@@ -340,8 +343,14 @@ import { useClipboard } from '@vueuse/core' // ✅ 클립보드 유틸 (vue-clip
 import { useGlobal } from '@/composables/useGlobal'
 import type { Parent, ChildRide } from '@/types'
 
-const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
-// import { useGlobal } from '@/composables/useGlobal' // 플러그인 훅
+const { $showMessage, $showError, $withLoading, $dialog, $confirm } = useGlobal()
+
+/** API가 배열이 아닌 null/객체 등으로 줄 때 spread 오류 방지 */
+function asArray<T>(v: unknown): T[] {
+  if (v == null) return []
+  if (Array.isArray(v)) return [...v] as T[]
+  return []
+}
 
 // ✅ 플러그인 연동용 props (필수)
 const props = defineProps({
@@ -378,9 +387,9 @@ const form = ref<any>({
   birthday: props.birthday,
   status: props.status,
   address: props.address,
-  parentList: [...props.parentList],
-  amChildRideList: [...props.amChildRideList],
-  pmChildRideList: [...props.pmChildRideList],
+  parentList: asArray<Parent>(props.parentList),
+  amChildRideList: asArray<ChildRide>(props.amChildRideList),
+  pmChildRideList: asArray<ChildRide>(props.pmChildRideList),
 })
 
 // ✅ 리스트 그룹 열림 상태
@@ -485,7 +494,7 @@ const openParentsDialog = async (isEdit: boolean, item: any = {}) => {
       childId: form.value.id,
     }
 
-    const result = await (window as any).$dialog?.(ParentsDialog, dialogProps)
+    const result = await $dialog?.(ParentsDialog, dialogProps)
 
     if (result) {
       // $showMessage?.({
@@ -530,10 +539,7 @@ const openChildRideDialog = async (
       child: { id: form.value.id },
     }
 
-    const result = await (window as any).$dialog?.(
-      ChildRideDialog,
-      dialogProps
-    )
+    const result = await $dialog?.(ChildRideDialog, dialogProps)
 
     if (result) {
       // $showMessage?.({
@@ -565,7 +571,7 @@ const openChildRideDialog = async (
 // ✅ 보호자 삭제
 const deleteParents = async (parent: Parent) => {
   try {
-    const confirmed = await (window as any).$confirm?.({
+    const confirmed = await $confirm?.({
       message: `${parent.name}님의 정보를 정말 삭제하시겠습니까?`,
     })
 
@@ -594,7 +600,7 @@ const deleteParents = async (parent: Parent) => {
 const deleteChildRide = async (childRide: any) => {
   try {
     const rideName = childRide?.meetingLocation?.sunnyRide?.name || '이 차량'
-    const confirmed = await (window as any).$confirm?.({
+    const confirmed = await $confirm?.({
       message: `${rideName}를 정말 삭제하시겠습니까?`,
     })
 
@@ -625,7 +631,7 @@ const deleteChildRide = async (childRide: any) => {
 // ✅ 원아 삭제 (최상위)
 const handleDeleteChild = async () => {
   try {
-    const confirmed = await (window as any).$confirm?.({
+    const confirmed = await $confirm?.({
       message: `주의: ${form.value.name}을 정말 삭제하시겠습니까?`,
     })
 

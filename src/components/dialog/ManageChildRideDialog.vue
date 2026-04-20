@@ -30,9 +30,11 @@
                 v-model="selectedSunnyRide"
                 :items="am ? amRideList : pmRideList"
                 item-title="name"
+                item-value="id"
                 return-object
+                clearable
                 :rules="rideRules"
-                :label="(am ? '오전' : '오후') + '코스를 선택해주세요'"
+                :label="(am ? '오전' : '오후') + ' 코스를 선택해주세요'"
                 variant="outlined"
                 hide-details="auto"
                 density="comfortable"
@@ -131,10 +133,11 @@ const form = ref<any>({
 // ✅ 차량 목록 (오전/오후 분리)
 const amRideList = ref<any[]>([])
 const pmRideList = ref<any[]>([])
-const selectedSunnyRide = ref<any>({ meetingLocationList: [] })
+/** 빈 객체로 두면 라벨이 없어 [object Object]로 보임 — 선택 전에는 null */
+const selectedSunnyRide = ref<any>(null)
 
-// ✅ 검증 규칙
-const rideRules = [(v: any) => !!v || '필수 항목입니다.']
+// ✅ 검증 규칙 (빈 객체 {} 는 truthy라 id 기준으로 검사)
+const rideRules = [(v: any) => !!(v && v.id) || '필수 항목입니다.']
 const meetingLocationRules = [(v: any) => !!v || '필수 항목입니다.']
 
 // ✅ 차량 목록 로딩
@@ -177,8 +180,11 @@ const fetchRideList = async () => {
   }
 }
 
-// ✅ 승하차 장소 초기화 (코스 변경 시)
+// ✅ 승하차 장소 초기화 (코스 변경·해제 시)
 const resetMeetingLocation = () => {
+  if (!form.value.meetingLocation) {
+    form.value.meetingLocation = {}
+  }
   form.value.meetingLocation.id = ''
   form.value.meetingLocation.name = ''
 }

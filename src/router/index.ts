@@ -14,9 +14,12 @@ function withLoadingError(
   importFn: () => Promise<any>,
   componentName: string
 ): () => Promise<any> {
-  return () => {
-    return importFn().catch((error: Error) => {
-      console.error(`[Router] Failed to load ${componentName}:`, error)
+  return async () => {
+    try {
+      return await importFn()
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error))
+      console.error(`[Router] Failed to load ${componentName}:`, err)
       return defineComponent({
         setup() {
           return () =>
@@ -31,7 +34,7 @@ function withLoadingError(
                 { class: 'text-h6 mt-4' },
                 `${componentName} 로딩 실패`
               ),
-              h('p', { class: 'text-grey mt-2' }, error.message),
+              h('p', { class: 'text-grey mt-2' }, err.message),
               h(
                 'v-btn',
                 {
@@ -44,7 +47,7 @@ function withLoadingError(
             ])
         },
       })
-    })
+    }
   }
 }
 

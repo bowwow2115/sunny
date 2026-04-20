@@ -1,6 +1,7 @@
 <template>
   <!-- ✅ teleport="body" 로 오버레이 컨텍스트 보장 -->
   <v-dialog
+    class="_dialog-sm"
     v-model="dialogModel"
     persistent
     max-width="400px"

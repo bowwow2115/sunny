@@ -220,12 +220,14 @@ const fetchAllChildren = async () => {
       getAllChildren().then((response: any) => {
         if (response?.code === '0' && Array.isArray(response.data)) {
           childrenList.value = response.data.map((element: any) => {
+            const parentsRaw = element.parentList
+            const parentArr = Array.isArray(parentsRaw) ? parentsRaw : []
             const parentNameList =
-              element.parentList?.map((parent: any) => parent.name).join(' ') ||
-              ''
+              parentArr.map((parent: any) => parent.name).join(' ') || ''
 
             return {
               ...element,
+              parentList: parentArr,
               // ✅ item-key="id" 에 필수: 모든 아이템에 id 보장
               id:
                 element.id ??
@@ -317,7 +319,7 @@ const openInfoDialog = async (info: any) => {
       birthday: info.birthday ?? '',
       status: info.status ?? '',
       address: info.address,
-      parentList: info.parentList,
+      parentList: Array.isArray(info.parentList) ? info.parentList : [],
       amChildRideList,
       pmChildRideList,
       closable: true, // ✅ ESC/오버레이 클릭으로 닫기 허용

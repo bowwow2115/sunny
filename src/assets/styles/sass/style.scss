@@ -385,12 +385,48 @@ input[type='checkbox'] {
 }
 
 /* ********** popup dialog 팝업 ********** */
+/*
+ * 모달 폭 고정: 인풋 텍스트·셀렉트 라벨 길이에 따라 창 너비가 출렁이지 않게 함
+ * (Vuetify 3: 실제 박스는 .v-overlay__content)
+ */
+.v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-overlay__content {
+  width: min(720px, 60vw, 92vw) !important;
+  max-width: min(720px, 60vw, 92vw) !important;
+  box-sizing: border-box;
+}
+
+/* 관리자용 좁은 카드 팝업 */
+.v-overlay.v-dialog:has(._pop-small-card):not(.v-dialog--fullscreen)
+  .v-overlay__content {
+  width: min(520px, 92vw) !important;
+  max-width: min(520px, 92vw) !important;
+}
+
+/* 확인/알림 등 최소 폭 */
+.v-overlay.v-dialog._dialog-sm:not(.v-dialog--fullscreen) .v-overlay__content {
+  width: min(400px, 92vw) !important;
+  max-width: min(400px, 92vw) !important;
+}
+
+.v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.v-overlay.v-dialog .v-card-text,
+.v-overlay.v-dialog .v-form,
+.v-overlay.v-dialog .v-card-text .v-row,
+.v-overlay.v-dialog .v-form .v-row {
+  min-width: 0;
+}
+
+.v-overlay.v-dialog .v-col {
+  min-width: 0;
+}
+
 .v-dialog {
-  max-width: 60%;
-  min-width: 300px;
-  &:has(._pop-small-card) {
-    max-width: 40%;
-  }
   .v-card__title + .v-card__text,
   .v-card__subtitle + .v-card__text {
     border-top: none;
@@ -517,11 +553,6 @@ input[type='checkbox'] {
     }
   }
   .v-dialog {
-    min-width: 50%;
-    max-width: 70%;
-    &:has(._pop-small-card) {
-      max-width: 65%;
-    }
     .v-list {
       .v-list-item-group {
         margin: 0 !important;
@@ -593,11 +624,6 @@ input[type='checkbox'] {
     }
   }
   .v-dialog {
-    min-width: 60%;
-    max-width: 85%;
-    &:has(._pop-small-card) {
-      max-width: 85%;
-    }
     .v-list {
       .v-list-item-group {
         margin: 0 !important;

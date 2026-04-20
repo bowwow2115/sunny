@@ -1,6 +1,7 @@
 <template>
   <!-- ✅ 외부 클릭/ESC로 닫을 수 있도록 persistent=false -->
   <v-dialog
+    class="_dialog-sm"
     v-model="dialogModel"
     :persistent="persistent"
     max-width="400px"
