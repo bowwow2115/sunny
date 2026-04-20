@@ -13,7 +13,9 @@ export default defineConfig(({ mode }) => ({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/assets/styles/variables.scss";`,
+        api: 'modern-compiler',
+        additionalData: `@use "@/assets/styles/variables.scss" as *;`,
+        silenceDeprecations: ['import', 'legacy-js-api', 'global-builtin'],
       },
     },
   },
@@ -21,7 +23,7 @@ export default defineConfig(({ mode }) => ({
     port: 8090,
     proxy: {
       '/sunny': {
-        target: 'http://192.168.1.254:8080',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
     },

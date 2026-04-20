@@ -51,9 +51,9 @@ import type { ConfirmOptions } from '@/types'
 const message = ref('')
 const confirmText = ref('확인')
 const cancelText = ref('닫기')
-const persistent = ref(true)
+const persistent = ref(false)
 
-const dialogModel = ref(true)
+const dialogModel = ref(false)
 
 let currentResolve: ((value: boolean) => void) | null = null
 

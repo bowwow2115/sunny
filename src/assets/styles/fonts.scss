@@ -1,0 +1,51 @@
+@charset "UTF-8";
+/* ***** 폰트 - NanumSquareNeo ****** */
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 300;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-aLt.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 400;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-bRg.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 700;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-cBd.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 800;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-dEb.woff') format('woff');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'NanumSquareNeo';
+  font-weight: 900;
+  font-style: normal;
+  src: url('@/assets/fonts/NanumSquareNeoTTF-eHv.woff') format('woff');
+}
+
+/* ***** 폰트 - 학교안심 둥근미소 ****** */
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 400;
+  font-style: normal;
+  src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-R.woff') format('woff');
+}
+@font-face {
+  font-family: 'HakgyoansimDunggeunmiso';
+  font-weight: 700;
+  font-style: normal;
+  src: url('@/assets/fonts/Hakgyoansim-Dunggeunmiso-TTF-B.woff') format('woff');
+}
