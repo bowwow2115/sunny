@@ -63,8 +63,8 @@
         </v-btn>
       </template>
 
-      <!-- ✅ body-append: 슬롯에서 headers 받지 않고, 고정값 또는 computed 사용 -->
-      <template v-slot:body-append="{ items }">
+      <!-- Vuetify 3: dotted slot name needs dynamic #[`body.append`] -->
+      <template #[`body.append`]="{ items }">
         <tr>
           <td
             :colspan="headers.length + 1"
@@ -75,8 +75,8 @@
         </tr>
       </template>
 
-      <!-- 푸터 -->
-      <template v-slot:footer>
+      <!-- Vuetify 3: custom footer when hide-default-footer → `#bottom` -->
+      <template #bottom>
         <v-row class="align-center" style="padding: 5px">
           <v-col cols="auto">
             <v-btn
@@ -158,7 +158,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { getAllChildren } from '@/api/api'
+import { getAllChildren, getChildById } from '@/api/api'
 import ChildMoreInfo from '@/views/ChildMoreInfo.vue' // ← 유지 가능
 
 import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
@@ -297,32 +297,35 @@ const openInfoDialog = async (info: any) => {
     return
   }
 
-  // ✅ 승하차 정보 분리
-  const amChildRideList: any[] = []
-  const pmChildRideList: any[] = []
-
-  if (Array.isArray(info.childRideList)) {
-    info.childRideList.forEach((childRide: any) => {
-      const isAm = childRide?.meetingLocation?.sunnyRide?.am === true
-      ;(isAm ? amChildRideList : pmChildRideList).push(childRide)
-    })
-  }
-
   try {
+    // 상세 API를 호출하여 parentList, childRideList 등 전체 데이터를 가져옴
+    const detail = await $withLoading(getChildById(info.id))
+    const child = detail?.data ?? info
+
+    // 승하차 정보 분리
+    const amChildRideList: any[] = []
+    const pmChildRideList: any[] = []
+
+    if (Array.isArray(child.childRideList)) {
+      child.childRideList.forEach((childRide: any) => {
+        const isAm = childRide?.meetingLocation?.sunnyRide?.am === true
+        ;(isAm ? amChildRideList : pmChildRideList).push(childRide)
+      })
+    }
+
     console.log('[openInfoDialog] About to open dialog...')
-    // ✅ $dialog 로 동적 마운트 (ChildMoreInfo 는 템플릿에 없어야 함!)
     const result = await $dialog?.(ChildMoreInfo, {
-      id: info.id,
-      name: info.name ?? '',
-      admissionDate: info.admissionDate ?? '',
-      className: info.className ?? '',
-      birthday: info.birthday ?? '',
-      status: info.status ?? '',
-      address: info.address,
-      parentList: Array.isArray(info.parentList) ? info.parentList : [],
+      id: child.id,
+      name: child.name ?? '',
+      admissionDate: child.admissionDate ?? '',
+      className: child.className ?? '',
+      birthday: child.birthday ?? '',
+      status: child.status ?? '',
+      address: child.address,
+      parentList: Array.isArray(child.parentList) ? child.parentList : [],
       amChildRideList,
       pmChildRideList,
-      closable: true, // ✅ ESC/오버레이 클릭으로 닫기 허용
+      closable: true,
     })
 
     console.log('[openInfoDialog] Result:', result)

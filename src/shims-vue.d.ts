@@ -16,9 +16,6 @@ declare module 'hangul-js' {
 
 declare global {
   interface Window {
-    $: any
-    jQuery: any
-    moment: any
     constants: any
     vuetify: any
     Utils: any
