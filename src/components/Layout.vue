@@ -118,6 +118,7 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ name: 'AppLayout' })
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'

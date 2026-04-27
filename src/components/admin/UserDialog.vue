@@ -103,8 +103,7 @@ const userList = ref<User[]>([])
 
 // ✅ 모바일 감지
 const checkIfMobile = (): void => {
-  const ua =
-    navigator.userAgent || navigator.vendor || (window as any).opera
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
     /android/i.test(ua) ||
     (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)

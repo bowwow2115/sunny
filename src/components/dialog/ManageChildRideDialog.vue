@@ -150,10 +150,12 @@ const fetchRideList = async () => {
       response.data.forEach((ride: any) => {
         // ✅ 원본 데이터 변조 방지를 위해 얕은 복사 고려 (필요시)
         if (ride.meetingLocationList) {
-          ride.meetingLocationList = ride.meetingLocationList.map((loc: any) => ({
-            ...loc,
-            name: `${loc.name}(${loc.time})`,
-          }))
+          ride.meetingLocationList = ride.meetingLocationList.map(
+            (loc: any) => ({
+              ...loc,
+              name: `${loc.name}(${loc.time})`,
+            })
+          )
         }
 
         if (ride.am) {

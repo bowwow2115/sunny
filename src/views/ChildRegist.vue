@@ -37,7 +37,7 @@
               label="재원여부"
               hide-details="auto"
               outlined
-              :menu-props="{ offsetY: true }"
+              :menu-props="{ offset: 8 }"
             ></v-combobox>
           </v-col>
           <v-col cols="6" md="3">
@@ -58,7 +58,7 @@
               label="반명"
               hide-details="auto"
               outlined
-              :menu-props="{ offsetY: true }"
+              :menu-props="{ offset: 8 }"
             ></v-select>
           </v-col>
           <v-col cols="4" md="2">
@@ -83,30 +83,25 @@
               transition="scale-transition"
               offset-y
               ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ props: activatorProps }">
                 <v-text-field
                   v-model="form.admissionDate"
                   label="원아 입학일"
                   hide-details="auto"
                   append-icon="ri-calendar-2-fill"
                   readonly
-                  v-bind="attrs"
-                  v-on="on"
+                  v-bind="activatorProps"
                   outlined
-                ></v-text-field
-                ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+                ></v-text-field>
               </template>
               <v-date-picker
                 v-model="form.admissionDate"
-                :active-picker.sync="activePicker"
+                v-model:view-mode="activePicker"
                 class="calendar"
-                no-title
+                hide-title
                 min="2015-01-01"
-                :weekday-format="getDay"
-                :month-format="getMonth"
-                :header-date-format="changeHeader"
                 width="100%"
-                @change="menuRef?.save((addmisionDateWrap = false))"
+                @update:model-value="addmisionDateWrap = false"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -118,7 +113,7 @@
               transition="scale-transition"
               offset-y
               ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ props: activatorProps }">
                 <v-text-field
                   v-model="form.birthday"
                   :rules="datePicRules"
@@ -126,28 +121,23 @@
                   hide-details="auto"
                   append-icon="ri-calendar-2-fill"
                   readonly
-                  v-bind="attrs"
-                  v-on="on"
+                  v-bind="activatorProps"
                   outlined
-                ></v-text-field
-                ><!-- v-bind="attrs" 및 v-on="on": 부모 요소(v-menu)에서 받은 속성과 이벤트를 v-text-field에 전달 - 양방향 바인딩을 위해 v-model 명 동일해야 함 -->
+                ></v-text-field>
               </template>
               <v-date-picker
                 v-model="form.birthday"
-                :active-picker.sync="activePicker"
+                v-model:view-mode="activePicker"
                 class="calendar"
-                no-title
+                hide-title
                 :max="
                   new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                     .toISOString()
                     .substr(0, 10)
                 "
                 min="2015-01-01"
-                :weekday-format="getDay"
-                :month-format="getMonth"
-                :header-date-format="changeHeader"
                 width="100%"
-                @change="menuRef?.save((birthdayWrap = false))"
+                @update:model-value="birthdayWrap = false"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -235,7 +225,7 @@
                   label="관계"
                   hide-details="auto"
                   outlined
-                  :menu-props="{ offsetY: true }"
+                  :menu-props="{ offset: 8 }"
                 ></v-select>
               </v-col>
               <v-col cols="7">
@@ -308,7 +298,7 @@
                     :items="['오전', '오후']"
                     label="시간대를 선택하세요"
                     outlined
-                    :menu-props="{ offsetY: true }"
+                    :menu-props="{ offset: 8 }"
                     hide-details="auto"
                   ></v-select>
                 </v-col>
@@ -322,7 +312,7 @@
                       (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
                     "
                     outlined
-                    :menu-props="{ offsetY: true }"
+                    :menu-props="{ offset: 8 }"
                     hide-details="auto"
                   ></v-select>
                 </v-col>
@@ -336,7 +326,7 @@
                     return-object
                     :label="'승하차 장소를 선택해주세요'"
                     outlined
-                    :menu-props="{ offsetY: true }"
+                    :menu-props="{ offset: 8 }"
                     hide-details="auto"
                   ></v-select>
                 </v-col>
@@ -378,10 +368,10 @@
                 transition="scale-transition"
                 origin="top left"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:activator="{ props: chipActivatorProps }">
                   <v-chip
                     close
-                    v-on="on"
+                    v-bind="chipActivatorProps"
                     :dark="childRide.amPm == '오후'"
                     @click:close="form.childRideList.splice(i, 1)"
                   >
@@ -512,20 +502,17 @@ const pmRideNameList = ref<any[]>([])
 
 const numRules = [
   (v: string) => !!v || '필수 항목입니다.',
-  (v: string) =>
-    /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
+  (v: string) => /^\d+$/.test(v) || '하이픈(-) 없이 숫자만 입력해 주세요.',
   (v: string) => /^.{8,11}$/.test(v) || '8~11자 이내로 입력해주세요.',
 ]
 const nameRules = [
   (v: string) => !!v || '필수 항목입니다.',
-  (v: string) =>
-    /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: string) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
   (v: string) => /^.{0,16}$/.test(v) || '16자 이내로 입력해주세요.',
 ]
 const statusRules = [
   (v: string) => !!v || '필수 항목입니다.',
-  (v: string) =>
-    /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
+  (v: string) => /^[가-힣ㄱ-ㅎㅏ-ㅣ]*$/.test(v) || '한글만 입력해 주세요.',
   (v: string) => /^.{0,8}$/.test(v) || '8자 이내로 입력해주세요.',
 ]
 const datePicRules = [(v: string) => !!v || '날짜를 선택해 주세요.']
@@ -537,37 +524,6 @@ const postcodeDialog = ref<boolean>(false)
 // ✅ 메서드
 const openUploadChildDialog = async () => {
   await $dialog?.(UploadChildDialog)
-}
-
-const getDay = (date: string | Date): string => {
-  const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
-  const week = new Date(date).getDay()
-  return daysOfWeek[week]
-}
-
-const getMonth = (date: string | Date): string => {
-  const monthName = [
-    '1월',
-    '2월',
-    '3월',
-    '4월',
-    '5월',
-    '6월',
-    '7월',
-    '8월',
-    '9월',
-    '10월',
-    '11월',
-    '12월',
-  ]
-  const month = new Date(date).getMonth()
-  return monthName[month]
-}
-
-const changeHeader = (date: string | Date): string => {
-  const year = new Date(date).getFullYear()
-  const month = new Date(date).getMonth() + 1
-  return `${year}년 ${month}월`
 }
 
 const addParentBox = () => {
@@ -728,9 +684,7 @@ const openPostcode = () => {
           // 건물명이 있고, 공동주택일 경우 추가
           if (data.buildingName !== '' && data.apartment === 'Y') {
             extraAddr +=
-              extraAddr !== ''
-                ? ', ' + data.buildingName
-                : data.buildingName
+              extraAddr !== '' ? ', ' + data.buildingName : data.buildingName
           }
           // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
           if (extraAddr !== '') {

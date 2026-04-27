@@ -115,8 +115,7 @@ const userIdRules = [
   (v: string) => !!v || '아이디는 필수 항목입니다.',
   (v: string) =>
     /^[a-zA-Z0-9]+$/.test(v) || '아이디는 알파벳과 숫자만 포함할 수 있습니다.',
-  (v: string) =>
-    (v && v.length >= 4) || '아이디는 최소 4자 이상이어야 합니다.',
+  (v: string) => (v && v.length >= 4) || '아이디는 최소 4자 이상이어야 합니다.',
 ]
 
 const userPwRules = [

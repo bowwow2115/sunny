@@ -1,10 +1,6 @@
 import { createApp, type App, type Component } from 'vue'
 import vuetify from '@/plugins/vuetify'
-import type {
-  ConfirmOptions,
-  ErrorOptions,
-  SnackbarOptions,
-} from '@/types'
+import type { ConfirmOptions, ErrorOptions, SnackbarOptions } from '@/types'
 
 function inheritAppContext(dialogApp: App, mainApp?: App): void {
   if (!mainApp) return
@@ -151,9 +147,4 @@ const MessageDialogPlugin = {
   },
 }
 
-export {
-  DialogPlugin,
-  ConfirmPlugin,
-  ErrorDialogPlugin,
-  MessageDialogPlugin,
-}
+export { DialogPlugin, ConfirmPlugin, ErrorDialogPlugin, MessageDialogPlugin }

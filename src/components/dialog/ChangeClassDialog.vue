@@ -83,7 +83,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { getClassList, updateChildrenClass } from '@/api/api'
+import { useGlobal } from '@/composables/useGlobal'
 import type { Child } from '@/types'
+
+const { $confirm, $showError, $withLoading } = useGlobal()
 
 // ✅ 플러그인 연동용 props
 const props = defineProps({
@@ -95,11 +98,6 @@ const props = defineProps({
   // ✅ 플러그인 콜백 (필수)
   onClose: { type: Function, default: () => {} },
   onError: { type: Function, default: () => {} },
-
-  // ✅ 전역 메서드 주입 (useGlobal 훅 또는 globalProperties 사용)
-  $confirm: { type: Function, default: null },
-  $showError: { type: Function, default: null },
-  $withLoading: { type: Function, default: (fn: any) => fn() },
 })
 
 // ✅ 상태 관리
@@ -130,7 +128,7 @@ const fetchClassList = async () => {
     }
   } catch (error) {
     console.error('Failed to load class list:', error)
-    props.$showError?.(error)
+    $showError?.(error)
   }
 }
 
@@ -155,14 +153,10 @@ const handleConfirm = async () => {
     return
   }
 
-  // ✅ 확인 다이얼로그 (전역 $confirm 또는 플러그인 사용)
-  const confirmed = await (props.$confirm?.({
+  const confirmOpts = {
     message: `정말 ${form.value.childrenList.length}명의 원아를 "${form.value.className}"으로 변경하시겠습니까?`,
-  }) ??
-    window.$confirm?.({
-      message: `정말 ${form.value.childrenList.length}명의 원아를 "${form.value.className}"으로 변경하시겠습니까?`,
-    }) ??
-    Promise.resolve(true)) // ✅ fallback: 바로 진행
+  }
+  const confirmed = await ($confirm?.(confirmOpts) ?? Promise.resolve(true))
 
   if (!confirmed) return
 
@@ -173,7 +167,7 @@ const handleConfirm = async () => {
     const execute = () =>
       updateChildrenClass(form.value.childrenList, form.value.className)
 
-    const response: any = await (props.$withLoading?.(execute()) ?? execute())
+    const response: any = await ($withLoading?.(execute()) ?? execute())
 
     if (response?.code === '0' || response?.code === 0) {
       // $showMessage?.({ type: 'success', message: '성공적으로 변경했습니다.' })
@@ -184,7 +178,7 @@ const handleConfirm = async () => {
     }
   } catch (error) {
     console.error('Update class error:', error)
-    props.$showError?.(error)
+    $showError?.(error)
     props.onError?.(error)
   } finally {
     loading.value = false

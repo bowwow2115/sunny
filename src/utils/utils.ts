@@ -47,8 +47,11 @@ const Utils = {
   },
 
   tripleDESenc(parameters: string): string {
-    const key = CryptoJS.enc.Utf8.parse('vf_9g13j4j91j27c582ji693')
-    const iv = CryptoJS.enc.Utf8.parse('vf_iv000')
+    const keyStr =
+      import.meta.env.VITE_TRIPLEDES_KEY || 'vf_9g13j4j91j27c582ji693'
+    const ivStr = import.meta.env.VITE_TRIPLEDES_IV || 'vf_iv000'
+    const key = CryptoJS.enc.Utf8.parse(keyStr)
+    const iv = CryptoJS.enc.Utf8.parse(ivStr)
     const encrypt = CryptoJS.TripleDES.encrypt(parameters, key, {
       iv,
       mode: CryptoJS.mode.CBC,

@@ -163,8 +163,7 @@ const form = ref<any>({
 
 // ✅ 모바일 감지
 const checkIfMobile = () => {
-  const ua =
-    navigator.userAgent || navigator.vendor || (window as any).opera
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
     /android/i.test(ua) ||
     (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
@@ -257,9 +256,7 @@ const openAddChildRideDialog = async () => {
     const allChildren: any = await getAttendingChildren()
     const availableChildren = (allChildren?.data || []).filter(
       (child: any) =>
-        !form.value.childRideList.some(
-          (cr: any) => cr.child?.id === child.id
-        )
+        !form.value.childRideList.some((cr: any) => cr.child?.id === child.id)
     )
 
     const result = await $dialog?.(SearchChildDialog, {

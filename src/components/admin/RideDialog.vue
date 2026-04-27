@@ -66,7 +66,7 @@
                   size="small"
                   variant="text"
                   color="grey"
-                  @click="deleteRide(ride)"
+                  @click="handleDeleteRide(ride)"
                 >
                   <v-icon icon="ri-close-circle-fill"></v-icon>
                 </v-btn>
@@ -136,8 +136,7 @@ const groups = ref<{ rides: boolean }>({ rides: true })
 const rideList = ref<Ride[]>([])
 
 const checkIfMobile = (): void => {
-  const ua =
-    navigator.userAgent || navigator.vendor || (window as any).opera
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
     /android/i.test(ua) ||
     (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
@@ -181,9 +180,7 @@ const handleDeleteRide = async (ride: Ride): Promise<void> => {
 
     if (response?.code === '0' || response?.code === 0) {
       $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
-      const idx = rideList.value.findIndex(
-        (item: Ride) => item.id === ride.id
-      )
+      const idx = rideList.value.findIndex((item: Ride) => item.id === ride.id)
       if (idx !== -1) {
         rideList.value.splice(idx, 1)
       }

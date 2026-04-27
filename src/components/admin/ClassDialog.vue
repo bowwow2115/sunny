@@ -48,7 +48,7 @@
                   size="small"
                   variant="text"
                   color="grey"
-                  @click="deleteClass(sunnyClass)"
+                  @click="handleDeleteClass(sunnyClass)"
                 >
                   <v-icon icon="ri-close-circle-fill"></v-icon>
                 </v-btn>
@@ -108,8 +108,7 @@ const groups = ref<{ classes: boolean }>({ classes: true })
 const classList = ref<ClassInfo[]>([])
 
 const checkIfMobile = (): void => {
-  const ua =
-    navigator.userAgent || navigator.vendor || (window as any).opera
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
     /android/i.test(ua) ||
     (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)

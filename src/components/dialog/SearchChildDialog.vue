@@ -55,24 +55,24 @@
 
       <v-list select-strategy="classic" class="pa-0">
         <template v-if="filteredList?.length">
-          <v-list-item
+          <template
             v-for="(child, index) in filteredList"
-            :key="child.id || index"
-            :value="child.id"
-            @click="toggleSelection(child.id)"
+            :key="child.id ?? index"
           >
-            <v-list-item-title>{{ child.name }}</v-list-item-title>
-            <v-list-item-subtitle class="text-grey">
-              {{ child.className }}
-            </v-list-item-subtitle>
-            <template v-slot:append>
-              <v-checkbox-btn
-                :model-value="selectedChild.includes(child.id)"
-                @click.stop="toggleSelection(child.id)"
-              ></v-checkbox-btn>
-            </template>
-          </v-list-item>
-          <v-divider v-if="index < filteredList.length - 1" />
+            <v-list-item :value="child.id" @click="toggleSelection(child.id)">
+              <v-list-item-title>{{ child.name }}</v-list-item-title>
+              <v-list-item-subtitle class="text-grey">
+                {{ child.className }}
+              </v-list-item-subtitle>
+              <template v-slot:append>
+                <v-checkbox-btn
+                  :model-value="selectedChild.includes(child.id)"
+                  @click.stop="toggleSelection(child.id)"
+                ></v-checkbox-btn>
+              </template>
+            </v-list-item>
+            <v-divider v-if="index < filteredList.length - 1" />
+          </template>
         </template>
 
         <v-list-item v-else>

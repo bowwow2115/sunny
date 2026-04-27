@@ -341,9 +341,11 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useClipboard } from '@vueuse/core' // ✅ 클립보드 유틸 (vue-clipboard3 대체)
 import { useGlobal } from '@/composables/useGlobal'
+import { deleteChild as deleteChildApi } from '@/api/api'
 import type { Parent, ChildRide } from '@/types'
 
-const { $showMessage, $showError, $withLoading, $dialog, $confirm } = useGlobal()
+const { $showMessage, $showError, $withLoading, $dialog, $confirm } =
+  useGlobal()
 
 /** API가 배열이 아닌 null/객체 등으로 줄 때 spread 오류 방지 */
 function asArray<T>(v: unknown): T[] {
@@ -411,8 +413,7 @@ const fullAddress = computed(() => {
 
 // ✅ 모바일 감지
 const checkIfMobile = () => {
-  const ua =
-    navigator.userAgent || navigator.vendor || (window as any).opera
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera
   isMobile.value =
     /android/i.test(ua) ||
     (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream)
@@ -637,16 +638,14 @@ const handleDeleteChild = async () => {
 
     if (!confirmed) return
 
-    // ✅ 로딩 처리 + API 호출
-    // await $withLoading?.(
-    //   deleteChildApi(form.value.id).then(response => {
-    if (true) {
-      // response?.code === '0'
-      // $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
+    const response =
+      (await $withLoading?.(deleteChildApi(form.value.id))) ??
+      (await deleteChildApi(form.value.id))
+
+    if (response?.code === '0' || response?.code === 0) {
+      $showMessage?.({ type: 'success', message: '성공적으로 삭제했습니다.' })
       props.onClose({ success: true, id: form.value.id })
     }
-    //   })
-    // )
   } catch (e) {
     console.error('Delete child error:', e)
     props.onError?.(e)
