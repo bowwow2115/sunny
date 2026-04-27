@@ -7,8 +7,11 @@ import {
 } from 'vue-router'
 import auth from '@/api/auth'
 import constants from '@/Constants'
-import store from '@/store'
+import { useAppStore } from '@/stores/app'
+import { pinia } from '@/pinia'
 import Utils from '@/utils/utils'
+
+const appStore = useAppStore(pinia)
 
 function withLoadingError(
   importFn: () => Promise<any>,
@@ -29,11 +32,7 @@ function withLoadingError(
                 color: 'error',
                 size: '48',
               }),
-              h(
-                'h3',
-                { class: 'text-h6 mt-4' },
-                `${componentName} 로딩 실패`
-              ),
+              h('h3', { class: 'text-h6 mt-4' }, `${componentName} 로딩 실패`),
               h('p', { class: 'text-grey mt-2' }, err.message),
               h(
                 'v-btn',
@@ -85,9 +84,24 @@ const RideTimelineTable = withLoadingError(
 
 const routes: RouteRecordRaw[] = [
   { path: '/', redirect: { name: 'SunnyHome' } },
-  { path: '/SignIn', name: 'SignIn', component: SignIn, meta: { requiresAuth: false } },
-  { path: '/SignUp', name: 'SignUp', component: SignUp, meta: { requiresAuth: false } },
-  { path: '/FindId', name: 'FindId', component: FindId, meta: { requiresAuth: false } },
+  {
+    path: '/SignIn',
+    name: 'SignIn',
+    component: SignIn,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/SignUp',
+    name: 'SignUp',
+    component: SignUp,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/FindId',
+    name: 'FindId',
+    component: FindId,
+    meta: { requiresAuth: false },
+  },
   {
     path: '/RideTimelineTable',
     name: 'RideTimelineTable',
@@ -99,14 +113,43 @@ const routes: RouteRecordRaw[] = [
     component: Layout,
     redirect: { name: 'SunnyHome' },
     children: [
-      { path: 'ChildRegist', name: 'ChildRegist', component: ChildRegist, meta: { requiresAuth: true } },
-      { path: 'ChildList', name: 'ChildList', component: ChildList, meta: { requiresAuth: true } },
-      { path: 'RideTimeline', name: 'RideTimeline', component: RideTimeline, meta: { requiresAuth: true } },
-      { path: 'AdminMenu', name: 'AdminMenu', component: AdminMenu, meta: { requiresAuth: true, requiresAdmin: true } },
-      { path: 'SunnyHome', name: 'SunnyHome', component: SunnyHome, meta: { requiresAuth: true } },
+      {
+        path: 'ChildRegist',
+        name: 'ChildRegist',
+        component: ChildRegist,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'ChildList',
+        name: 'ChildList',
+        component: ChildList,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'RideTimeline',
+        name: 'RideTimeline',
+        component: RideTimeline,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'AdminMenu',
+        name: 'AdminMenu',
+        component: AdminMenu,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: 'SunnyHome',
+        name: 'SunnyHome',
+        component: SunnyHome,
+        meta: { requiresAuth: true },
+      },
     ],
   },
-  { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'SunnyHome' } },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    redirect: { name: 'SunnyHome' },
+  },
 ]
 
 const router = createRouter({
@@ -118,34 +161,39 @@ const router = createRouter({
   },
 })
 
-router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-  if (to.fullPath === from.fullPath) return
+router.beforeEach(
+  async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+    if (to.fullPath === from.fullPath) return
 
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+    const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
 
-  if (requiresAuth) {
-    const isAuthenticated = await validateAuth()
+    if (requiresAuth) {
+      const isAuthenticated = await validateAuth()
 
-    if (isAuthenticated) {
-      if (requiresAdmin && !store.getters.isAdmin) {
-        return { name: constants.DEFAULT_HOME || 'SunnyHome' }
+      if (isAuthenticated) {
+        if (requiresAdmin && !appStore.isAdmin) {
+          return { name: constants.DEFAULT_HOME || 'SunnyHome' }
+        }
+        return true
       }
-      return true
+      return {
+        name: 'SignIn',
+        query: { redirect: to.fullPath },
+      }
     }
-    return {
-      name: 'SignIn',
-      query: { redirect: to.fullPath },
+
+    const hasToken = !Utils.isNull(Utils.getToken())
+    if (
+      hasToken &&
+      !['SignIn', 'SignUp', 'FindId'].includes(to.name as string)
+    ) {
+      return { name: constants.DEFAULT_HOME || 'SunnyHome' }
     }
-  }
 
-  const hasToken = !Utils.isNull(Utils.getToken())
-  if (hasToken && !['SignIn', 'SignUp', 'FindId'].includes(to.name as string)) {
-    return { name: constants.DEFAULT_HOME || 'SunnyHome' }
+    return true
   }
-
-  return true
-})
+)
 
 async function validateAuth(): Promise<boolean> {
   try {
@@ -156,8 +204,8 @@ async function validateAuth(): Promise<boolean> {
     console.warn('Auth validation failed:', error)
     try {
       Utils.deleteCookie?.(constants.TOKEN)
-      store.commit?.('SET_USERID', '')
-      store.commit?.('SET_ADMIN', false)
+      appStore.setUserId('')
+      appStore.setAdmin(false)
     } catch (e) {
       console.error('Cookie cleanup error:', e)
     }
@@ -177,8 +225,8 @@ router.afterEach((to) => {
   const baseTitle = '해맑은 어린이집'
   document.title = titles[to.name as string] || baseTitle
 
-  if (store.state?.isLoading) {
-    store.commit?.('SET_LOADING', false)
+  if (appStore.isLoading) {
+    appStore.setLoading(false)
   }
 })
 

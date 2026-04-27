@@ -1,16 +1,18 @@
 import type { App } from 'vue'
-import store from '@/store'
+import { useAppStore } from '@/stores/app'
+import { pinia } from '@/pinia'
 
 const LoadingPlugin = {
   install(app: App) {
     app.config.globalProperties.$withLoading = async function <T>(
       promise: Promise<T>
     ): Promise<T | void> {
-      store.dispatch('setLoading', true)
+      const store = useAppStore(pinia)
+      store.setLoading(true)
       try {
         return await promise
       } finally {
-        store.dispatch('setLoading', false)
+        store.setLoading(false)
       }
     }
   },

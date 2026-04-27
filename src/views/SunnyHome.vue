@@ -179,7 +179,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from '@/store'
+import { useAppStore } from '@/stores/app'
 import { getBirthMonthChild } from '@/api/api'
 import auth from '@/api/auth'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
@@ -190,7 +190,7 @@ import { useGlobal } from '@/composables/useGlobal'
 import type { Child } from '@/types'
 
 const router = useRouter()
-const store = useStore()
+const store = useAppStore()
 const {
   $showMessage,
   $showError,
@@ -205,14 +205,13 @@ const birthMonthChildList = ref<Child[]>([])
 const beingBirthdayChildList = ref<Array<Child & { dDay: number }>>([])
 const currentMonth = ref<number | string>('')
 
-// ✅ Vuex getters (computed 로 연결)
-const isAdmin = computed<boolean>(() => store.getters.isAdmin)
-const userId = computed<string>(() => store.getters.userId)
+const isAdmin = computed<boolean>(() => store.isAdmin)
+const userId = computed<string>(() => store.userId)
 
 const copyToClipboard = async (text: string) => {
   try {
     // ✅ 성공 메시지 (글로벌 훅 사용)
-    $showConfirm?.({
+    $showMessage?.({
       type: 'success',
       message: '전화번호를 클립보드에 저장했습니다.',
     })
@@ -244,9 +243,9 @@ const fetchBirthMonthChildren = async () => {
           return dDay >= 0 ? { ...child, dDay } : null
         })
         .filter(Boolean)
-        .sort(
-          (a: any, b: any) => a.dDay - b.dDay
-        ) as Array<Child & { dDay: number }> // ✅ D-day 오름차순
+        .sort((a: any, b: any) => a.dDay - b.dDay) as Array<
+        Child & { dDay: number }
+      > // ✅ D-day 오름차순
     }
   } catch (e) {
     console.error('Fetch birth children error:', e)

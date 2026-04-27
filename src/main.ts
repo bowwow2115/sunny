@@ -1,10 +1,8 @@
 import { createApp } from 'vue'
-import $ from 'jquery'
-import moment from 'moment'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
-import store, { key as storeKey } from './store'
+import { pinia } from './pinia'
 import 'remixicon/fonts/remixicon.css'
 
 import VueClipboard from 'vue-clipboard3'
@@ -12,6 +10,7 @@ import VueClipboard from 'vue-clipboard3'
 import constants from './Constants'
 import Utils from '@/utils/utils'
 import lodash from 'lodash'
+import { setApiErrorNotifier } from '@/api/errorNotify'
 
 import LoadingPlugin from '@/plugins/loadingPlugin'
 import {
@@ -21,8 +20,6 @@ import {
   ConfirmPlugin,
 } from '@/plugins/dialogPlugin'
 
-window.$ = window.jQuery = $
-window.moment = moment
 window.constants = constants
 window.vuetify = vuetify
 window.Utils = Utils
@@ -38,7 +35,7 @@ app.config.globalProperties.$constants = constants
 app.config.globalProperties.$lodash = lodash
 app.config.globalProperties.$utils = Utils
 
-app.use(store, storeKey)
+app.use(pinia)
 app.use(router)
 app.use(vuetify)
 app.use(VueClipboard as any)
@@ -48,6 +45,10 @@ app.use(DialogPlugin)
 app.use(ErrorDialogPlugin)
 app.use(MessageDialogPlugin)
 app.use(ConfirmPlugin)
+
+setApiErrorNotifier((opts) => {
+  app.config.globalProperties.$showError?.(opts)
+})
 
 app.config.errorHandler = (err: any, instance, info) => {
   console.error('Router View Error:', {
@@ -83,7 +84,7 @@ if (import.meta.env.DEV) {
   window.vue = vue
   window.$app = app
   window.$router = router
-  window.$store = store
+  window.$store = pinia
   window.$vuetify = vuetify
 }
 

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import Utils from '@/utils/utils'
 import constants from '@/Constants'
+import { notifyApiError } from '@/api/errorNotify'
 import type { ApiResponse } from '@/types'
 
 function createAxiosInstance(contentType: string | null = null): AxiosInstance {
@@ -30,10 +31,8 @@ function validateResponse<T = any>(
       handleLogout()
       return null
     }
-    if (withNoty && window.vue?.$showError) {
-      window.vue.$showError(
-        data.message || '요청 처리 중 오류가 발생했습니다.'
-      )
+    if (withNoty) {
+      notifyApiError(data.message || '요청 처리 중 오류가 발생했습니다.')
     }
     throw data
   }
@@ -46,8 +45,8 @@ function handleError(error: any, withNoty = false): null {
     handleLogout()
     return null
   }
-  if (withNoty && error.response?.data?.message && window.vue?.$showError) {
-    window.vue.$showError(error.response.data.message)
+  if (withNoty && error.response?.data?.message) {
+    notifyApiError(String(error.response.data.message))
   }
   throw error.response?.data || error
 }
@@ -70,6 +69,19 @@ export function post<T = any>(
 ): Promise<ApiResponse<T> | null> {
   return createAxiosInstance('application/json')
     .post<ApiResponse<T>>(url, data)
+    .then((response) => validateResponse<T>(response, withNoty))
+    .catch((error) => handleError(error, withNoty))
+}
+
+/** application/x-www-form-urlencoded (기존 jQuery $.param 용도) */
+export function postUrlEncoded<T = any>(
+  url: string,
+  data: Record<string, string>,
+  withNoty = false
+): Promise<ApiResponse<T> | null> {
+  const body = new URLSearchParams(data).toString()
+  return createAxiosInstance('application/x-www-form-urlencoded')
+    .post<ApiResponse<T>>(url, body)
     .then((response) => validateResponse<T>(response, withNoty))
     .catch((error) => handleError(error, withNoty))
 }

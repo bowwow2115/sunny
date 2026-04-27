@@ -33,18 +33,18 @@
 <script setup lang="ts">
 import { ref, computed, watch, provide } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useStore } from '@/store'
+import { useAppStore } from '@/stores/app'
 import GlobalAlert from '@/components/GlobalAlert.vue'
 import GlobalSnackbar from '@/components/GlobalSnackbar.vue'
 import GlobalConfirmSheet from '@/components/GlobalConfirmSheet.vue'
 
-const store = useStore()
+const store = useAppStore()
 const router = useRouter()
 const route = useRoute()
 
 const loadingOverlay = computed<boolean>({
-  get: () => store.state.isLoading,
-  set: (value: boolean) => store.commit('SET_LOADING', value),
+  get: () => store.isLoading,
+  set: (value: boolean) => store.setLoading(value),
 })
 
 const alertRef = ref<InstanceType<typeof GlobalAlert> | null>(null)
@@ -56,13 +56,13 @@ provide('snackbarRef', snackbarRef)
 provide('confirmRef', confirmRef)
 
 router.afterEach(() => {
-  if (store.state.isLoading) {
-    store.commit('SET_LOADING', false)
+  if (store.isLoading) {
+    store.setLoading(false)
   }
 })
 
 watch(
-  () => store.state.isLoading,
+  () => store.isLoading,
   (newVal) => {
     console.log('Loading state changed:', newVal)
   }

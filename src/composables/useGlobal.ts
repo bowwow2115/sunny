@@ -38,7 +38,11 @@ export function useGlobal() {
     duration = 3000,
   }: SnackbarOptions = {}) => {
     if (snackbarRef?.value?.showSnackbar) {
-      return snackbarRef.value.showSnackbar({ type, message, timeout: duration })
+      return snackbarRef.value.showSnackbar({
+        type,
+        message,
+        timeout: duration,
+      })
     }
     console.warn('[$showMessage] Snackbar ref not available')
     console.log(`[${(type as string).toUpperCase()}] ${message}`)

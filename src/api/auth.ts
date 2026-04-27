@@ -1,9 +1,13 @@
-import $ from 'jquery'
-import store from '@/store'
+import { useAppStore } from '@/stores/app'
+import { pinia } from '@/pinia'
 import Utils from '@/utils/utils'
 import * as api from '@/api/api'
 import constants from '@/Constants'
 import type { LoginForm, PasswordForm, ApiResponse } from '@/types'
+
+function appStore() {
+  return useAppStore(pinia)
+}
 
 interface TokenData {
   accessToken?: string
@@ -41,13 +45,13 @@ function loggedIn(): Promise<ApiResponse> {
           console.log('loggedIn Check : ', response)
           if (response.code == '0') {
             if (response.data[0].authority == 'ROLE_ADMIN') {
-              store.commit('SET_ADMIN', true)
+              appStore().setAdmin(true)
             }
             if (
               response.data[1].userId != null ||
               response.data[1].userId != undefined
             ) {
-              store.commit('SET_USERID', response.data[1].userId)
+              appStore().setUserId(response.data[1].userId)
             }
             resolve(response)
           } else if (response.code == 'EXPIRED-TOKEN') {
@@ -102,10 +106,10 @@ function login(form: LoginForm): Promise<any> {
         }
         parseToken(r)
         if (r.data.roles[0].authority == 'ROLE_ADMIN') {
-          store.commit('SET_ADMIN', true)
+          appStore().setAdmin(true)
         }
         if (r.data.userId != null || r.data.userId != undefined) {
-          store.commit('SET_USERID', r.data.userId)
+          appStore().setUserId(r.data.userId)
         }
         resolve(r.data)
       })
@@ -116,15 +120,15 @@ function login(form: LoginForm): Promise<any> {
 }
 
 function logout(): void {
-  store.dispatch('resetState')
+  appStore().resetState()
 
   Utils.deleteCookie('auth', '/')
   Utils.deleteCookie('JSESSIONID', '/')
   Utils.deleteCookie('refreshToken', '/')
   Utils.deleteCookie('lang')
 
-  store.commit('SET_ADMIN', false)
-  store.commit('SET_USERID', '')
+  appStore().setAdmin(false)
+  appStore().setUserId('')
 
   location.href = Utils.checkEnv(import.meta.env.MODE)
   window.location.reload()
@@ -165,7 +169,7 @@ function changePassword(passwordForm: PasswordForm): Promise<any> {
 
   return new Promise((resolve, reject) => {
     api
-      .post(`${constants.CONTEXT_PATH}/changePw`, $.param(data as any))
+      .postUrlEncoded(`${constants.CONTEXT_PATH}/changePw`, data!, false)
       .then((r) => resolve(r))
       .catch((error) => reject(error))
   })
