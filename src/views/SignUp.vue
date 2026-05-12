@@ -1,141 +1,129 @@
 <template>
-  <v-main>
+  <v-main class="login">
     <v-container>
-      <v-row class="justify-center">
-        <v-col cols="12" sm="8" md="6">
-          <h2 class="text-h4 font-weight-bold text-center mb-6">회원가입</h2>
-
-          <v-card class="pa-6 rounded-xl" elevation="2">
-            <v-form
-              ref="formRef"
-              v-model="isValid"
-              @submit.prevent="handleJoin"
+      <h2 class="page-title">회원가입</h2>
+      <v-card class="card-section">
+        <v-form
+          ref="formRef"
+          v-model="isValid"
+          @submit.prevent="handleJoin"
+        >
+          <!-- 아이디 + 중복확인 -->
+          <div class="input-group">
+            <v-text-field
+              v-model="form.userId"
+              label="아이디 입력"
+              prepend-inner-icon="ri-user-5-fill"
+              :rules="userIdRules"
+              required
+              variant="outlined"
+              clearable
+              hide-details="auto"
+            ></v-text-field>
+            <v-btn
+              variant="outlined"
+              class=""
+              :loading="checkingId"
+              :disabled="!form.userId || checkingId"
+              @click="checkDuplicateId"
             >
-              <!-- 아이디 + 중복확인 -->
-              <div class="d-flex align-start">
-                <v-text-field
-                  v-model="form.userId"
-                  label="아이디 입력"
-                  prepend-inner-icon="ri-user-5-fill"
-                  :rules="userIdRules"
-                  required
-                  variant="outlined"
-                  clearable
-                  hide-details="auto"
-                  density="comfortable"
-                  class="flex-grow-1"
-                ></v-text-field>
-                <v-btn
-                  type="button"
-                  variant="outlined"
-                  class="text-body-2 label-with-btn ms-3"
-                  :loading="checkingId"
-                  :disabled="!form.userId || checkingId"
-                  @click="checkDuplicateId"
-                >
-                  중복확인
-                </v-btn>
-              </div>
-              <p class="mt-2 text-body-2 text-grey">
-                <i class="ri-asterisk text-error me-1"></i>
-                최소 4자 이상 영문과 숫자만 사용 가능합니다. (특수문자 불가)
-              </p>
+              중복확인
+            </v-btn>
+          </div>
+          <p class="caption essential">
+            <i class="ri-asterisk">필수</i>
+            최소 4자 이상 영문과 숫자만 사용 가능합니다. (특수문자 불가)
+          </p>
 
-              <!-- 비밀번호 -->
-              <v-text-field
-                v-model="form.password"
-                type="password"
-                label="비밀번호 입력"
-                prepend-inner-icon="ri-lock-password-fill"
-                :rules="passwordRules"
-                required
-                variant="outlined"
-                clearable
-                hide-details="auto"
-                density="comfortable"
-                class="mt-4"
-              ></v-text-field>
+          <!-- 비밀번호 -->
+          <v-text-field
+            v-model="form.password"
+            type="password"
+            label="비밀번호 입력"
+            prepend-inner-icon="ri-lock-password-fill"
+            :rules="passwordRules"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+            class="mt-4"
+          ></v-text-field>
 
-              <v-text-field
-                v-model="form.passwordCheck"
-                type="password"
-                label="비밀번호 확인"
-                prepend-inner-icon="ri-lock-password-fill"
-                :rules="passwordCheckRules"
-                required
-                variant="outlined"
-                clearable
-                hide-details="auto"
-                density="comfortable"
-              ></v-text-field>
+          <v-text-field
+            v-model="form.passwordCheck"
+            type="password"
+            label="비밀번호 확인"
+            prepend-inner-icon="ri-lock-password-fill"
+            :rules="passwordCheckRules"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-text-field>
 
-              <p class="mt-2 text-body-2 text-grey">
-                <i class="ri-asterisk text-error me-1"></i>
-                4~10자 영문과 숫자만 사용 가능합니다. (특수문자 불가)
-              </p>
+          <p class="caption essential">
+            <i class="ri-asterisk">필수</i>
+            4~10자 영문과 숫자만 사용 가능합니다. (특수문자 불가)
+          </p>
 
-              <!-- 이름 -->
-              <v-text-field
-                v-model="form.name"
-                label="이름"
-                prepend-inner-icon="ri-user-smile-fill"
-                :rules="nameRules"
-                required
-                variant="outlined"
-                clearable
-                density="comfortable"
-                class="mt-4"
-              ></v-text-field>
+          <!-- 이름 -->
+          <v-text-field
+            v-model="form.name"
+            label="이름"
+            prepend-inner-icon="ri-user-5-fill"
+            :rules="nameRules"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+            class="mt-10"
+          ></v-text-field>
 
-              <!-- 전화번호 -->
-              <v-text-field
-                v-model="form.telephone"
-                label="전화번호"
-                prepend-inner-icon="ri-smartphone-line"
-                :rules="phoneRules"
-                required
-                variant="outlined"
-                clearable
-                hide-details="auto"
-                density="comfortable"
-                maxlength="11"
-                @input="formatPhoneInput"
-              ></v-text-field>
-              <p class="mt-2 text-body-2 text-grey">
-                <i class="ri-asterisk text-error me-1"></i>
-                하이픈(-) 제외 숫자만 입력하세요. (예: 01012345678)
-              </p>
+          <!-- 전화번호 -->
+          <v-text-field
+            v-model="form.telephone"
+            label="전화번호"
+            prepend-inner-icon="ri-smartphone-line"
+            :rules="phoneRules"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+            maxlength="11"
+            @input="formatPhoneInput"
+          ></v-text-field>
+          <p class="caption essential">
+            <i class="ri-asterisk">필수</i>
+            하이픈(-) 제외 숫자만 입력하세요. (예: 01012345678)
+          </p>
 
-              <!-- 이메일 (선택) -->
-              <v-text-field
-                v-model="form.email"
-                type="email"
-                label="이메일주소 (본인확인용 선택사항)"
-                prepend-inner-icon="ri-mail-fill"
-                :rules="emailRules"
-                variant="outlined"
-                clearable
-                density="comfortable"
-                class="mt-4"
-              ></v-text-field>
+          <!-- 이메일 (선택) -->
+          <v-text-field
+            v-model="form.email"
+            type="email"
+            label="이메일주소 (본인확인용 선택사항)"
+            prepend-inner-icon="ri-mail-fill"
+            :rules="emailRules"
+            variant="outlined"
+            clearable
+            hide-details="auto"
+            class="mt-10"
+          ></v-text-field>
 
-              <!-- 회원가입 버튼 -->
-              <v-btn
-                type="submit"
-                block
-                variant="flat"
-                size="x-large"
-                color="primary"
-                class="mt-6"
-                :loading="loading"
-                :disabled="!isValid || idChecked !== true"
-              >
-                회원가입 하기
-              </v-btn>
-            </v-form>
-          </v-card>
-        </v-col>
-      </v-row>
+          <!-- 회원가입 버튼 -->
+          <v-btn
+            type="submit"
+            block
+            variant="flat"
+            size="x-large"
+            color="primary"
+            :loading="loading"
+            :disabled="!isValid || idChecked !== true"
+          >
+            회원가입 하기
+          </v-btn>
+        </v-form>
+      </v-card>
     </v-container>
   </v-main>
 </template>

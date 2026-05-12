@@ -1,89 +1,79 @@
 <template>
-  <v-main>
+  <v-main class="login">
     <v-container>
-      <v-row class="justify-center">
-        <v-col cols="12" sm="8" md="6">
-          <h2 class="text-h4 font-weight-bold text-center mb-6">로그인</h2>
+      <h2 class="page-title">로그인</h2>
+      <v-card class="card-section">
+        <v-form ref="formRef" v-model="valid" @submit.prevent="login">
+          <!-- 아이디 입력 -->
+          <v-text-field
+            v-model="form.userId"
+            @keyup.enter="login"
+            :rules="userIdRules"
+            label="아이디 입력"
+            prepend-inner-icon="ri-user-5-fill"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-text-field>
 
-          <v-card class="pa-6 rounded-xl" elevation="2">
-            <v-form ref="formRef" v-model="valid" @submit.prevent="login">
-              <!-- 아이디 입력 -->
-              <v-text-field
-                v-model="form.userId"
-                @keyup.enter="login"
-                :rules="userIdRules"
-                label="아이디 입력"
-                prepend-inner-icon="ri-user-5-fill"
-                required
-                variant="outlined"
-                clearable
-                class="mb-4"
-              ></v-text-field>
+          <!-- 비밀번호 입력 -->
+          <v-text-field
+            v-model="form.password"
+            @keyup.enter="login"
+            :rules="userPwRules"
+            type="password"
+            label="비밀번호 입력"
+            prepend-inner-icon="ri-lock-password-fill"
+            required
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-text-field>
+        </v-form>
 
-              <!-- 비밀번호 입력 -->
-              <v-text-field
-                v-model="form.password"
-                @keyup.enter="login"
-                :rules="userPwRules"
-                type="password"
-                label="비밀번호 입력"
-                prepend-inner-icon="ri-lock-password-fill"
-                required
-                variant="outlined"
-                clearable
-                class="mb-2"
-              ></v-text-field>
-            </v-form>
+        <!-- 하단 링크 영역 -->
+        <div class="input-group">
+          <v-checkbox
+            v-model="saveLogin"
+            id="saveLoginChk"
+            label="아이디 저장"
+            hide-details
+          ></v-checkbox>
+          <v-btn
+            to="/FindId"
+            variant="text"
+            class="text-none text-medium-emphasis"
+          >
+            아이디 / 비밀번호 찾기
+          </v-btn>
+        </div>
 
-            <!-- 하단 링크 영역 -->
-            <v-row class="justify-space-between align-center my-4">
-              <v-col cols="auto" class="pa-0">
-                <v-checkbox
-                  v-model="saveLogin"
-                  id="saveLoginChk"
-                  label="아이디 저장"
-                  hide-details
-                  density="compact"
-                  class="mt-0"
-                ></v-checkbox>
-              </v-col>
-              <v-col cols="auto" class="pa-0">
-                <router-link
-                  to="/FindId"
-                  class="text-decoration-none text-grey-darken-2"
-                >
-                  아이디 / 비밀번호 찾기
-                </router-link>
-              </v-col>
-            </v-row>
+        <!-- 로그인 버튼 -->
+        <v-btn
+          type="submit"
+          block
+          size="x-large"
+          color="primary"
+          class="my-4"
+          @click="login"
+          variant="flat"
+          :loading="loading"
+        >
+          로그인
+        </v-btn>
 
-            <!-- 로그인 버튼 -->
-            <v-btn
-              type="submit"
-              block
-              size="x-large"
-              color="primary"
-              class="my-4"
-              @click="login"
-              variant="flat"
-              :loading="loading"
-            >
-              로그인
-            </v-btn>
-
-            <!-- 회원가입 버튼 -->
-            <v-btn
-              block
-              size="x-large"
-              color="primary"
-              :to="{ path: '/SignUp' }"
-              variant="outlined"
-            >
-              회원가입
-            </v-btn>
-          </v-card>
-        </v-col>
-      </v-row>
+        <!-- 회원가입 버튼 -->
+        <v-btn
+          block
+          size="x-large"
+          color="primary"
+          :to="{ path: '/SignUp' }"
+          variant="outlined"
+        >
+          회원가입
+        </v-btn>
+      </v-card>
     </v-container>
   </v-main>
 </template>
@@ -173,9 +163,6 @@ const login = async () => {
 
 <style scoped>
 :deep(.v-checkbox .v-label) {
-  font-size: 0.875rem;
-}
-a:hover {
-  text-decoration: underline !important;
+  font-size: 0.9rem;
 }
 </style>

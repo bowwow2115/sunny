@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const proxyTarget =
-    env.VITE_API_PROXY_TARGET || 'http://localhost:8080'
+    env.VITE_API_PROXY_TARGET || 'http://13.209.7.58:8081'
 
   return {
     base: mode === 'production' ? '/sunny/app/' : '/',
@@ -25,10 +25,10 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 8090,
+      port: 8080,
       proxy: {
         '/sunny': {
-          target: proxyTarget,
+          target: 'http://localhost:8090',
           changeOrigin: false,
         },
       },

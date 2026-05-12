@@ -1,178 +1,171 @@
 <template>
   <div class="_home">
-    <v-row>
-      <!-- 좌측 컬럼: 로고, 환영메시지, 엑셀등록, 다가오는 생일 -->
-      <v-col cols="12" md="6">
-        <v-card class="pa-2 rounded-xl _log d-flex flex-column">
-          <v-card-title class="_logo align-end">
-            <img
-              src="@/assets/images/sunny-en.svg"
-              alt="sunny"
-              class="me-3"
-              style="height: 48px"
-            />
-            <h1 class="_font-miso text-h4 font-weight-bold">해맑은 어린이집</h1>
-          </v-card-title>
+    <v-card class="pa-2 rounded-xl _log d-flex flex-column">
+      <v-card-title class="_logo align-end">
+        <img
+          src="@/assets/images/sunny-en.svg"
+          alt="sunny"
+          class="me-3"
+          style="height: 48px"
+        />
+        <h1 class="_font-miso text-h3 font-weight-bold">해맑은 어린이집</h1>
+      </v-card-title>
 
-          <v-card-text class="mt-5 flex-grow-1">
-            <div
-              class="_log-info d-flex flex-wrap justify-space-between align-center"
+      <v-card-text class="mt-5 flex-grow-1">
+        <div
+          class="_log-info d-flex flex-wrap justify-space-between align-center"
+        >
+          <h2 class="text-h6 font-weight-bold">
+            <u class="font-weight-black" @click="copyToClipboard(userId)"
+              >{{ userId }}님</u
+            >, 안녕하세요.
+          </h2>
+          <v-card-actions class="flex-wrap">
+            <v-btn
+              variant="outlined"
+              rounded
+              color="grey"
+              class="px-6"
+              @click="handleLogout"
             >
-              <h2 class="text-h6 font-weight-bold">
-                <u class="font-weight-black" @click="copyToClipboard(userId)"
-                  >{{ userId }}님</u
-                >, 안녕하세요.
-              </h2>
-              <v-card-actions class="flex-wrap">
-                <v-btn
-                  variant="outlined"
-                  rounded
-                  color="grey"
-                  class="px-6"
-                  @click="handleLogout"
-                >
-                  로그아웃
-                </v-btn>
-                <v-btn
-                  variant="outlined"
-                  rounded
-                  class="px-6 ms-2"
-                  @click="goToMypage"
-                >
-                  마이페이지
-                </v-btn>
-              </v-card-actions>
-            </div>
-
-            <!-- 엑셀 등록 섹션 -->
-            <div class="_excel-regist pt-4">
-              <h3 class="text-subtitle-1 mb-4">
-                <v-icon
-                  icon="ri-file-excel-fill"
-                  color="#1d6f42"
-                  class="me-1"
-                ></v-icon>
-                엑셀 파일로 원아등록 바로 하기
-              </h3>
-              <div class="_btn-grp d-flex flex-wrap gap-2">
-                <v-btn
-                  variant="tonal"
-                  size="large"
-                  class="_excel-download flex-grow-1"
-                  href="/sunny/app/file/sunny_regist_children.xlsx"
-                  target="_blank"
-                >
-                  양식 다운로드
-                </v-btn>
-                <v-btn
-                  variant="tonal"
-                  size="large"
-                  class="_excel-upload flex-grow-1"
-                  @click="openUploadChildDialog"
-                >
-                  원아 엑셀 등록
-                </v-btn>
-              </div>
-            </div>
-          </v-card-text>
-
-          <!-- 관리자 메뉴 (isAdmin 일 때만 표시) -->
-          <div
-            v-if="isAdmin"
-            class="_admin-menu d-flex flex-wrap gap-2 pa-4 border-t"
-          >
-            <v-btn variant="text" size="large" @click="openManageClassDialog">
-              <v-icon icon="ri-book-read-fill" start></v-icon>
-              반 관리
+              로그아웃
             </v-btn>
-            <v-btn variant="text" size="large" @click="openManageUserDialog">
-              <v-icon icon="ri-user-fill" start></v-icon>
-              사용자 관리
+            <v-btn
+              variant="outlined"
+              rounded
+              class="px-6 ms-2"
+              @click="goToMypage"
+            >
+              마이페이지
             </v-btn>
-            <v-btn variant="text" size="large" @click="openManageRideDialog">
-              <v-icon icon="ri-bus-2-fill" start></v-icon>
-              차량 관리
+          </v-card-actions>
+        </div>
+
+        <!-- 엑셀 등록 섹션 -->
+        <div class="_excel-regist pt-4">
+          <h3 class="text-subtitle-1 mb-4">
+            <v-icon
+              icon="ri-file-excel-fill"
+              color="#1d6f42"
+              class="me-1"
+            ></v-icon>
+            엑셀 파일로 원아등록 바로 하기
+          </h3>
+          <div class="_btn-grp d-flex flex-wrap gap-2">
+            <v-btn
+              variant="tonal"
+              size="large"
+              class="_excel-download flex-grow-1"
+              href="/sunny/app/file/sunny_regist_children.xlsx"
+              target="_blank"
+            >
+              양식 다운로드
+            </v-btn>
+            <v-btn
+              variant="tonal"
+              size="large"
+              class="_excel-upload flex-grow-1"
+              @click="openUploadChildDialog"
+            >
+              원아 엑셀 등록
             </v-btn>
           </div>
-        </v-card>
+        </div>
+      </v-card-text>
 
-        <!-- 다가오는 생일 카드 -->
-        <v-card class="pa-2 rounded-xl _birth-come mt-6">
-          <v-card-title class="text-h6">
-            <span class="font-weight-bold">생일</span>이 다가오고 있어요!
-          </v-card-title>
-          <v-card-text>
-            <ul v-if="beingBirthdayChildList.length > 0" class="pa-0 ma-0">
-              <li
-                v-for="(child, index) in beingBirthdayChildList"
-                :key="child.id || index"
-                class="px-3 py-2 d-flex align-center"
-              >
-                <span
-                  class="_d-day font-weight-black me-2 d-inline-flex align-center"
-                  :class="child.dDay === 0 ? 'text-error' : 'text-grey'"
-                >
-                  <v-icon
-                    v-if="child.dDay === 0"
-                    icon="ri-cake-2-fill"
-                    size="small"
-                    class="me-1"
-                  ></v-icon>
-                  {{ child.dDay === 0 ? 'Today!' : `D-${child.dDay}` }}
-                </span>
-                <span class="font-weight-medium">{{ child.name }}</span>
-                <small class="text-grey ms-2"
-                  >{{ child.className }}, {{ child.birthday }}</small
-                >
-              </li>
-            </ul>
-            <div v-else class="text-center py-4 text-grey">
-              다가오는 {{ currentMonth }}월의 생일자가 없습니다.
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
+      <!-- 관리자 메뉴 (isAdmin 일 때만 표시) -->
+      <div
+        v-if="isAdmin"
+        class="_admin-menu d-flex flex-wrap gap-2 pa-4 border-t"
+      >
+        <v-btn variant="text" size="large" @click="openManageClassDialog">
+          <v-icon icon="ri-book-read-fill" start></v-icon>
+          반 관리
+        </v-btn>
+        <v-btn variant="text" size="large" @click="openManageUserDialog">
+          <v-icon icon="ri-user-fill" start></v-icon>
+          사용자 관리
+        </v-btn>
+        <v-btn variant="text" size="large" @click="openManageRideDialog">
+          <v-icon icon="ri-bus-2-fill" start></v-icon>
+          차량 관리
+        </v-btn>
+      </div>
+    </v-card>
 
-      <!-- 우측 컬럼: 이번달 생일 -->
-      <v-col cols="12" md="6">
-        <v-card class="pa-2 pt-8 rounded-xl _birth position-relative">
-          <v-card-title class="_font-miso font-weight-bold text-h4">
-            <b class="_today-b d-block mb-2">
-              <span class="text-primary">{{ currentMonth }}</span>
-              <span>월</span>
-            </b>
-            의 생일
-          </v-card-title>
-          <v-card-text class="mt-5">
-            <ul v-if="birthMonthChildList.length > 0" class="pa-0 ma-0">
-              <li
-                v-for="(child, index) in birthMonthChildList"
-                :key="child.id || index"
-                class="font-weight-bold py-2 d-flex align-center"
-              >
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="primary"
-                  class="me-2"
-                >
-                  <v-icon icon="ri-add-circle-fill"></v-icon>
-                </v-btn>
-                <span>{{ child.name }}</span>
-                <b class="text-primary mx-2">{{ child.birthday }}</b>
-                <small class="text-grey font-weight-regular">{{
-                  child.className
-                }}</small>
-              </li>
-            </ul>
-            <div v-else class="text-center py-8 text-grey">
-              등록된 생일자가 없습니다.
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <!-- 다가오는 생일 카드 -->
+    <v-card class="pa-2 rounded-xl _birth-come mt-6">
+      <v-card-title class="text-h6">
+        <span class="font-weight-bold">생일</span>이 다가오고 있어요!
+      </v-card-title>
+      <v-card-text>
+        <ul v-if="beingBirthdayChildList.length > 0" class="pa-0 ma-0">
+          <li
+            v-for="(child, index) in beingBirthdayChildList"
+            :key="child.id || index"
+            class="px-3 py-2 d-flex align-center"
+          >
+            <span
+              class="_d-day font-weight-black me-2 d-inline-flex align-center"
+              :class="child.dDay === 0 ? 'text-error' : 'text-grey'"
+            >
+              <v-icon
+                v-if="child.dDay === 0"
+                icon="ri-cake-2-fill"
+                size="small"
+                class="me-1"
+              ></v-icon>
+              {{ child.dDay === 0 ? 'Today!' : `D-${child.dDay}` }}
+            </span>
+            <span class="font-weight-medium">{{ child.name }}</span>
+            <small class="text-grey ms-2"
+              >{{ child.className }}, {{ child.birthday }}</small
+            >
+          </li>
+        </ul>
+        <div v-else class="text-center py-4 text-grey">
+          다가오는 {{ currentMonth }}월의 생일자가 없습니다.
+        </div>
+      </v-card-text>
+    </v-card>
+
+    <!-- 이번달 생일 -->
+    <v-card class="pa-2 pt-8 rounded-xl _birth position-relative mt-6">
+      <v-card-title class="_font-miso font-weight-bold text-h4">
+        <b class="_today-b d-block mb-2">
+          <span class="text-primary">{{ currentMonth }}</span>
+          <span>월</span>
+        </b>
+        의 생일
+      </v-card-title>
+      <v-card-text class="mt-5">
+        <ul v-if="birthMonthChildList.length > 0" class="pa-0 ma-0">
+          <li
+            v-for="(child, index) in birthMonthChildList"
+            :key="child.id || index"
+            class="font-weight-bold py-2 d-flex align-center"
+          >
+            <v-btn
+              icon
+              size="small"
+              variant="text"
+              color="primary"
+              class="me-2"
+            >
+              <v-icon icon="ri-add-circle-fill"></v-icon>
+            </v-btn>
+            <span>{{ child.name }}</span>
+            <b class="text-primary mx-2">{{ child.birthday }}</b>
+            <small class="text-grey font-weight-regular">{{
+              child.className
+            }}</small>
+          </li>
+        </ul>
+        <div v-else class="text-center py-8 text-grey">
+          등록된 생일자가 없습니다.
+        </div>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
