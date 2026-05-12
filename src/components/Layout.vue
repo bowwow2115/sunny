@@ -123,6 +123,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import auth from '@/api/auth'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 interface MenuItem {
   title: string

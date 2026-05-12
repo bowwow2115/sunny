@@ -8,7 +8,7 @@
           <v-text-field
             v-model="form.userId"
             label="아이디 입력"
-            prepend-inner-icon="ri-user-5-fill"
+            :prepend-inner-icon="ICONS.user"
             required
             outlined
             clearable
@@ -20,7 +20,7 @@
             v-model="form.userEmail"
             type="email"
             label="이메일주소(본인 확인용)"
-            prepend-inner-icon="ri-mail-fill"
+            :prepend-inner-icon="ICONS.email"
             outlined
             clearable
             hide-details="auto"
@@ -40,7 +40,7 @@
             v-model="form.newPw"
             type="password"
             label="새 비밀번호 입력"
-            prepend-inner-icon="ri-lock-password-fill"
+            :prepend-inner-icon="ICONS.password"
             required
             outlined
             clearable
@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 interface FindIdForm {
   userId: string

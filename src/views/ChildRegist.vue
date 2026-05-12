@@ -3,442 +3,369 @@
   <!-- <v-container fluid></v-container> -->
   <v-form v-model="isValid" ref="formRef">
     <!-- ---------- 원아 정보 ---------- -->
-    <v-card class="my-4 pa-2 rounded-xl">
-      <div class="d-flex justify-space-between align-center flex-wrap">
+    <v-card class="card-section">
+      <div class="card-title-wrap">
         <div>
-          <v-card-title class="_card-title">원아정보</v-card-title>
-          <v-card-subtitle>원아정보를 입력해 주세요.</v-card-subtitle>
+          <v-card-title class="card-title">원아정보</v-card-title>
+          <v-card-subtitle class="card-subtitle">원아정보를 입력해 주세요.</v-card-subtitle>
         </div>
-        <div class="_btn-grp px-6">
+        <div class="btn-group">
           <v-btn
             type="button"
-            text
-            class="_excel-download"
+            variant="flat"
+            color="excel"
+            :prepend-icon="ICONS.download"
             href="/sunny/app/file/sunny_regist_children.xlsx"
             >양식 다운로드</v-btn
           >
           <v-btn
             type="button"
-            text
-            class="_excel-upload"
+            variant="flat"
+            color="excel"
+            :prepend-icon="ICONS.excel"
             @click="openUploadChildDialog"
             >원아 엑셀 등록</v-btn
           >
         </div>
       </div>
-      <v-card-text class="pt-6">
-        <v-row>
-          <v-col cols="6" md="3">
-            <v-combobox
-              v-if="form.status == '기타' ? (form.status = '') : true"
-              v-model="form.status"
-              :items="['재원', '졸업', '퇴소', '기타']"
-              :rules="statusRules"
-              label="재원여부"
-              hide-details="auto"
-              outlined
-              :menu-props="{ offset: 8 }"
-            ></v-combobox>
-          </v-col>
-          <v-col cols="6" md="3">
-            <v-text-field
-              v-model="form.name"
-              label="원아이름"
-              :rules="nameRules"
-              hide-details="auto"
-              required
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="8" md="4">
-            <v-select
-              v-model="form.className"
-              :items="classNameList"
-              :rules="classNameRules"
-              label="반명"
-              hide-details="auto"
-              outlined
-              :menu-props="{ offset: 8 }"
-            ></v-select>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn
-              type="button"
-              class="text-body-1 font-weight-bold label-with-btn"
-              color="primary"
-              outlined
-              block
-              @click="checkChild"
-            >
-              중복 검색
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" sm="6">
-            <v-menu
-              ref="menuRef"
-              v-model="addmisionDateWrap"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-text-field
-                  v-model="form.admissionDate"
-                  label="원아 입학일"
-                  hide-details="auto"
-                  append-icon="ri-calendar-2-fill"
-                  readonly
-                  v-bind="activatorProps"
-                  outlined
-                ></v-text-field>
-              </template>
-              <v-date-picker
+      <div class="card-content">
+        <div class="input-group">
+          <v-combobox class="select-base"
+            v-if="form.status == '기타' ? (form.status = '') : true"
+            v-model="form.status"
+            :items="['재원', '졸업', '퇴소', '기타']"
+            :rules="statusRules"
+            label="재원여부"
+            hide-details="auto"
+            variant="outlined"
+            :menu-props="{ offset: 8 }"
+          ></v-combobox>
+          <v-text-field class="input-base"
+            v-model="form.name"
+            label="원아이름"
+            :rules="nameRules"
+            hide-details="auto"
+            required
+            variant="outlined"
+          ></v-text-field>
+          <v-select class="select-base"
+            v-model="form.className"
+            :items="classNameList"
+            :rules="classNameRules"
+            label="반명"
+            hide-details="auto"
+            variant="outlined"
+          ></v-select>
+          <v-btn
+            type="button"
+            size="large"
+            variant="outlined"
+            @click="checkChild"
+            >중복 검색</v-btn
+          >
+        </div>
+        <div class="input-group">
+          <v-menu
+            ref="menuRef"
+            v-model="addmisionDateWrap"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset="8"
+            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-text-field class="input-base"
                 v-model="form.admissionDate"
-                v-model:view-mode="activePicker"
-                class="calendar"
-                hide-title
-                min="2015-01-01"
-                width="100%"
-                @update:model-value="addmisionDateWrap = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-menu
-              ref="menuRef"
-              v-model="birthdayWrap"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-text-field
-                  v-model="form.birthday"
-                  :rules="datePicRules"
-                  label="원아 생년월일"
-                  hide-details="auto"
-                  append-icon="ri-calendar-2-fill"
-                  readonly
-                  v-bind="activatorProps"
-                  outlined
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="form.birthday"
-                v-model:view-mode="activePicker"
-                class="calendar"
-                hide-title
-                :max="
-                  new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                    .toISOString()
-                    .substr(0, 10)
-                "
-                min="2015-01-01"
-                width="100%"
-                @update:model-value="birthdayWrap = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="8" md="4">
-            <v-text-field
-              v-model="form.address.zipCode"
-              label="우편번호"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn
-              type="button"
-              class="text-body-1 font-weight-bold label-with-btn"
-              color="primary"
-              outlined
-              block
-              @click="openPostcode"
+                label="원아 입학일"
+                hide-details="auto"
+                :prepend-inner-icon="ICONS.calendar"
+                readonly
+                v-bind="activatorProps"
+                variant="outlined"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="form.admissionDate"
+              v-model:view-mode="activePicker"
+              hide-title
+              hide-header
+              min="2015-01-01"
+              @update:model-value="addmisionDateWrap = false"
             >
-              주소 검색
-            </v-btn>
-
-            <!-- 주소 검색 다이얼로그(모달창) -->
-            <v-dialog v-model="postcodeDialog" max-width="600">
-              <v-card>
-                <v-card-title
-                  class="justify-space-between text-subtitle-1 font-weight-bold mb-2"
-                  >주소 검색
-                  <v-btn text @click="postcodeDialog = false" outlined small
-                    >닫기</v-btn
-                  ></v-card-title
-                >
-                <!-- 주소 검색 팝업을 표시할 div -->
-                <div id="postcode" style="width: 100%; height: 500px"></div>
-              </v-card>
-            </v-dialog>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="form.address.address"
-              label="주소"
-              hide-details="auto"
-              outlined
-              readonly
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="form.address.detailAddress"
-              ref="detailAddressRef"
-              label="상세주소 입력"
-              hide-details="auto"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card-text>
+            </v-date-picker>
+          </v-menu>
+          <v-menu
+            ref="menuRef"
+            v-model="birthdayWrap"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset="8"
+            ><!-- 열려있는 동안 콘텐츠 클릭으로 메뉴 닫히지 않게 false -->
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-text-field class="input-base"
+                v-model="form.birthday"
+                :rules="datePicRules"
+                label="원아 생년월일"
+                hide-details="auto"
+                :prepend-inner-icon="ICONS.calendar"
+                readonly
+                v-bind="activatorProps"
+                variant="outlined"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="form.birthday"
+              v-model:view-mode="activePicker"
+              hide-title
+              hide-header
+              :max="
+                new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                  .toISOString()
+                  .substr(0, 10)
+              "
+              min="2015-01-01"
+              @update:model-value="birthdayWrap = false"
+            ></v-date-picker>
+          </v-menu>
+        </div>
+        <div class="input-group">
+          <v-text-field class="input-base"
+            v-model="form.address.zipCode"
+            label="우편번호"
+            hide-details="auto"
+            variant="outlined"
+            readonly
+          ></v-text-field>
+          <v-btn
+            type="button"
+            size="large"
+            variant="outlined"
+            @click="openPostcode"
+          >
+            주소 검색
+          </v-btn>
+          <!-- 주소 검색 다이얼로그(모달창) -->
+          <v-dialog
+            v-model="postcodeDialog"
+            max-width="800"
+            width="90%"
+            trqnsition="dialog-bottom-transition"
+          >
+            <v-card class="card-section">
+              <div class="card-title-wrap">
+                <div>
+                  <v-card-title class="card-title">주소 검색</v-card-title>
+                  <v-card-subtitle class="card-subtitle"
+                    >주소 검색을 위해 도로명 주소 또는 지번 주소를 입력해주세요.</v-card-subtitle
+                  >
+                </div>
+                <v-btn
+                  @click="postcodeDialog = false"
+                  :icon="ICONS.close"
+                ></v-btn>
+              </div>
+              <!-- 주소 검색 팝업을 표시할 div -->
+              <div id="postcode"></div>
+            </v-card>
+          </v-dialog>
+        </div>
+        <div class="input-group">
+          <v-text-field class="input-base"
+            v-model="form.address.address"
+            label="주소"
+            hide-details="auto"
+            outlined
+            readonly
+          ></v-text-field>
+          <v-text-field class="input-base"
+            v-model="form.address.detailAddress"
+            ref="detailAddressRef"
+            label="상세주소 입력"
+            hide-details="auto"
+            outlined
+          ></v-text-field>
+        </div>
+      </div>
     </v-card>
 
     <!-- ---------- 학부모 정보 ---------- -->
-    <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title">학부모 정보</v-card-title>
-      <v-card-subtitle
+    <v-card class="card-section">
+      <v-card-title class="card-title">학부모 정보</v-card-title>
+      <v-card-subtitle class="card-subtitle"
         >학부모 정보는 버튼을 이용하여 추가할 수 있습니다.</v-card-subtitle
       >
-      <v-card-text class="pt-6">
-        <v-row
-          class="parent-box"
-          v-for="(parentBox, index) in form.parentList"
+      <div class="card-content">
+        <div
+          class="input-group parent-box"
+          v-for="(parentBox, index) in form.parentList" 
           :key="index"
+          :class="{ 'mt-4': index > 0 }"
         >
-          <v-col cols="12" md="6">
-            <v-row>
-              <v-col cols="5">
-                <v-select
-                  v-model="parentBox.relation"
-                  :items="parentTypeList"
-                  :rules="pbRelationRules"
-                  label="관계"
-                  hide-details="auto"
-                  outlined
-                  :menu-props="{ offset: 8 }"
-                ></v-select>
-              </v-col>
-              <v-col cols="7">
-                <v-text-field
-                  v-model="parentBox.name"
-                  :rules="nameRules"
-                  label="학부모 이름"
-                  hide-details="auto"
-                  required
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="10" md="5">
-            <v-text-field
-              v-model="parentBox.telephone"
-              :rules="numRules"
-              label="연락처"
-              hide-details="auto"
-              required
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="2" md="1" class="text-right pa-2">
-            <v-btn @click="addParentBox" icon color="primary">
-              <v-icon>ri-add-line</v-icon>
-            </v-btn>
+          <v-select class="select-base"
+            v-model="form.parentList[0].relation"
+            :items="parentTypeList"
+            :rules="pbRelationRules"
+            label="관계"
+            hide-details="auto"
+            variant="outlined"
+          ></v-select>
+          <v-text-field class="input-base"
+            v-model="form.parentList[0].name"
+            :rules="nameRules"
+            label="학부모 이름"
+            hide-details="auto"
+            required
+            variant="outlined"
+          ></v-text-field>
+          <v-text-field class="input-base"
+            v-model="form.parentList[0].telephone"
+            :rules="numRules"
+            label="연락처"
+            hide-details="auto"
+            required
+            variant="outlined"
+          ></v-text-field>
+          <!-- 추가/삭제 버튼 영역 -->
+          <div class="btn-group">
             <v-btn
-              @click="removeParentBox(index)"
+              @click="addParentBox"
+              :icon="ICONS.plus"
+              variant="text"
+              color="primary"
+            ></v-btn>
+            <v-btn
               v-if="form.parentList.length > 1"
-              icon
+              @click="removeParentBox(index)"
+              :icon="ICONS.minus"
+              variant="text"
               color="error"
-            >
-              <v-icon>ri-subtract-line</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-text>
+            ></v-btn>
+          </div>
+        </div>
+      </div>
     </v-card>
 
     <!-- ---------- 탑승차량 정보 ---------- -->
-    <v-card class="my-4 pa-2 rounded-xl">
-      <v-card-title class="_card-title">탑승차량 정보 </v-card-title>
-      <v-card-subtitle
+    <v-card class="card-section">
+      <v-card-title class="card-title">탑승차량 정보 </v-card-title>
+      <v-card-subtitle class="card-subtitle"
         >차량 사용 시 사용여부를 체크한 후 입력해주세요.
       </v-card-subtitle>
-      <v-card-text class="pt-6">
-        <v-row>
-          <v-col>
-            <input
-              type="checkbox"
-              v-model="hasRide"
-              @click="form.childRideList = []"
-              class="custom-chkbox"
-              id="hasRideChk"
-            /><label for="hasRideChk"
-              ><v-icon class="ri-checkbox-circle-fill"></v-icon>차량 사용
-              여부</label
+      <div class="card-content">
+        <v-checkbox
+          v-model="hasRide"
+          id="hasRideChk"
+          label="차량 사용 여부"
+          @click="form.childRideList = []"
+          hide-details
+        ></v-checkbox>
+        <div v-if="hasRide">
+          <div class="input-group">
+            <v-select class="select-base"
+              v-model="amPm"
+              :items="['오전', '오후']"
+              label="시간대를 선택하세요"
+              variant="outlined"
+              hide-details="auto"
+            ></v-select>
+            <v-text-field
+              v-model="childRideComment"
+              label="비고"
+              outlined
+              clearable
+              clear-icon="ri-close-circle-fill"
+              hide-details="auto"
             >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <div class="pickup" v-if="hasRide">
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="amPm"
-                    :items="['오전', '오후']"
-                    label="시간대를 선택하세요"
-                    outlined
-                    :menu-props="{ offset: 8 }"
-                    hide-details="auto"
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="selectedRide"
-                    :items="amPm == '오전' ? amRideNameList : pmRideNameList"
-                    item-text="name"
-                    return-object
-                    :label="
-                      (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
-                    "
-                    outlined
-                    :menu-props="{ offset: 8 }"
-                    hide-details="auto"
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="selectedMeetingLocation"
-                    :items="selectedRide.meetingLocationList"
-                    item-text="name"
-                    return-object
-                    :label="'승하차 장소를 선택해주세요'"
-                    outlined
-                    :menu-props="{ offset: 8 }"
-                    hide-details="auto"
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="8" md="4">
-                  <v-text-field
-                    v-model="childRideComment"
-                    label="비고"
-                    outlined
-                    clearable
-                    clear-icon="ri-close-circle-fill"
-                    hide-details="auto"
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" sm="4" md="2">
-                  <v-btn
-                    @click="pushChildRideList()"
-                    type="button"
-                    color="primary"
-                    outlined
-                    block
-                    class="text-body-1 font-weight-bold label-with-btn"
-                    >추가하기</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </div>
-          </v-col>
-          <v-row justify="start">
-            <v-col
-              v-for="(childRide, i) in form.childRideList"
-              :key="i"
-              class="shrink"
-            >
-              <v-menu
-                v-model="form.childRideList[i].menuOpen"
-                bottom
-                right
-                transition="scale-transition"
-                origin="top left"
+            </v-text-field>
+          </div>
+          <div class="input-group">
+            <v-select
+              v-model="selectedRide"
+              :items="amPm == '오전' ? amRideNameList : pmRideNameList"
+              item-text="name"
+              return-object
+              :label="
+                (amPm == '오전' ? '등원' : '하원') + '코스를 선택해주세요'
+              "
+              variant="outlined"
+              hide-details="auto"
+            ></v-select>
+            <v-select
+              v-model="selectedMeetingLocation"
+              :items="selectedRide.meetingLocationList"
+              item-text="name"
+              return-object
+              :label="'승하차 장소를 선택해주세요'"
+              variant="outlined"
+              hide-details="auto"
+            ></v-select>
+            <v-btn
+              @click="pushChildRideList()"
+              type="button"
+              variant="outlined"
+              size="large"
+              >추가하기</v-btn>
+          </div>
+        </div>
+        <div v-if="form.childRideList.length > 0">
+          <v-menu
+            v-for="(childRide, i) in form.childRideList"
+            :key="i"
+            v-model="childRide.menuOpen"
+            location="bottom start"
+            origin="top left"
+            transition="scale-transition"
+          >
+            <template v-slot:activator="{ props }" class="chip-container">
+              <v-chip
+                class="chip"
+                v-bind="props"
+                closable
+                :close-icon="ICONS.close"
+                :color="childRide.amPm === '오후' ? 'infoDeep' : 'accent'"
+                variant="tonal"
+                size="large"
+                @click:close="form.childRideList.splice(i, 1)"
               >
-                <template v-slot:activator="{ props: chipActivatorProps }">
-                  <v-chip
-                    close
-                    v-bind="chipActivatorProps"
-                    :dark="childRide.amPm == '오후'"
-                    @click:close="form.childRideList.splice(i, 1)"
-                  >
-                    <v-icon left>{{
-                      childRide.amPm == '오전'
-                        ? 'mdi-white-balance-sunny'
-                        : 'mdi-moon-waning-crescent'
-                    }}</v-icon>
-                    <!-- // `${childRide.rideName}, ${childRide.meetingLocation.name}, ${childRide.comment}` -->
-                    {{ truncateString(childRide.meetingLocation.name, 18) }}
-                  </v-chip>
-                </template>
+                <v-icon start>
+                  {{ childRide.amPm === '오전' ? 'ri-sun-fill' : 'ri-moon-fill' }}
+                </v-icon>
+                {{ truncateString(childRide.meetingLocation.name, 12) }}
+              </v-chip>
+            </template>
 
-                <v-card width="300" dark>
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-bus</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>{{
-                          childRide.rideName
-                        }}</v-list-item-title>
-                        <v-list-item-subtitle>{{
-                          childRide.amPm
-                        }}</v-list-item-subtitle>
-                      </v-list-item-content>
-                      <v-list-item-action>
-                        <v-btn
-                          icon
-                          @click="form.childRideList[i].menuOpen = false"
-                        >
-                          <v-icon>mdi-close-circle</v-icon>
-                        </v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-list>
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-map-marker</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          {{ childRide.meetingLocation.name }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle>{{
-                          childRide.comment
-                        }}</v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list>
-                </v-card>
-              </v-menu>
-            </v-col>
-          </v-row>
-        </v-row>
-      </v-card-text>
+            <!-- 칩 클릭 시 상세 정보 카드 -->
+            <v-card width="300">
+              <v-list lines="two" density="compact">
+                <v-list-item :prepend-icon="ICONS.bus">
+                  <v-list-item-title class="font-weight-bold">{{ childRide.rideName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ childRide.amPm }}</v-list-item-subtitle>
+                  <template v-slot:append>
+                    <v-btn
+                      variant="text"
+                      :icon="ICONS.close"
+                      density="comfortable"
+                      @click="childRide.menuOpen = false"
+                    ></v-btn>
+                  </template>
+                </v-list-item>
+                <v-divider inset></v-divider>
+                <v-list-item :prepend-icon="ICONS.mapPin">
+                  <v-list-item-title>{{ childRide.meetingLocation.name }}</v-list-item-title>
+                  <v-list-item-subtitle v-if="childRide.comment">{{ childRide.comment }}</v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-menu>
+        </div>
+      </div>
     </v-card>
-
-    <v-row class="justify-center">
-      <v-col cols="12" md="6">
-        <v-btn @click="addChild" depressed block x-large color="primary"
-          >등록</v-btn
-        >
-      </v-col>
-    </v-row>
+    <v-btn @click="addChild"
+      type="submit"
+      color="primary"
+      size="x-large"
+      varient="flat"
+      block
+      >등록</v-btn>
   </v-form>
 </template>
 
@@ -452,6 +379,7 @@ import {
 } from '@/api/api'
 import UploadChildDialog from '@/components/dialog/UploadChildDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
@@ -752,10 +680,3 @@ onMounted(() => {
   init()
 })
 </script>
-
-<style lang="scss" scoped>
-._btn-grp {
-  gap: 0.5rem;
-  flex-wrap: nowrap;
-}
-</style>

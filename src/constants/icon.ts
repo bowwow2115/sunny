@@ -1,0 +1,16 @@
+export const ICONS = {
+  home: 'ri-home-5-fill',
+  user: 'ri-user-5-fill',
+  password: 'ri-lock-password-fill',
+  email: 'ri-mail-fill',
+  phone: 'ri-phone-fill',
+  calendar: 'ri-calendar-2-fill',
+  location: 'ri-map-pin-2-fill',
+  bus: 'ri-bus-2-fill',
+  mapPin: 'ri-map-pin-line',
+  close: 'ri-close-fill',
+  plus: 'ri-add-fill',
+  minus: 'ri-subtract-fill',
+  excel: 'ri-file-excel-2-fill',
+  download: 'ri-download-2-line',
+} as const

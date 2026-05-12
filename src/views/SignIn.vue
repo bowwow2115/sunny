@@ -10,7 +10,7 @@
             @keyup.enter="login"
             :rules="userIdRules"
             label="아이디 입력"
-            prepend-inner-icon="ri-user-5-fill"
+            :prepend-inner-icon="ICONS.user"
             required
             variant="outlined"
             clearable
@@ -24,7 +24,7 @@
             :rules="userPwRules"
             type="password"
             label="비밀번호 입력"
-            prepend-inner-icon="ri-lock-password-fill"
+            :prepend-inner-icon="ICONS.password"
             required
             variant="outlined"
             clearable
@@ -85,6 +85,7 @@ import auth from '@/api/auth'
 import Utils from '@/utils/utils'
 import { useGlobal } from '@/composables/useGlobal' // 커스텀 훅
 import type { LoginForm } from '@/types'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 const router = useRouter()
 const { $showError } = useGlobal()

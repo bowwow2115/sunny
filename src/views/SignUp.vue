@@ -13,7 +13,7 @@
             <v-text-field
               v-model="form.userId"
               label="아이디 입력"
-              prepend-inner-icon="ri-user-5-fill"
+              :prepend-inner-icon="ICONS.user"
               :rules="userIdRules"
               required
               variant="outlined"
@@ -40,7 +40,7 @@
             v-model="form.password"
             type="password"
             label="비밀번호 입력"
-            prepend-inner-icon="ri-lock-password-fill"
+            :prepend-inner-icon="ICONS.password"
             :rules="passwordRules"
             required
             variant="outlined"
@@ -53,7 +53,7 @@
             v-model="form.passwordCheck"
             type="password"
             label="비밀번호 확인"
-            prepend-inner-icon="ri-lock-password-fill"
+            :prepend-inner-icon="ICONS.password"
             :rules="passwordCheckRules"
             required
             variant="outlined"
@@ -70,7 +70,7 @@
           <v-text-field
             v-model="form.name"
             label="이름"
-            prepend-inner-icon="ri-user-5-fill"
+            :prepend-inner-icon="ICONS.user"
             :rules="nameRules"
             required
             variant="outlined"
@@ -83,7 +83,7 @@
           <v-text-field
             v-model="form.telephone"
             label="전화번호"
-            prepend-inner-icon="ri-smartphone-line"
+            :prepend-inner-icon="ICONS.phone"
             :rules="phoneRules"
             required
             variant="outlined"
@@ -102,7 +102,7 @@
             v-model="form.email"
             type="email"
             label="이메일주소 (본인확인용 선택사항)"
-            prepend-inner-icon="ri-mail-fill"
+            :prepend-inner-icon="ICONS.email"
             :rules="emailRules"
             variant="outlined"
             clearable
@@ -133,6 +133,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { addUser, checkDuplicateUserId } from '@/api/api'
 import { useGlobal } from '@/composables/useGlobal'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 const router = useRouter()
 const { $showMessage, $showError, $withLoading } = useGlobal()

@@ -28,25 +28,6 @@
     }
   }
 }
-.v-text-field {
-  > .v-input__control > .v-input__slot:after {
-    display: none !important;
-  }
-  .v-input__icon--clear {
-    opacity: 0.4 !important;
-    .v-icon.primary--text {
-      color: inherit !important;
-    }
-  }
-}
-.v-application a:not(._excel-download, ._excel-upload) {
-  // color: inherit;
-  // text-decoration: none;
-
-  // &:hover {
-  //   color: var(--v-primary-base) !important;
-  // }
-}
 .v-application .v-btn {
   letter-spacing: normal;
   font-weight: bold;
@@ -56,35 +37,7 @@
     background-color: #e0e0e0;
   }
 }
-.v-text-field {
-  .v-label--active.primary--text {
-    font-weight: 700 !important;
-  }
-  fieldset {
-    color: rgba(0, 0, 0, 0.15);
-  }
-}
-.v-card__title + .v-card__text,
-.v-card__subtitle + .v-card__text {
-  border-top: 1px dashed #e0e0e0;
-}
-._card-title {
-  font-weight: 600 !important;
-}
-._card-title::before {
-  content: '';
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background: linear-gradient(
-    120deg,
-    var(--v-primary-base),
-    var(--v-secondary-lighten1)
-  );
-  border-radius: 100%;
-  transform: translatey(-10px);
-  margin-right: 3px;
-}
+
 input[type='checkbox'] {
   display: none;
 }
@@ -174,21 +127,7 @@ input[type='checkbox'] {
   margin: auto 0 1rem;
   // border-top: 1px solid #e0e0e0;
 }
-._btn-grp {
-  display: flex;
-  flex-wrap: wrap;
-}
-._btn-grp .v-btn {
-  flex: 0 0 50%;
-}
-._excel-download {
-  background-color: rgba($color: #1d6f42, $alpha: 0.1);
-  color: #1d6f42 !important;
-}
-._excel-upload {
-  background-color: #ffeed5;
-  color: var(--v-accent-lighten1) !important;
-}
+
 
 // ._quick-regist {
 //   text-align: left;
@@ -382,127 +321,129 @@ input[type='checkbox'] {
  * 모달 폭 고정: 인풋 텍스트·셀렉트 라벨 길이에 따라 창 너비가 출렁이지 않게 함
  * (Vuetify 3: 실제 박스는 .v-overlay__content)
  */
-.v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-overlay__content {
-  width: min(720px, 60vw, 92vw) !important;
-  max-width: min(720px, 60vw, 92vw) !important;
-  box-sizing: border-box;
-}
+// .v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-overlay__content {
+//   width: min(720px, 60vw, 92vw) !important;
+//   max-width: min(720px, 60vw, 92vw) !important;
+//   box-sizing: border-box;
+// }
 
-/* 관리자용 좁은 카드 팝업 */
-.v-overlay.v-dialog:has(._pop-small-card):not(.v-dialog--fullscreen)
-  .v-overlay__content {
-  width: min(520px, 92vw) !important;
-  max-width: min(520px, 92vw) !important;
-}
+// /* 관리자용 좁은 카드 팝업 */
+// .v-overlay.v-dialog:has(._pop-small-card):not(.v-dialog--fullscreen)
+//   .v-overlay__content {
+//   width: min(520px, 92vw) !important;
+//   max-width: min(520px, 92vw) !important;
+// }
 
-/* 확인/알림 등 최소 폭 */
-.v-overlay.v-dialog._dialog-sm:not(.v-dialog--fullscreen) .v-overlay__content {
-  width: min(400px, 92vw) !important;
-  max-width: min(400px, 92vw) !important;
-}
+// /* 확인/알림 등 최소 폭 */
+// .v-overlay.v-dialog._dialog-sm:not(.v-dialog--fullscreen) .v-overlay__content {
+//   width: min(400px, 92vw) !important;
+//   max-width: min(400px, 92vw) !important;
+// }
 
-.v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-card {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
+// .v-overlay.v-dialog:not(.v-dialog--fullscreen) .v-card {
+//   width: 100% !important;
+//   max-width: 100% !important;
+//   overflow-x: hidden;
+//   box-sizing: border-box;
+// }
 
-.v-overlay.v-dialog .v-card-text,
-.v-overlay.v-dialog .v-form,
-.v-overlay.v-dialog .v-card-text .v-row,
-.v-overlay.v-dialog .v-form .v-row {
-  min-width: 0;
-}
+// .v-overlay.v-dialog .v-card-text,
+// .v-overlay.v-dialog .v-form,
+// .v-overlay.v-dialog .v-card-text .v-row,
+// .v-overlay.v-dialog .v-form .v-row {
+//   min-width: 0;
+// }
 
-.v-overlay.v-dialog .v-col {
-  min-width: 0;
-}
+// .v-overlay.v-dialog .v-col {
+//   min-width: 0;
+// }
 
-.v-dialog {
-  .v-card__title + .v-card__text,
-  .v-card__subtitle + .v-card__text {
-    border-top: none;
-  }
-  .v-card__title {
-    // border-bottom: 10px solid #f2f2f2;
-    font-weight: 600 !important;
-  }
-  .v-card__actions {
-    border-top: 1px solid #e0e0e0;
-  }
-  ._child-more-head {
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    font-size: 1.25rem;
-    font-weight: 600;
-    border-radius: 4px;
-    > small {
-      font-size: 0.8em;
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.5);
-    }
-  }
-  .v-list {
-    .v-list-group__header.v-list-item--active {
-      border-top: 1px solid #e0e0e0;
-    }
-    .v-list-item__icon:has(._list-icon) {
-      margin: 10px;
-    }
-    ._list-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 45px;
-      height: 45px;
-      border-radius: 100%;
-      background: var(--v-gray-lighten1);
-      color: #fff;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    ._list-icon-ko {
-      background: var(--v-primary-base);
-    }
-    ._list-icon-am {
-      background: var(--v-tertiary-base);
-    }
-    ._list-icon-pm {
-      background: var(--v-info-base);
-    }
-    ._list-title-with-sub {
-      > span {
-        color: rgba(0, 0, 0, 0.45);
-        font-size: 0.9em;
-        font-weight: 600;
-        margin-left: 1rem;
+// .v-dialog {
+//   .v-card__title + .v-card__text,
+//   .v-card__subtitle + .v-card__text {
+//     border-top: none;
+//   }
+//   .v-card__title {
+//     // border-bottom: 10px solid #f2f2f2;
+//     font-weight: 600 !important;
+//   }
+//   .v-card__actions {
+//     border-top: 1px solid #e0e0e0;
+//   }
+//   ._child-more-head {
+//     border: 1px solid rgba(0, 0, 0, 0.3);
+//     font-size: 1.25rem;
+//     font-weight: 600;
+//     border-radius: 4px;
+//     > small {
+//       font-size: 0.8em;
+//       font-weight: 500;
+//       color: rgba(0, 0, 0, 0.5);
+//     }
+//   }
+//   .v-list {
+//     .v-list-group__header.v-list-item--active {
+//       border-top: 1px solid #e0e0e0;
+//     }
+//     .v-list-item__icon:has(._list-icon) {
+//       margin: 10px;
+//     }
+//     ._list-icon {
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       width: 45px;
+//       height: 45px;
+//       border-radius: 100%;
+//       background: var(--v-gray-lighten1);
+//       color: #fff;
+//       font-weight: 600;
+//       font-size: 14px;
+//     }
+//     ._list-icon-ko {
+//       background: var(--v-primary-base);
+//     }
+//     ._list-icon-am {
+//       background: var(--v-tertiary-base);
+//     }
+//     ._list-icon-pm {
+//       background: var(--v-info-base);
+//     }
+//     ._list-title-with-sub {
+//       > span {
+//         color: rgba(0, 0, 0, 0.45);
+//         font-size: 0.9em;
+//         font-weight: 600;
+//         margin-left: 1rem;
 
-        .v-icon {
-          font-size: 1.2em !important;
-        }
-      }
-    }
-  }
-  ._list-half {
-    display: flex;
-    flex-wrap: wrap;
-    .v-list-item {
-      flex: 0 0 50%;
-      width: 50%;
-      .v-list-item__title {
-        white-space: normal;
-        word-break: auto-phrase;
-      }
-    }
-    .v-list-item._list-half-not {
-      flex: 0 0 100%;
-      width: 100%;
-    }
-  }
-}
+//         .v-icon {
+//           font-size: 1.2em !important;
+//         }
+//       }
+//     }
+//   }
+//   ._list-half {
+//     display: flex;
+//     flex-wrap: wrap;
+//     .v-list-item {
+//       flex: 0 0 50%;
+//       width: 50%;
+//       .v-list-item__title {
+//         white-space: normal;
+//         word-break: auto-phrase;
+//       }
+//     }
+//     .v-list-item._list-half-not {
+//       flex: 0 0 100%;
+//       width: 100%;
+//     }
+//   }
+// }
 
 /* !!!!!!!!!!!!!!!! 이후 수정 */
-/* reset CSS */
+/* **************************************************************
+    reset CSS 
+*************************************************************** */
 .v-input {
   margin-bottom: 1em; 
 }
@@ -516,8 +457,26 @@ input[type='checkbox'] {
 .v-field--variant-outlined.v-field--focused .v-field__outline {
   --v-field-border-width: 1px;
 }
-
-/* custom CSS */
+.v-text-field input {
+  min-height: 56px;
+}
+.v-menu > .v-overlay__content > .v-card, .v-menu > .v-overlay__content > .v-sheet, .v-menu > .v-overlay__content > .v-list {
+  width: 100%;
+}
+.v-chip {
+  margin: 0.2em;
+}
+.v-chip__content {
+  font-weight: 600;
+}
+.v-btn {
+  .v-icon {
+    font-weight: 400;
+  }
+}
+/* **************************************************************
+    custom CSS
+*************************************************************** */
 .page-title {
   font-size: 1.6em;
   font-weight: 800;
@@ -530,20 +489,51 @@ input[type='checkbox'] {
   margin: 1rem auto;
   box-shadow: 0 20px 40px rgba(0,0,0,0.05) !important;
 }
-.login .card-section {
-  max-width: 620px;
+.card-title {
+  font-weight: 700;
+  font-size: 1.4em;
+  padding: 0; margin: 0;
+}
+.card-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1em;
+}
+.card-title + .card-subtitle {
+  padding: 0.4em 0 0;
+}
+.card-content {
+  margin: 2em 0 0;
+}
+.login {
+  .card-section {
+    max-width: 620px;
+  }
+  .input-group {
+    justify-content: space-between;
+  }
 }
 .input-group {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1em;
 }
 .input-group:has(.v-input) {
   align-items: flex-start;
 }
-.input-group > .v-btn {
-  min-height: 48px;
+.input-group {
+  .v-btn {
+    min-height: 56px;
+  }
+}
+.select-base {
+  // max-width: 200px;
+  max-width: 10.7rem;
+}
+.input-base {
+  max-width: 360px;
 }
 .caption {
   font-size: 0.9em;
@@ -558,15 +548,66 @@ input[type='checkbox'] {
 .caption.essential i.ri-asterisk {
   color: rgb(var(--v-theme-error));
 }
+.btn-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4em;
+  .v-btn {
+    flex: 0 0 49%;
+  }
+}
+#postcode {
+  width: 100%;
+  height: 500px;
+}
+.parent-box {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+}
 
-/* media */
-@media (max-width: 1023px) {}
+/* **************************************************************
+    반응형 1024px (태블릿) / 768px (모바일) / 576px (소형 모바일)
+*************************************************************** */
+@media (max-width: 1023px) {
+  .select-base {
+    max-width: 8rem;
+  }
+}
 @media (max-width: 767px) {
   .card-section {
     padding: 36px 30px;
   }
   .caption {
     font-size: 0.8em;
+  }
+  .card-title-wrap {
+    flex-wrap: wrap;
+  }
+  .btn-group {
+    width: 100%;
+  }
+  .select-base {
+    max-width: 8rem;
+  }
+  .input-base {
+    max-width: unset;
+  }
+  .input-group {
+    flex-direction: column;
+    gap: 0;
+    .select-base {
+      width: 100%;
+      max-width: unset;
+    }
+    .input-base {
+      width: 100%;
+      max-width: unset;
+    }
+    .v-btn {
+      width: 100%;
+    }
+  }
+  .input-group + .input-group {
+    margin: 2em 0 0;
   }
 }
 @media (max-width: 575px) {}
