@@ -5,7 +5,7 @@
     <!-- :sort-by="sortBy"
       :sort-desc="sortDesc"
       v-model:group-by="groupBy" -->
-    <v-data-table
+    <v-data-table class="card-section table-list"
       v-if="Array.isArray(childrenList) && childrenList.length >= 0"
       v-model="selectedRow"
       :items="childrenList"
@@ -17,58 +17,54 @@
       show-select
       item-key="id"
       no-data-text="등록된 원아가 존재하지 않습니다."
-      class="elevation-1 mt-0 _mobile-table"
       hide-default-footer
       :items-per-page-text="'명씩'"
     >
       <!-- 상단 툴바 -->
       <template v-slot:top>
-        <v-toolbar dark color="primary" class="_custom-toolbar mb-4">
+        <div class="input-group">
           <v-text-field
             v-model="search"
             clearable
-            flat
-            variant="solo"
-            bg-color="white"
             hide-details
-            prepend-inner-icon="ri-search-line"
+            :prepend-inner-icon="ICONS.search"
             label="검색어를 입력하세요."
-            class="me-2"
+            variant="outlined"
           ></v-text-field>
 
-          <v-select
+          <v-select class="select-base"
             v-model="groupBy"
-            flat
-            variant="solo"
+            variant="outlined"
             bg-color="white"
             hide-details
-            prepend-inner-icon="ri-sort-desc"
+            :prepend-inner-icon="ICONS.sortDesc"
             :items="[
               { name: '반명', value: 'className' },
               { name: '재원여부', value: 'status' },
             ]"
             item-title="name"
             item-value="value"
-            label="집합 정렬할 기준을 선택해주세요."
-            class="_group-select"
+            label="집합 정렬 기준"
             clearable
           ></v-select>
-        </v-toolbar>
+        </div>
       </template>
 
       <!-- 액션 버튼 -->
       <template #[`item.actions`]="{ item }">
-        <v-btn icon size="small" variant="text" @click="openInfoDialog(item)">
-          <v-icon icon="ri-more-2-line"></v-icon>
-        </v-btn>
+        <v-btn
+          size="small"
+          @click="openInfoDialog(item)"
+          :icon="ICONS.more"
+        ></v-btn>
       </template>
 
       <!-- Vuetify 3: dotted slot name needs dynamic #[`body.append`] -->
       <template #[`body.append`]="{ items }">
         <tr>
           <td
+            class="search-results"
             :colspan="headers.length + 1"
-            class="text-center py-2 text-body-2 grey--text"
           >
             총 {{ items?.length || 0 }}건의 원아가 검색되었습니다.
           </td>
@@ -77,26 +73,22 @@
 
       <!-- Vuetify 3: custom footer when hide-default-footer → `#bottom` -->
       <template #bottom>
-        <v-row class="align-center" style="padding: 5px">
-          <v-col cols="auto">
+        <div class="input-group tl-footer">
+          <div>
             <v-btn
               type="button"
-              class="font-weight-bold"
-              color="accent"
+              color="primary"
               variant="flat"
               @click="openChangeClassDialog"
             >
               반 변경
             </v-btn>
-          </v-col>
-
-          <v-col class="d-flex align-center justify-end">
+          </div>
+          <div class="input-group">
             <v-menu location="top">
               <template v-slot:activator="{ props }">
                 <v-btn
                   variant="outlined"
-                  size="small"
-                  class="me-2"
                   v-bind="props"
                 >
                   {{
@@ -117,34 +109,27 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-
-            <div class="d-flex align-center">
+            <div class="pager">
               <v-btn
-                icon
                 size="small"
                 variant="tonal"
                 :disabled="page <= 1"
                 @click="formerPage"
-              >
-                <v-icon icon="ri-arrow-left-s-line"></v-icon>
-              </v-btn>
+                :icon="ICONS.pagerLeft"
+              ></v-btn>
 
-              <span class="grey--text mx-4 text-body-2">
-                {{ page }} / {{ numberOfPages }}
-              </span>
+              <span>{{ page }} / {{ numberOfPages }}</span>
 
               <v-btn
-                icon
                 size="small"
                 variant="tonal"
                 :disabled="page >= numberOfPages"
                 @click="nextPage"
-              >
-                <v-icon icon="ri-arrow-right-s-line"></v-icon>
-              </v-btn>
+                :icon="ICONS.pagerRight"
+              ></v-btn>
             </div>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </template>
     </v-data-table>
 
@@ -164,6 +149,7 @@ import ChildMoreInfo from '@/views/ChildMoreInfo.vue' // ← 유지 가능
 import ChangeClassDialog from '@/components/dialog/ChangeClassDialog.vue'
 import { useGlobal } from '@/composables/useGlobal'
 import type { Child } from '@/types'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 const { $showMessage, $showError, $withLoading, $dialog } = useGlobal()
 
@@ -377,29 +363,3 @@ defineExpose({
   refresh: fetchAllChildren,
 })
 </script>
-
-<style scoped>
-._custom-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  height: unset;
-}
-
-/* Vue 3: deep selector 는 :deep() 사용 */
-._custom-toolbar :deep(.v-select) {
-  width: min-content;
-}
-
-._group-select {
-  min-width: 200px;
-}
-
-._mobile-table :deep(.v-data-table-header) {
-  font-size: 0.875rem;
-}
-
-._mobile-table :deep(.v-data-table__td) {
-  padding: 8px 12px;
-}
-</style>

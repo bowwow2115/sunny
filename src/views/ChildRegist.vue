@@ -321,7 +321,7 @@
                 v-bind="props"
                 closable
                 :close-icon="ICONS.close"
-                :color="childRide.amPm === '오후' ? 'infoDeep' : 'accent'"
+                :color="childRide.amPm === '오후' ? 'infoDeep' : 'success'"
                 variant="tonal"
                 size="large"
                 @click:close="form.childRideList.splice(i, 1)"

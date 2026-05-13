@@ -3,139 +3,113 @@
   <v-dialog
     v-model="dialogModel"
     persistent
-    max-width="720px"
     teleport="body"
     @click:outside="handleCancel"
   >
-    <v-card class="pa-2">
-      <v-card-title class="d-flex align-center justify-space-between">
-        <span class="text-h6 font-weight-bold">원아정보 수정</span>
-        <v-btn icon size="small" variant="text" @click="handleCancel">
-          <v-icon icon="ri-close-line"></v-icon>
-        </v-btn>
-      </v-card-title>
+    <v-card class="popup pop-small">
+      <div class="popup-title-wrap">
+        <v-card-title class="popup-title">원아정보 수정</v-card-title>
+        <v-btn
+          @click="handleCancel"
+          :icon="ICONS.close"
+        ></v-btn>
+      </div>
 
       <v-form ref="formRef" v-model="isValid">
-        <v-list class="pa-0 _list-half">
+        <v-list class="popup-content">
           <!-- 원아 이름 -->
-          <v-list-item class="pl-0">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">이름</span>
-            </v-list-item-icon>
-            <!-- ✅ v-list-item-content 제거, title 직속 사용 -->
-            <v-text-field
-              v-model="form.name"
-              label="원아의 이름을 입력해주세요."
-              :rules="nameRules"
-              variant="outlined"
-              clearable
-              clear-icon="ri-close-circle-fill"
-            ></v-text-field>
-          </v-list-item>
-
+          <!-- ✅ v-list-item-content 제거, title 직속 사용 -->
+          <v-text-field
+            v-model="form.name"
+            label="원아의 이름을 입력해주세요."
+            :rules="nameRules"
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-text-field>
           <!-- 재원여부 -->
-          <v-list-item class="pl-0">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">상태</span>
-            </v-list-item-icon>
-            <v-combobox
-              v-model="form.status"
-              :items="['재원', '졸업', '퇴소', '기타']"
-              :rules="statusRules"
-              label="원아의 재원여부를 입력해주세요."
-              variant="outlined"
-              clearable
-              clear-icon="ri-close-circle-fill"
-            ></v-combobox>
-          </v-list-item>
+          <v-combobox
+            v-model="form.status"
+            :items="['재원', '졸업', '퇴소', '기타']"
+            :rules="statusRules"
+            label="원아의 재원여부를 입력해주세요."
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-combobox>
 
           <!-- 반 -->
-          <v-list-item class="pl-0">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">반</span>
-            </v-list-item-icon>
-            <v-select
-              v-model="form.className"
-              :items="classNameList"
-              :rules="classNameRules"
-              label="원아의 반을 입력해주세요."
-              variant="outlined"
-              clearable
-              clear-icon="ri-close-circle-fill"
-            ></v-select>
-          </v-list-item>
-
+          <v-select
+            v-model="form.className"
+            :items="classNameList"
+            :rules="classNameRules"
+            label="원아의 반을 입력해주세요."
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-select>
           <!-- 입학일 (데이트 피커) -->
-          <v-list-item class="pl-0">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">입학</span>
-            </v-list-item-icon>
-            <v-menu
-              v-model="admissionDateMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-            >
-              <template #activator="{ props: menuProps }">
-                <v-text-field
-                  v-model="form.admissionDate"
-                  label="원아의 입학일을 입력해주세요."
-                  :rules="datePicRules"
-                  readonly
-                  variant="outlined"
-                  v-bind="menuProps"
-                ></v-text-field>
-              </template>
-              <v-date-picker
+          <v-menu
+            v-model="admissionDateMenu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset="8"
+          >
+            <template #activator="{ props: menuProps }">
+              <v-text-field
                 v-model="form.admissionDate"
-                v-model:active-picker="activePicker"
-                class="calendar"
-                no-title
-                min="2015-01-01"
-                @update:model-value="admissionDateMenu = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-list-item>
+                label="원아의 입학일을 입력해주세요."
+                hide-details="auto"
+                :prepend-inner-icon="ICONS.calendar"
+                :rules="datePicRules"
+                readonly
+                variant="outlined"
+                v-bind="menuProps"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="form.admissionDate"
+              v-model:active-picker="activePicker"
+              hide-title
+              hide-header
+              min="2015-01-01"
+              @update:model-value="admissionDateMenu = false"
+            ></v-date-picker>
+          </v-menu>
 
           <!-- 생일 (데이트 피커) -->
-          <v-list-item class="pl-0">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">생일</span>
-            </v-list-item-icon>
-            <v-menu
-              v-model="birthdayMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-            >
-              <template #activator="{ props: menuProps }">
-                <v-text-field
-                  v-model="form.birthday"
-                  :rules="datePicRules"
-                  label="원아의 생년월일을 입력해주세요."
-                  readonly
-                  variant="outlined"
-                  v-bind="menuProps"
-                ></v-text-field>
-              </template>
-              <v-date-picker
+          <v-menu
+            v-model="birthdayMenu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset="8"
+          >
+            <template #activator="{ props: menuProps }">
+              <v-text-field
                 v-model="form.birthday"
-                v-model:active-picker="activePicker"
-                class="calendar"
-                no-title
-                :max="maxDate"
-                min="2015-01-01"
-                @update:model-value="birthdayMenu = false"
-              ></v-date-picker>
-            </v-menu>
-          </v-list-item>
+                :rules="datePicRules"
+                label="원아의 생년월일을 입력해주세요."
+                hide-details="auto"
+                :prepend-inner-icon="ICONS.calendar"
+                readonly
+                variant="outlined"
+                v-bind="menuProps"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="form.birthday"
+              v-model:active-picker="activePicker"
+              hide-title
+              hide-header
+              :max="maxDate"
+              min="2015-01-01"
+              @update:model-value="birthdayMenu = false"
+            ></v-date-picker>
+          </v-menu>
 
           <!-- 주소 섹션 -->
-          <v-list-item class="pl-0 _list-half-not">
-            <v-list-item-icon class="my-4 mx-3">
-              <span class="_list-icon">주소</span>
-            </v-list-item-icon>
-          </v-list-item>
-
           <!-- 우편번호 + 검색 -->
+          <div></div>
           <v-list-item class="pl-0">
             <v-row no-gutters class="w-100">
               <v-col cols="6">
@@ -228,6 +202,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { getClassList, updateChild } from '@/api/api'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 // ✅ 플러그인 연동용 props
 const props = defineProps({

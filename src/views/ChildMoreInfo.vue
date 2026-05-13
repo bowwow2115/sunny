@@ -8,324 +8,318 @@
     teleport="body"
     @click:outside="handleCancel"
   >
-    <v-card class="pa-2">
+    <v-card class="popup">
       <!-- 헤더 -->
-      <v-card-title class="d-flex align-center justify-space-between">
-        <span class="text-h6 font-weight-bold">원아정보 더보기</span>
-        <v-btn icon size="small" variant="text" @click="handleCancel">
-          <v-icon icon="ri-close-line"></v-icon>
-        </v-btn>
-      </v-card-title>
+      <div class="popup-title-wrap">
+        <v-card-title class="popup-title">원아정보 더보기</v-card-title>
+        <v-btn
+          @click="handleCancel"
+          :icon="ICONS.close"
+        ></v-btn>
+      </div>
+      <div class="popup-content">
+        <!-- 원아 정보 헤더 -->
+        <h2>
+          {{ form.name }}
+          <small>{{ form.status }}</small>
+        </h2>
 
-      <!-- 원아 정보 헤더 -->
-      <h2 class="_child-more-head ma-4 py-3 px-4">
-        {{ form.name }}
-        <small class="ml-2 text-grey">{{ form.status }}</small>
-      </h2>
-
-      <!-- 1. 원아 정보 섹션 -->
-      <v-list class="pa-0">
-        <v-list-group v-model="groups.childInfo" value="childInfo">
-          <template #activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="ri-user-5-fill">
-              <v-list-item-title>원아 정보</v-list-item-title>
-            </v-list-item>
-          </template>
-
-          <!-- ✅ v-list-item-content 제거, 직접 v-list-item-title 사용 -->
-          <v-list-item class="ml-14">
-            <v-list-item-icon start>
-              <span class="_list-icon _list-icon-ko">반</span>
-            </v-list-item-icon>
-            <v-list-item-title>{{ form.className }}</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item class="ml-14">
-            <v-list-item-icon start>
-              <span class="_list-icon _list-icon-ko">입학</span>
-            </v-list-item-icon>
-            <v-list-item-title>{{ form.admissionDate }}</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item class="ml-14">
-            <v-list-item-icon start>
-              <span class="_list-icon _list-icon-ko">생일</span>
-            </v-list-item-icon>
-            <v-list-item-title>{{ form.birthday }}</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item class="ml-14">
-            <v-list-item-icon start>
-              <span class="_list-icon _list-icon-ko">주소</span>
-            </v-list-item-icon>
-            <v-list-item-title>{{ fullAddress }}</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item class="py-2">
-            <v-btn block variant="flat" @click="openChildDialog">
-              정보 수정
-              <v-icon
-                icon="ri-edit-2-fill"
-                color="success"
-                class="ml-2"
-              ></v-icon>
-            </v-btn>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-
-      <!-- 2. 보호자 정보 섹션 -->
-      <v-list class="pa-0">
-        <v-list-group v-model="groups.parentInfo" value="parentInfo">
-          <template #activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="ri-parent-fill">
-              <v-list-item-title>보호자 정보</v-list-item-title>
-            </v-list-item>
-          </template>
-
-          <template v-if="form.parentList?.length">
-            <template
-              v-for="(item, index) in form.parentList"
-              :key="item.id || index"
-            >
-              <v-list-item class="ml-14">
-                <v-list-item-icon start>
-                  <span class="_list-icon _list-icon-ko">{{
-                    item.relation
-                  }}</span>
-                </v-list-item-icon>
-
-                <v-list-item-title class="_list-title-with-sub">
-                  {{ item.name }}
-                  <span class="ml-2">
-                    <v-btn
-                      icon
-                      size="x-small"
-                      variant="text"
-                      @click="copyToClipboard(item.telephone)"
-                    >
-                      <v-icon icon="ri-phone-fill" color="grey"></v-icon>
-                    </v-btn>
-                    {{ item.telephone }}
-                  </span>
-                </v-list-item-title>
-
-                <v-list-item-action start>
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="grey"
-                    @click="deleteParents(item)"
-                  >
-                    <v-icon icon="ri-close-circle-fill"></v-icon>
-                  </v-btn>
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="success"
-                    class="ml-2"
-                    @click="openParentsDialog(true, item)"
-                  >
-                    <v-icon icon="ri-edit-2-fill"></v-icon>
-                  </v-btn>
-                </v-list-item-action>
+        <!-- 1. 원아 정보 섹션 -->
+        <v-list>
+          <v-list-group v-model="groups.childInfo" value="childInfo">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="ICONS.user"
+                :append-icon="ICONS.expand"
+                ><v-list-item-title>원아 정보</v-list-item-title>
               </v-list-item>
-              <v-divider
-                v-if="index < form.parentList.length - 1"
-                class="ml-14"
-              />
             </template>
-          </template>
 
-          <v-list-item v-else>
-            <v-list-item-icon>
-              <v-icon icon="mdi-information-off"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-title
-              >등록된 부모의 정보가 없습니다.</v-list-item-title
-            >
-          </v-list-item>
-
-          <v-list-item class="py-2">
-            <v-btn block variant="flat" @click="openParentsDialog(false)">
-              보호자 정보 추가
-              <v-icon icon="ri-add-fill" color="success" class="ml-2"></v-icon>
-            </v-btn>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-
-      <!-- 3. 오전 차량 정보 섹션 -->
-      <v-list class="pa-0">
-        <v-list-group v-model="groups.amRide" value="amRide">
-          <template #activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="ri-bus-2-fill">
-              <v-list-item-title>오전차량 정보</v-list-item-title>
+            <!-- ✅ v-list-item-content 제거, 직접 v-list-item-title 사용 -->
+            <v-list-item>
+              <template v-slot:prepend>
+                <span class="list-icon">반</span>
+              </template>
+              <v-list-item-title>{{ form.className }}</v-list-item-title>
             </v-list-item>
-          </template>
+            <v-list-item>
+              <template v-slot:prepend>
+                <span class="list-icon">입학</span>
+              </template>
+              <v-list-item-title>{{ form.admissionDate }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <template v-slot:prepend>
+                <span class="list-icon">생일</span>
+              </template>
+              <v-list-item-title>{{ form.birthday }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <template v-slot:prepend>
+                <span class="list-icon">주소</span>
+              </template>
+              <v-list-item-title>{{ fullAddress }}</v-list-item-title>
+            </v-list-item>
 
-          <template v-if="form.amChildRideList?.length">
-            <v-list-item
-              v-for="(childRide, index) in form.amChildRideList"
-              :key="childRide.id || index"
-              class="ml-14"
-            >
-              <v-list-item-icon start>
-                <span class="_list-icon _list-icon-am">오전</span>
+            <v-list-item>
+              <v-btn
+                block
+                variant="outlined"
+                @click="openChildDialog"
+                :append-icon="ICONS.edit"
+              >정보 수정</v-btn>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+
+        <!-- 2. 보호자 정보 섹션 -->
+        <v-list>
+          <v-list-group v-model="groups.parentInfo" value="parentInfo">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="ICONS.parents"
+                :append-icon="ICONS.expand"
+                ><v-list-item-title>보호자 정보</v-list-item-title>
+              </v-list-item>
+            </template>
+
+            <template v-if="form.parentList?.length">
+              <template
+                v-for="(item, index) in form.parentList"
+                :key="item.id || index"
+              >
+                <v-list-item>
+                  <template v-slot:prepend>
+                    <span class="list-icon">{{item.relation}}</span>
+                  </template>
+                  <v-list-item-title class="input-group">
+                    {{ item.name }}
+                    <span>
+                      <v-btn
+                        color="info"
+                        size="x-small"
+                        variant="text"
+                        @click="copyToClipboard(item.telephone)"
+                        :icon="ICONS.phone"
+                      >
+                      </v-btn>
+                      {{ item.telephone }}
+                    </span>
+                    <div class="list-item-actions">
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="gray"
+                        @click="deleteParents(item)"
+                        :icon="ICONS.delete"
+                      ></v-btn>
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="success"
+                        @click="openParentsDialog(true, item)"
+                        :icon="ICONS.edit"
+                      >
+                        <v-icon icon="ri-edit-2-fill"></v-icon>
+                      </v-btn>
+                    </div>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+            </template>
+
+            <v-list-item v-else>
+              <v-list-item-icon>
+                <v-icon icon="mdi-information-off"></v-icon>
               </v-list-item-icon>
-
-              <v-list-item-title class="_list-title-with-sub">
-                {{ formatRideTitle(childRide) }}
-                <span class="ml-2 text-grey">{{
-                  formatRideSubtitle(childRide)
-                }}</span>
-              </v-list-item-title>
-
-              <v-list-item-subtitle class="text-body-2">
-                {{
-                  `${childRide.meetingLocation?.name || ''}(${
-                    childRide.meetingLocation?.time || ''
-                  })`
-                }}
-                <span class="ml-2">{{ childRide.comment || '' }}</span>
-              </v-list-item-subtitle>
-
-              <v-list-item-action start>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="grey"
-                  @click="deleteChildRide(childRide)"
-                >
-                  <v-icon icon="ri-close-circle-fill"></v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="success"
-                  class="ml-2"
-                  @click="openChildRideDialog(true, childRide, true)"
-                >
-                  <v-icon icon="ri-edit-2-fill"></v-icon>
-                </v-btn>
-              </v-list-item-action>
+              <v-list-item-title
+                >등록된 부모의 정보가 없습니다.</v-list-item-title
+              >
             </v-list-item>
-          </template>
 
-          <v-list-item v-else>
-            <v-list-item-icon>
-              <v-icon icon="mdi-information-off"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-title
-              >등록된 오전차량의 정보가 없습니다.</v-list-item-title
-            >
-          </v-list-item>
-
-          <v-list-item class="ml-14 py-2">
-            <v-btn
-              block
-              variant="flat"
-              @click="openChildRideDialog(false, {}, true)"
-            >
-              오전차량 정보 추가
-              <v-icon icon="ri-add-fill" color="success" class="ml-2"></v-icon>
-            </v-btn>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-
-      <!-- 4. 오후 차량 정보 섹션 -->
-      <v-list class="pa-0">
-        <v-list-group v-model="groups.pmRide" value="pmRide">
-          <template #activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="ri-bus-2-fill">
-              <v-list-item-title>오후차량 정보</v-list-item-title>
+            <v-list-item>
+              <v-btn
+                block
+                variant="outlined"
+                @click="openParentsDialog(false)"
+                :append-icon="ICONS.plus"
+              >보호자 정보 추가</v-btn>
             </v-list-item>
-          </template>
+          </v-list-group>
+        </v-list>
 
-          <template v-if="form.pmChildRideList?.length">
-            <v-list-item
-              v-for="(childRide, index) in form.pmChildRideList"
-              :key="childRide.id || index"
-              class="ml-14"
-            >
-              <v-list-item-icon start>
-                <span class="_list-icon _list-icon-pm">오후</span>
+        <!-- 3. 오전 차량 정보 섹션 -->
+        <v-list>
+          <v-list-group v-model="groups.amRide" value="amRide">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="ICONS.bus"
+                :append-icon="ICONS.expand"
+                ><v-list-item-title>오전 차량 정보</v-list-item-title>
+              </v-list-item>
+            </template>
+
+            <template v-if="form.amChildRideList?.length">
+              <template
+                v-for="(childRide, index) in form.amChildRideList"
+                :key="childRide.id || index"
+              >
+                <v-list-item>
+                  <template v-slot:prepend>
+                    <span class="list-icon-am">오전</span>
+                  </template>
+                  <div class="input-group">
+                    <div>
+                      <v-list-item-title class="mb-1">
+                        {{ formatRideTitle(childRide) }}
+                        <small class="ml-1 text-grey">{{
+                          formatRideSubtitle(childRide)
+                        }}</small>
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{
+                          `${childRide.meetingLocation?.name || ''}(${
+                            childRide.meetingLocation?.time || ''
+                          })`
+                        }}
+                        <span class="ml-1">{{ childRide.comment || '' }}</span>
+                      </v-list-item-subtitle>
+                    </div>
+                    <div class="list-item-actions">
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="grey"
+                        @click="deleteChildRide(childRide)"
+                        :icon="ICONS.delete"
+                      ></v-btn>
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="success"
+                        @click="openChildRideDialog(true, childRide, true)"
+                        :icon="ICONS.edit"
+                      ></v-btn>
+                    </div>
+                  </div>
+                </v-list-item>
+              </template>
+            </template>
+
+            <v-list-item v-else>
+              <v-list-item-icon>
+                <v-icon icon="mdi-information-off"></v-icon>
               </v-list-item-icon>
-
-              <v-list-item-title class="_list-title-with-sub">
-                {{ formatRideTitle(childRide) }}
-                <span class="ml-2 text-grey">{{
-                  formatRideSubtitle(childRide)
-                }}</span>
-              </v-list-item-title>
-
-              <v-list-item-subtitle class="text-body-2">
-                {{
-                  `${childRide.meetingLocation?.name || ''}(${
-                    childRide.meetingLocation?.time || ''
-                  })`
-                }}
-                <span class="ml-2">{{ childRide.comment || '' }}</span>
-              </v-list-item-subtitle>
-
-              <v-list-item-action start>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="grey"
-                  @click="deleteChildRide(childRide)"
-                >
-                  <v-icon icon="ri-close-circle-fill"></v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="success"
-                  class="ml-2"
-                  @click="openChildRideDialog(true, childRide, false)"
-                >
-                  <v-icon icon="ri-edit-2-fill"></v-icon>
-                </v-btn>
-              </v-list-item-action>
+              <v-list-item-title
+                >등록된 오전차량의 정보가 없습니다.</v-list-item-title
+              >
             </v-list-item>
-          </template>
 
-          <v-list-item v-else>
-            <v-list-item-icon>
-              <v-icon icon="mdi-information-off"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-title
-              >등록된 오후차량의 정보가 없습니다.</v-list-item-title
-            >
-          </v-list-item>
+            <v-list-item>
+              <v-btn
+                block
+                variant="outlined"
+                @click="openChildRideDialog(false, {}, true)"
+                :append-icon="ICONS.plus"
+              >오전 차량 정보 추가</v-btn>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
 
-          <v-list-item class="ml-14 py-2">
-            <v-btn
-              block
-              variant="flat"
-              @click="openChildRideDialog(false, {}, false)"
-            >
-              오후차량 정보 추가
-              <v-icon icon="ri-add-fill" color="success" class="ml-2"></v-icon>
-            </v-btn>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
+        <!-- 4. 오후 차량 정보 섹션 -->
+        <v-list>
+          <v-list-group v-model="groups.pmRide" value="pmRide">
+            <template #activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="ICONS.bus"
+                :append-icon="ICONS.expand"
+              ><v-list-item-title>오후 차량 정보</v-list-item-title>
+              </v-list-item>
+            </template>
+
+            <template v-if="form.pmChildRideList?.length">
+              <template
+                v-for="(childRide, index) in form.pmChildRideList"
+                :key="childRide.id || index"
+              >
+                <v-list-item>
+                  <template v-slot:prepend>
+                    <span class="list-icon-pm">오후</span>
+                  </template>
+                  <div class="input-group">
+                    <div>
+                      <v-list-item-title class="mb-1">
+                        {{ formatRideTitle(childRide) }}
+                        <small class="ml-1 text-grey">{{
+                          formatRideSubtitle(childRide)
+                        }}</small>
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{
+                          `${childRide.meetingLocation?.name || ''}(${
+                            childRide.meetingLocation?.time || ''
+                          })`
+                        }}
+                        <span class="ml-1">{{ childRide.comment || '' }}</span>
+                      </v-list-item-subtitle>
+                    </div>
+                    <div class="list-item-actions">
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="grey"
+                        @click="deleteChildRide(childRide)"
+                        :icon="ICONS.delete"
+                      ></v-btn>
+                      <v-btn
+                        size="small"
+                        variant="text"
+                        color="success"
+                        @click="openChildRideDialog(true, childRide, false)"
+                        :icon="ICONS.edit"
+                      ></v-btn>
+                    </div>
+                  </div>
+                </v-list-item>
+              </template>
+            </template>
+
+            <v-list-item v-else>
+              <v-list-item-icon>
+                <v-icon icon="mdi-information-off"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-title
+                >등록된 오후차량의 정보가 없습니다.</v-list-item-title
+              >
+            </v-list-item>
+
+            <v-list-item>
+              <v-btn
+                block
+                variant="outlined"
+                @click="openChildRideDialog(false, {}, false)"
+                :append-icon="ICONS.plus"
+              >오후 차량 정보 추가</v-btn>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </div>
 
       <!-- 하단 액션 버튼 -->
-      <v-card-actions class="flex-wrap justify-end py-4 px-6">
-        <v-btn variant="text" color="grey" size="large" @click="handleCancel">
-          닫기
+      <v-card-actions>
+        <v-btn
+          variant="flat"
+          color="grey"
+          size="large"
+          @click="handleCancel"
+        >닫기
         </v-btn>
         <v-btn
-          variant="text"
+          variant="flat"
           color="error"
           size="large"
           @click="handleDeleteChild"
@@ -343,6 +337,7 @@ import { useClipboard } from '@vueuse/core' // ✅ 클립보드 유틸 (vue-clip
 import { useGlobal } from '@/composables/useGlobal'
 import { deleteChild as deleteChildApi } from '@/api/api'
 import type { Parent, ChildRide } from '@/types'
+import { ICONS } from '@/constants/icon.ts' // 아이콘
 
 const { $showMessage, $showError, $withLoading, $dialog, $confirm } =
   useGlobal()
